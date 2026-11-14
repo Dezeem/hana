@@ -1,6 +1,6 @@
 # Hana · 花间
 
-**A private herbarium for the films, series, books and albums you keep.**
+**A private archive for the films, series, books and albums you keep.**
 
 Hana is a self-hosted alternative to keeping a Douban shelf: a quiet, editorial archive
 where every work is numbered, classified and annotated by hand. Visitors browse freely;
@@ -12,14 +12,13 @@ only you log in to add or edit.
 
 ## Why another media tracker
 
-Most trackers look like dashboards. Hana is designed like a printed catalogue — warm paper,
-hairline rules, serif type, a three-digit specimen number on every item. The artwork is the
-only saturated thing on the page, which is the point.
+Most trackers look like dashboards. Hana borrows its geometry from De Stijl: a strict black
+grid, three primaries, and type large enough to carry a page on its own. Every work is
+numbered and framed like a plate.
 
-- **The work is the hero** — asymmetric cover collage on the home page, generous margins,
-  metadata treated as scientific labels.
-- **Four collections, four inks** — films (vermilion), series (indigo), books (moss),
-  albums (amber). The colour only ever appears in hairlines, dots and tags.
+- **The work is the hero** — an asymmetric cover collage, black frames, oversized headlines.
+- **Four collections, four marks** — films (red), series (blue), books (yellow), albums
+  (black). Colour is structural: it marks a plane, a tab, a rule — never a gradient.
 - **Retrieval that respects how you remember** — full-text search over titles, creators,
   tags and your own notes, plus faceted filtering that lives in the URL.
 
@@ -189,10 +188,11 @@ npm run db:reset                                        # start over (dev)
 
 ## Design credits
 
-- Type: Fraunces (Latin display, self-hosted, SIL OFL) with a CJK serif stack
-  (Noto Serif SC / Songti SC / SimSun).
-- Demo covers are generated procedurally in `lib/covers.ts` — no third-party artwork ships
-  with this repository.
+- Type: Jost (geometric sans, self-hosted, SIL OFL), with a CJK sans stack for the
+  interface and Noto Serif SC for long-form review text.
+- Palette: De Stijl primaries — red `#D8231C`, blue `#1B4B9C`, yellow `#F7C400`, black.
+- Demo covers are generated procedurally in `lib/covers.ts` as partitioned plates — no
+  third-party artwork ships with this repository.
 - Metadata referenced from Douban is used for personal archival purposes only.
 
 ## License

@@ -69,7 +69,7 @@ export default async function WorkPage({ params }: PageProps) {
           <div className="col-span-12 sm:col-span-7 lg:col-span-5 xl:col-span-4">
             <div className="sm:sticky sm:top-24">
               <div
-                className="relative w-full overflow-hidden bg-line/30"
+                className="relative w-full overflow-hidden bg-mist"
                 style={{ aspectRatio: aspect(work.coverRatio), maxHeight: "78vh" }}
               >
                 <Cover
@@ -88,13 +88,13 @@ export default async function WorkPage({ params }: PageProps) {
               <div className="mt-4 flex items-start justify-between gap-4">
                 <div>
                   <p className="meta">Collected</p>
-                  <p className="num mt-1 text-[12px] text-ink-soft">
+                  <p className="num mt-1 text-[13px] text-ink-soft">
                     {formatDate(work.finishedOn ?? work.createdAt)}
                   </p>
                 </div>
                 <div className="text-right">
                   <p className="meta">Status</p>
-                  <p className="mt-1 text-[12px] text-ink-soft">{STATUS_META[work.status].zh}</p>
+                  <p className="mt-1 text-[13px] text-ink-soft">{STATUS_META[work.status].zh}</p>
                 </div>
               </div>
 
@@ -122,18 +122,18 @@ export default async function WorkPage({ params }: PageProps) {
               <span className="h-px flex-1" style={{ backgroundColor: type?.color, opacity: 0.35 }} />
             </div>
 
-            <h1 className="mt-5 font-display text-[32px] leading-[1.15] tracking-[-0.02em] text-ink sm:text-[44px]">
+            <h1 className="mt-5 font-display text-[38px] leading-[1.02] tracking-[-0.035em] text-ink sm:text-[58px]">
               {work.title}
             </h1>
             {work.originalTitle ? (
               <p className="mt-2 font-display text-[15px] italic text-ink-soft">{work.originalTitle}</p>
             ) : null}
 
-            <p className="mt-6 font-serif text-[14px] text-ink-soft">
+            <p className="mt-6 text-[14px] text-ink-soft">
               {[work.creator, work.year ? String(work.year) : ""].filter(Boolean).join(" · ")}
             </p>
 
-            <div className="mt-8 flex flex-wrap items-end gap-x-12 gap-y-6 border-y border-line py-6">
+            <div className="mt-8 flex flex-wrap items-end gap-x-12 gap-y-6 border-y-2 border-line py-6">
               <div>
                 <p className="meta mb-2">我的评分</p>
                 <Rating value={work.rating} size="lg" />
@@ -152,22 +152,22 @@ export default async function WorkPage({ params }: PageProps) {
                       <Link
                         key={tag}
                         href={`/library?tag=${encodeURIComponent(tag)}`}
-                        className="border border-line px-2 py-0.5 text-[11px] text-ink-soft transition-colors hover:border-ink hover:text-ink"
+                        className="border-2 border-line px-2 py-0.5 text-[12px] text-ink-soft transition-colors hover:border-ink hover:text-ink"
                       >
                         {tag}
                       </Link>
                     ))
                   ) : (
-                    <span className="text-[12px] text-ink-faint">—</span>
+                    <span className="text-[13px] text-ink-faint">—</span>
                   )}
                 </div>
               </div>
             </div>
 
             {work.review ? (
-              <blockquote className="mt-10 border-l border-line pl-6 sm:pl-8">
+              <blockquote className="mt-10 border-l-2 border-line pl-6 sm:pl-8">
                 <p className="meta mb-3">短评 · Note</p>
-                <p className="whitespace-pre-line font-serif text-[15px] leading-[2.1] text-ink sm:text-[16px]">
+                <p className="whitespace-pre-line font-serif text-[17px] leading-[1.95] text-ink sm:text-[18px]">
                   {work.review}
                 </p>
               </blockquote>
@@ -176,16 +176,16 @@ export default async function WorkPage({ params }: PageProps) {
             {work.summary ? (
               <div className="mt-10">
                 <p className="meta mb-3">简介 · Synopsis</p>
-                <p className="whitespace-pre-line font-serif text-[13px] leading-[2] text-ink-soft">
+                <p className="whitespace-pre-line text-[15px] leading-[1.95] text-ink-soft">
                   {work.summary}
                 </p>
               </div>
             ) : null}
 
             {details.length ? (
-              <dl className="mt-12 grid grid-cols-1 gap-x-8 gap-y-3 border-t border-line pt-6 sm:grid-cols-2">
+              <dl className="mt-12 grid grid-cols-1 gap-x-8 gap-y-3 border-t-2 border-line pt-6 sm:grid-cols-2">
                 {details.map((item) => (
-                  <div key={item.label} className="flex gap-4 text-[12px]">
+                  <div key={item.label} className="flex gap-4 text-[13px]">
                     <dt className="meta w-20 shrink-0 pt-[3px]">{item.label}</dt>
                     <dd className="text-ink-soft">{item.value}</dd>
                   </div>
@@ -193,13 +193,13 @@ export default async function WorkPage({ params }: PageProps) {
               </dl>
             ) : null}
 
-            <nav className="mt-14 flex items-center justify-between gap-6 border-t border-line pt-6">
+            <nav className="mt-14 flex items-center justify-between gap-6 border-t-2 border-line pt-6">
               {prev ? (
                 <Link href={`/work/${prev.id}`} className="group flex items-center gap-3 text-left">
                   <ArrowLeft className="h-3.5 w-3.5 text-ink-faint transition-transform group-hover:-translate-x-1" strokeWidth={1.4} />
                   <span>
                     <span className="meta block">上一件</span>
-                    <span className="mt-1 block max-w-[11rem] truncate font-serif text-[13px] text-ink">
+                    <span className="mt-1 block max-w-[11rem] truncate text-[14px] text-ink">
                       {prev.title}
                     </span>
                   </span>
@@ -211,7 +211,7 @@ export default async function WorkPage({ params }: PageProps) {
                 <Link href={`/work/${next.id}`} className="group flex items-center gap-3 text-right">
                   <span>
                     <span className="meta block">下一件</span>
-                    <span className="mt-1 block max-w-[11rem] truncate font-serif text-[13px] text-ink">
+                    <span className="mt-1 block max-w-[11rem] truncate text-[14px] text-ink">
                       {next.title}
                     </span>
                   </span>
@@ -226,7 +226,7 @@ export default async function WorkPage({ params }: PageProps) {
       </div>
 
       {related.length ? (
-        <section className="mt-28 border-t border-line">
+        <section className="mt-28 border-t-2 border-line">
           <div className="mx-auto max-w-[1440px] px-5 pt-8 sm:px-8">
             <div className="flex items-baseline justify-between">
               <h2 className="meta text-ink">同标签藏品 · Related</h2>

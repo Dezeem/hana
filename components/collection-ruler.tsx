@@ -7,42 +7,44 @@ type RulerProps = {
   total: number;
 };
 
-/** Four engraved scales — one per collection type. */
+/** Four primary-coloured columns — a De Stijl index of the collection. */
 export function CollectionRuler({ counts, total }: RulerProps) {
   const max = Math.max(...Object.values(counts), 1);
 
   return (
-    <div className="w-full max-w-sm">
-      <div className="mb-5 flex items-baseline justify-between border-b border-line pb-2">
-        <span className="meta">Index</span>
-        <span className="num text-[11px] text-ink-soft">{total} specimens</span>
+    <div className="w-full">
+      <div className="flex items-baseline justify-between border-b-2 border-line pb-3">
+        <span className="meta text-ink">Index</span>
+        <span className="num text-[14px] font-medium">{total} specimens</span>
       </div>
-      <ul className="space-y-4">
+
+      <ul className="divide-y-2 divide-line">
         {WORK_TYPES.map((type) => {
           const count = counts[type.key] ?? 0;
           return (
             <li key={type.key}>
-              <Link href={`/library?type=${type.key}`} className="group block">
-                <div className="flex items-baseline justify-between">
-                  <span className="flex items-baseline gap-2">
+              <Link href={`/library?type=${type.key}`} className="group block py-4">
+                <div className="flex items-baseline justify-between gap-4">
+                  <span className="flex items-baseline gap-3">
                     <span
-                      className="inline-block h-[7px] w-[7px] shrink-0 translate-y-[-1px]"
+                      className="inline-block h-3 w-3 shrink-0 translate-y-[-1px]"
                       style={{ backgroundColor: type.color }}
                     />
-                    <span className="font-serif text-[13px] text-ink">{type.zh}</span>
-                    <span className="meta">{type.en}</span>
+                    <span className="text-[15px] font-medium">{type.zh}</span>
+                    <span className="text-[12px] uppercase tracking-[0.18em] text-ink-faint">
+                      {type.en}
+                    </span>
                   </span>
-                  <span className="num text-[13px] text-ink-soft transition-colors group-hover:text-ink">
+                  <span className="num text-[22px] font-semibold leading-none">
                     {String(count).padStart(2, "0")}
                   </span>
                 </div>
-                <div className="mt-2 h-px w-full bg-line">
+                <div className="mt-3 h-2 w-full border-2 border-line">
                   <div
-                    className="h-px transition-all duration-500 group-hover:opacity-100"
+                    className="h-full transition-all duration-500 group-hover:opacity-80"
                     style={{
-                      width: `${Math.max((count / max) * 100, 2)}%`,
+                      width: `${Math.max((count / max) * 100, 3)}%`,
                       backgroundColor: type.color,
-                      opacity: 0.75,
                     }}
                   />
                 </div>

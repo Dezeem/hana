@@ -3,9 +3,9 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { site } from "@/site.config";
 
-const fraunces = localFont({
-  src: "../public/fonts/fraunces-latin.woff2",
-  variable: "--font-fraunces",
+const jost = localFont({
+  src: "../public/fonts/jost-latin.woff2",
+  variable: "--font-jost",
   weight: "300 700",
   display: "swap",
   preload: true,
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   description: site.description,
   applicationName: site.name,
   authors: [{ name: site.owner }],
-  keywords: ["个人收藏", "书影音", "标本室", "豆瓣", "作品档案"],
+  keywords: ["个人收藏", "书影音", "作品档案", "豆瓣", "视觉档案"],
   openGraph: {
     type: "website",
     locale: "zh_CN",
@@ -56,7 +56,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="zh-CN" className={fraunces.variable} suppressHydrationWarning>
+    <html lang="zh-CN" className={jost.variable} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>

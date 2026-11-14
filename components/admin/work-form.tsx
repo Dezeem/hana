@@ -62,7 +62,7 @@ function initialValues(work?: Work | null): Values {
 function SubmitBar({ isEdit }: { isEdit: boolean }) {
   const { pending } = useFormStatus();
   return (
-    <div className="sticky bottom-0 z-20 -mx-5 mt-10 flex items-center justify-between gap-4 border-t border-line bg-paper/95 px-5 py-4 backdrop-blur-md sm:-mx-8 sm:px-8">
+    <div className="sticky bottom-0 z-20 -mx-5 mt-10 flex items-center justify-between gap-4 border-t-2 border-line bg-paper/95 px-5 py-4 backdrop-blur-md sm:-mx-8 sm:px-8">
       <div className="flex items-center gap-5">
         <button type="submit" className="btn" disabled={pending}>
           {pending ? "保存中…" : isEdit ? "保存修改" : "收录作品"}
@@ -133,8 +133,8 @@ export function WorkForm({ work }: { work?: Work | null }) {
         onUrlResolved={(url) => set("doubanUrl", url)}
       />
 
-      <section className="border border-line">
-        <div className="border-b border-line px-5 py-3">
+      <section className="border-2 border-line">
+        <div className="border-b-2 border-line px-5 py-3">
           <span className="meta text-ink">基础信息</span>
         </div>
         <div className="grid grid-cols-1 gap-6 px-5 py-6 sm:grid-cols-2">
@@ -145,11 +145,11 @@ export function WorkForm({ work }: { work?: Work | null }) {
               value={values.title}
               onChange={(event) => set("title", event.target.value)}
               placeholder="例如：牯岭街少年杀人事件"
-              className="field font-serif text-lg"
+              className="field text-lg"
               required
             />
             {state.fieldErrors?.title ? (
-              <span className="mt-1 block text-[11px] text-movie">{state.fieldErrors.title}</span>
+              <span className="mt-1 block text-[12px] text-movie">{state.fieldErrors.title}</span>
             ) : null}
           </label>
 
@@ -196,7 +196,7 @@ export function WorkForm({ work }: { work?: Work | null }) {
                   type="button"
                   onClick={() => set("type", item.key)}
                   className={cn(
-                    "flex items-center gap-2 border px-2.5 py-1 text-[11px] transition-colors",
+                    "flex items-center gap-2 border px-2.5 py-1 text-[12px] transition-colors",
                     values.type === item.key
                       ? "border-ink text-ink"
                       : "border-line text-ink-soft hover:text-ink",
@@ -217,8 +217,8 @@ export function WorkForm({ work }: { work?: Work | null }) {
         </div>
       </section>
 
-      <section className="border border-line">
-        <div className="border-b border-line px-5 py-3">
+      <section className="border-2 border-line">
+        <div className="border-b-2 border-line px-5 py-3">
           <span className="meta text-ink">我的记录</span>
         </div>
         <div className="grid grid-cols-1 gap-6 px-5 py-6 sm:grid-cols-2">
@@ -254,7 +254,7 @@ export function WorkForm({ work }: { work?: Work | null }) {
                   type="button"
                   onClick={() => set("status", status)}
                   className={cn(
-                    "border px-3 py-1 text-[11px] transition-colors",
+                    "border px-3 py-1 text-[12px] transition-colors",
                     values.status === status
                       ? "border-ink bg-ink text-paper"
                       : "border-line text-ink-soft hover:text-ink",
@@ -302,13 +302,13 @@ export function WorkForm({ work }: { work?: Work | null }) {
         </div>
       </section>
 
-      <section className="border border-line">
-        <div className="border-b border-line px-5 py-3">
+      <section className="border-2 border-line">
+        <div className="border-b-2 border-line px-5 py-3">
           <span className="meta text-ink">封面与来源</span>
         </div>
         <div className="grid grid-cols-1 gap-6 px-5 py-6 sm:grid-cols-[160px_1fr]">
           <div>
-            <div className="w-[160px] overflow-hidden border border-line bg-line/30" style={{ aspectRatio: "0.72" }}>
+            <div className="w-[160px] overflow-hidden border-2 border-line bg-mist" style={{ aspectRatio: "0.72" }}>
               {values.cover || values.coverRemote ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -317,7 +317,7 @@ export function WorkForm({ work }: { work?: Work | null }) {
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <div className="flex h-full items-center justify-center text-[11px] text-ink-faint">
+                <div className="flex h-full items-center justify-center text-[12px] text-ink-faint">
                   暂无封面
                 </div>
               )}
@@ -328,7 +328,7 @@ export function WorkForm({ work }: { work?: Work | null }) {
                 type="file"
                 name="coverFile"
                 accept="image/*"
-                className="w-full text-[11px] text-ink-soft file:mr-2 file:border file:border-line file:bg-transparent file:px-2 file:py-1 file:text-[11px]"
+                className="w-full text-[12px] text-ink-soft file:mr-2 file:border file:border-line file:bg-transparent file:px-2 file:py-1 file:text-[12px]"
               />
             </label>
           </div>
@@ -348,7 +348,7 @@ export function WorkForm({ work }: { work?: Work | null }) {
             {metaPreview.length ? (
               <div>
                 <span className="meta mb-2 block">抓取到的附加信息</span>
-                <dl className="space-y-1 border-l border-line pl-3 text-[11px]">
+                <dl className="space-y-1 border-l-2 border-line pl-3 text-[12px]">
                   {metaPreview.map(([key, value]) => (
                     <div key={key} className="flex gap-3">
                       <dt className="w-16 shrink-0 text-ink-faint">{key}</dt>
@@ -367,14 +367,14 @@ export function WorkForm({ work }: { work?: Work | null }) {
                 onChange={(event) => set("featured", event.target.checked)}
                 className="h-3.5 w-3.5 accent-ink"
               />
-              <span className="text-[12px] text-ink-soft">在首页「精选展品」中展示</span>
+              <span className="text-[13px] text-ink-soft">在首页「精选展品」中展示</span>
             </label>
           </div>
         </div>
       </section>
 
       {state.error ? (
-        <p className="border-l-2 border-movie pl-3 text-[12px] text-movie">{state.error}</p>
+        <p className="border-l-2 border-movie pl-3 text-[13px] text-movie">{state.error}</p>
       ) : null}
 
       <SubmitBar isEdit={Boolean(work)} />

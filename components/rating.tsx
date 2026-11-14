@@ -9,9 +9,9 @@ type RatingProps = {
 };
 
 const SIZES = {
-  sm: { text: "text-[11px]", tick: "h-[3px] w-3" },
-  md: { text: "text-sm", tick: "h-[3px] w-4" },
-  lg: { text: "text-2xl", tick: "h-[4px] w-6" },
+  sm: { text: "text-[13px]", tick: "h-[4px] w-3.5" },
+  md: { text: "text-[15px]", tick: "h-[4px] w-4" },
+  lg: { text: "text-[34px]", tick: "h-[6px] w-8" },
 };
 
 /** Score plus a row of hairline ticks — a measuring scale, not stars. */

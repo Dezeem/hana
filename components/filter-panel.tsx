@@ -31,7 +31,7 @@ function useApply() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h3 className="meta mb-3 border-b border-line pb-2 text-ink">{title}</h3>
+      <h3 className="meta mb-3 border-b-2 border-line pb-2 text-ink">{title}</h3>
       {children}
     </div>
   );
@@ -51,12 +51,12 @@ export function FilterPanel({ counts, years, tags, query }: PanelProps) {
               type="button"
               onClick={() => apply({ types: [] })}
               className={cn(
-                "flex w-full items-center justify-between py-1 text-left text-[13px] transition-colors",
+                "flex w-full items-center justify-between py-1 text-left text-[14px] transition-colors",
                 query.types.length === 0 ? "text-ink" : "text-ink-soft hover:text-ink",
               )}
             >
               <span>全部</span>
-              <span className="num text-[11px]">
+              <span className="num text-[12px]">
                 {Object.values(counts).reduce((sum, value) => sum + value, 0)}
               </span>
             </button>
@@ -69,13 +69,13 @@ export function FilterPanel({ counts, years, tags, query }: PanelProps) {
                   type="button"
                   onClick={() => apply({ types: toggleIn(query.types, type.key) })}
                   className={cn(
-                    "flex w-full items-center justify-between py-1 text-left text-[13px] transition-colors",
+                    "flex w-full items-center justify-between py-1 text-left text-[14px] transition-colors",
                     active ? "text-ink" : "text-ink-soft hover:text-ink",
                   )}
                 >
                   <span className="flex items-center gap-2">
                     <span
-                      className="inline-block h-[7px] w-[7px] border transition-colors"
+                      className="inline-block h-2.5 w-2.5 border-2 transition-colors"
                       style={{
                         borderColor: type.color,
                         backgroundColor: active ? type.color : "transparent",
@@ -83,7 +83,7 @@ export function FilterPanel({ counts, years, tags, query }: PanelProps) {
                     />
                     {type.zh}
                   </span>
-                  <span className="num text-[11px]">{counts[type.key] ?? 0}</span>
+                  <span className="num text-[12px]">{counts[type.key] ?? 0}</span>
                 </button>
               </li>
             );
@@ -102,7 +102,7 @@ export function FilterPanel({ counts, years, tags, query }: PanelProps) {
                   type="button"
                   onClick={() => apply({ years: toggleIn(query.years, year) })}
                   className={cn(
-                    "num border px-1.5 py-0.5 text-[11px] transition-colors",
+                    "num border px-1.5 py-0.5 text-[12px] transition-colors",
                     active
                       ? "border-ink bg-ink text-paper"
                       : "border-line text-ink-soft hover:border-line-strong hover:text-ink",
@@ -135,7 +135,7 @@ export function FilterPanel({ counts, years, tags, query }: PanelProps) {
                 type="button"
                 onClick={() => apply({ minRating: active ? null : value })}
                 className={cn(
-                  "num border px-2 py-0.5 text-[11px] transition-colors",
+                  "num border px-2 py-0.5 text-[12px] transition-colors",
                   active
                     ? "border-ink bg-ink text-paper"
                     : "border-line text-ink-soft hover:border-line-strong hover:text-ink",
@@ -158,14 +158,14 @@ export function FilterPanel({ counts, years, tags, query }: PanelProps) {
                   type="button"
                   onClick={() => apply({ status: active ? null : status })}
                   className={cn(
-                    "flex w-full items-center justify-between py-1 text-left text-[13px] transition-colors",
+                    "flex w-full items-center justify-between py-1 text-left text-[14px] transition-colors",
                     active ? "text-ink" : "text-ink-soft hover:text-ink",
                   )}
                 >
                   <span className="flex items-center gap-2">
                     <span
                       className={cn(
-                        "inline-block h-[5px] w-[5px] rounded-full",
+                        "inline-block h-2 w-2",
                         active ? "bg-ink" : "bg-line-strong",
                       )}
                     />
@@ -190,7 +190,7 @@ export function FilterPanel({ counts, years, tags, query }: PanelProps) {
                   type="button"
                   onClick={() => apply({ tags: toggleIn(query.tags, item.tag) })}
                   className={cn(
-                    "border px-2 py-0.5 text-[11px] transition-colors",
+                    "border px-2 py-0.5 text-[12px] transition-colors",
                     active
                       ? "border-ink bg-ink text-paper"
                       : "border-line text-ink-soft hover:border-line-strong hover:text-ink",
@@ -231,7 +231,7 @@ export function FilterDrawer(props: PanelProps) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="flex items-center gap-2 border border-line px-3 py-1.5 text-[12px] text-ink-soft lg:hidden"
+        className="flex items-center gap-2 border-2 border-line px-3 py-1.5 text-[13px] text-ink-soft lg:hidden"
       >
         <SlidersHorizontal className="h-3.5 w-3.5" strokeWidth={1.4} />
         筛选
@@ -246,7 +246,7 @@ export function FilterDrawer(props: PanelProps) {
             aria-label="关闭筛选"
             onClick={() => setOpen(false)}
           />
-          <div className="absolute inset-x-0 bottom-0 max-h-[85vh] overflow-y-auto border-t border-line bg-paper px-5 pb-10 pt-5">
+          <div className="absolute inset-x-0 bottom-0 max-h-[85vh] overflow-y-auto border-t-2 border-line bg-paper px-5 pb-10 pt-5">
             <div className="mb-6 flex items-center justify-between">
               <span className="meta text-ink">筛选藏品</span>
               <button

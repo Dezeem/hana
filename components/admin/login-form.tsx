@@ -34,7 +34,7 @@ export function LoginForm({ next }: { next: string }) {
       </label>
 
       {state.error ? (
-        <p className="border-l-2 border-movie pl-3 text-[12px] leading-relaxed text-movie">
+        <p className="border-l-2 border-movie pl-3 text-[13px] leading-relaxed text-movie">
           {state.error}
         </p>
       ) : null}

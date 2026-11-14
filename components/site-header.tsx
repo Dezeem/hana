@@ -27,7 +27,6 @@ export function SiteHeader() {
         setSearchOpen(true);
         return;
       }
-      // "/" is the quick-search key, as long as the caret is not in a field.
       if (event.key === "/" && !isTyping(event.target)) {
         event.preventDefault();
         setSearchOpen(true);
@@ -39,18 +38,18 @@ export function SiteHeader() {
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-50 h-16 border-b border-line bg-paper/85 backdrop-blur-md">
+      <header className="fixed inset-x-0 top-0 z-50 h-20 border-b-2 border-line bg-paper">
         <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between px-5 sm:px-8">
-          <Link href="/" className="group flex items-baseline gap-2.5" aria-label={`${site.name} 首页`}>
-            <span className="font-display text-[23px] italic leading-none tracking-[-0.02em] text-ink">
-              Hana
+          <Link href="/" className="group flex items-baseline gap-3" aria-label={`${site.name} 首页`}>
+            <span className="flex h-8 items-center bg-ink px-3 text-[20px] font-semibold uppercase leading-none tracking-[0.08em] text-paper">
+              {site.name}
             </span>
-            <span className="meta hidden pb-[3px] transition-colors group-hover:text-ink sm:block">
+            <span className="hidden text-[13px] font-medium uppercase tracking-[0.3em] text-ink-soft sm:block">
               {site.nameZh}
             </span>
           </Link>
 
-          <nav className="hidden items-center gap-9 md:flex" aria-label="主导航">
+          <nav className="hidden items-center gap-10 md:flex" aria-label="主导航">
             {site.nav.map((item) => {
               const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
               return (
@@ -58,8 +57,8 @@ export function SiteHeader() {
                   key={item.href}
                   href={item.href}
                   data-active={active}
-                  className="underlink meta text-ink-soft hover:text-ink"
-                  style={active ? { color: "var(--ink)" } : undefined}
+                  className="underlink text-[14px] font-medium uppercase tracking-[0.22em] transition-colors"
+                  style={{ color: active ? "var(--ink)" : "var(--ink-soft)" }}
                 >
                   {item.label}
                 </Link>
@@ -67,18 +66,17 @@ export function SiteHeader() {
             })}
           </nav>
 
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
-              className="flex h-8 items-center gap-2 border border-transparent px-2 text-ink-soft transition-colors hover:border-line hover:text-ink"
+              className="flex h-9 items-center gap-2 border-2 border-line px-3 text-ink transition-colors hover:bg-ink hover:text-paper"
               aria-label="打开搜索"
             >
-              <Search className="h-[15px] w-[15px]" strokeWidth={1.4} />
-              <span className="meta hidden sm:inline">搜索</span>
-              <kbd className="meta ml-1 hidden rounded-none border border-line px-1 py-[1px] text-[9px] lg:inline">
-                ⌘K
-              </kbd>
+              <Search className="h-4 w-4" strokeWidth={2} />
+              <span className="hidden text-[12px] font-medium uppercase tracking-[0.2em] sm:inline">
+                搜索
+              </span>
             </button>
             <ThemeToggle />
           </div>

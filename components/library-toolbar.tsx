@@ -69,9 +69,9 @@ export function LibraryToolbar({ query, total }: Props) {
   ];
 
   return (
-    <div className="flex flex-col gap-4 border-b border-line pb-4">
+    <div className="flex flex-col gap-4 border-b-2 border-line pb-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="font-serif text-[13px] text-ink-soft">
+        <p className="text-[14px] text-ink-soft">
           <span className="num mr-1.5 font-display text-[26px] italic text-ink">{total}</span>
           件藏品
         </p>
@@ -82,7 +82,7 @@ export function LibraryToolbar({ query, total }: Props) {
             <select
               value={query.sort}
               onChange={(event) => apply({ sort: event.target.value as LibraryQuery["sort"] })}
-              className="cursor-pointer border border-line bg-transparent px-2 py-1 font-serif text-[12px] text-ink outline-none focus:border-ink"
+              className="cursor-pointer border-2 border-line bg-transparent px-2 py-1 text-[13px] text-ink outline-none focus:border-ink"
             >
               {SORTS.map((sort) => (
                 <option key={sort.value} value={sort.value} className="bg-paper text-ink">
@@ -92,7 +92,7 @@ export function LibraryToolbar({ query, total }: Props) {
             </select>
           </label>
 
-          <div className="flex items-center border border-line">
+          <div className="flex items-center border-2 border-line">
             <button
               type="button"
               onClick={() => apply({ view: "grid" })}
@@ -124,7 +124,7 @@ export function LibraryToolbar({ query, total }: Props) {
           {chips.map((chip) => (
             <span
               key={chip.key}
-              className="inline-flex items-center gap-1.5 border border-line px-2 py-0.5 text-[11px] text-ink-soft"
+              className="inline-flex items-center gap-1.5 border-2 border-line px-2 py-0.5 text-[12px] text-ink-soft"
               style={chip.color ? { borderColor: chip.color, color: chip.color } : undefined}
             >
               {chip.label}

@@ -59,8 +59,8 @@ export function DoubanImport({ type, onTypeChange, onImported, onUrlResolved }: 
   }
 
   return (
-    <section className="border border-line">
-      <div className="flex items-center justify-between border-b border-line px-5 py-3">
+    <section className="border-2 border-line">
+      <div className="flex items-center justify-between border-b-2 border-line px-5 py-3">
         <div className="flex items-center gap-2">
           <Sparkles className="h-3.5 w-3.5 text-ink-soft" strokeWidth={1.4} />
           <span className="meta text-ink">从豆瓣导入</span>
@@ -76,7 +76,7 @@ export function DoubanImport({ type, onTypeChange, onImported, onUrlResolved }: 
               type="button"
               onClick={() => onTypeChange(item.key)}
               className={cn(
-                "border px-2.5 py-1 text-[11px] transition-colors",
+                "border px-2.5 py-1 text-[12px] transition-colors",
                 type === item.key
                   ? "border-ink bg-ink text-paper"
                   : "border-line text-ink-soft hover:border-line-strong hover:text-ink",
@@ -117,23 +117,23 @@ export function DoubanImport({ type, onTypeChange, onImported, onUrlResolved }: 
         {notice ? (
           <div
             className={cn(
-              "mt-4 border-l-2 pl-3 py-1 text-[12px] leading-relaxed",
+              "mt-4 border-l-2 pl-3 py-1 text-[13px] leading-relaxed",
               notice.kind === "ok" && "border-book text-book",
               notice.kind === "err" && "border-movie text-movie",
               notice.kind === "info" && "border-line-strong text-ink-soft",
             )}
           >
             <p>{notice.text}</p>
-            {notice.hint ? <p className="mt-1 text-[11px] opacity-80">{notice.hint}</p> : null}
+            {notice.hint ? <p className="mt-1 text-[12px] opacity-80">{notice.hint}</p> : null}
           </div>
         ) : (
-          <p className="mt-3 text-[11px] leading-relaxed text-ink-faint">
+          <p className="mt-3 text-[12px] leading-relaxed text-ink-faint">
             豆瓣没有公开 API，抓取成功率取决于网络环境。失败也没关系，直接在下面手动填写即可，链接会帮你保留。
           </p>
         )}
 
         {candidates.length ? (
-          <ul className="mt-4 divide-y divide-line border-y border-line">
+          <ul className="mt-4 divide-y divide-line border-y-2 border-line">
             {candidates.map((item) => (
               <li key={item.id}>
                 <button
@@ -144,15 +144,15 @@ export function DoubanImport({ type, onTypeChange, onImported, onUrlResolved }: 
                   }}
                   className="flex w-full items-center gap-3 py-2 text-left transition-colors hover:bg-ink/[0.03]"
                 >
-                  <span className="h-10 w-7 shrink-0 overflow-hidden bg-line/50">
+                  <span className="h-10 w-7 shrink-0 overflow-hidden bg-mist">
                     {item.pic ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={item.pic} alt="" className="h-full w-full object-cover" />
                     ) : null}
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate font-serif text-[13px] text-ink">{item.title}</span>
-                    <span className="block truncate text-[11px] text-ink-soft">{item.subtitle}</span>
+                    <span className="block truncate text-[14px] text-ink">{item.title}</span>
+                    <span className="block truncate text-[12px] text-ink-soft">{item.subtitle}</span>
                   </span>
                   <span className="meta shrink-0">选择</span>
                 </button>

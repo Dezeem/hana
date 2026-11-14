@@ -51,9 +51,9 @@ export default async function LibraryPage({ searchParams }: PageProps) {
               <span className="inline-block h-px w-8 bg-line-strong" />
               The collection
             </p>
-            <h1 className="font-display text-[38px] leading-none tracking-[-0.02em] text-ink sm:text-[52px]">
+            <h1 className="font-display text-[46px] leading-none tracking-[-0.035em] text-ink sm:text-[68px]">
               藏品库
-              <span className="ml-4 align-baseline font-serif text-[13px] not-italic tracking-[0.2em] text-ink-faint">
+              <span className="ml-4 align-baseline text-[14px] not-italic tracking-[0.2em] text-ink-faint">
                 LIBRARY
               </span>
             </h1>
@@ -82,7 +82,7 @@ export default async function LibraryPage({ searchParams }: PageProps) {
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-32 text-center">
               <p className="font-display text-2xl italic text-ink-faint">No specimens</p>
-              <p className="mt-4 max-w-sm font-serif text-[13px] leading-relaxed text-ink-soft">
+              <p className="mt-4 max-w-sm text-[14px] leading-relaxed text-ink-soft">
                 当前条件下没有藏品。试试放宽年份或评分，或者清除筛选看看全部。
               </p>
               <Link href="/library" className="btn btn-ghost mt-8">
@@ -106,7 +106,7 @@ export default async function LibraryPage({ searchParams }: PageProps) {
           )}
 
           {pages > 1 ? (
-            <nav className="mt-16 flex items-center justify-between border-t border-line pt-6">
+            <nav className="mt-16 flex items-center justify-between border-t-2 border-line pt-6">
               {query.page > 1 ? (
                 <Link href={hrefFor({ page: query.page - 1 })} className="meta underlink text-ink">
                   ← 上一页
@@ -114,7 +114,7 @@ export default async function LibraryPage({ searchParams }: PageProps) {
               ) : (
                 <span className="meta opacity-40">← 上一页</span>
               )}
-              <span className="num text-[12px] text-ink-soft">
+              <span className="num text-[13px] text-ink-soft">
                 {String(query.page).padStart(2, "0")} / {String(pages).padStart(2, "0")}
               </span>
               {query.page < pages ? (

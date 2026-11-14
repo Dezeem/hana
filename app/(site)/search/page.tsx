@@ -47,7 +47,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
               placeholder="标题、导演、标签，或一句短评"
               autoFocus={!query}
               aria-label="搜索藏品"
-              className="w-full bg-transparent font-serif text-xl text-ink outline-none placeholder:text-ink-faint sm:text-2xl"
+              className="w-full bg-transparent text-xl text-ink outline-none placeholder:text-ink-faint sm:text-2xl"
             />
             <button type="submit" className="meta shrink-0 pb-1.5 text-ink-soft hover:text-ink">
               检索
@@ -55,7 +55,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
           </div>
         </form>
 
-        <p className="mt-5 font-serif text-[13px] text-ink-soft">
+        <p className="mt-5 text-[14px] text-ink-soft">
           {query ? (
             <>
               找到 <span className="num text-ink">{works.length}</span> 件与「{query}」相关的藏品
@@ -75,9 +75,9 @@ export default async function SearchPage({ searchParams }: PageProps) {
           ))}
         </div>
       ) : query ? (
-        <div className="border-t border-line py-24 text-center">
+        <div className="border-t-2 border-line py-24 text-center">
           <p className="font-display text-2xl italic text-ink-faint">Nothing matched</p>
-          <p className="mx-auto mt-4 max-w-sm font-serif text-[13px] leading-relaxed text-ink-soft">
+          <p className="mx-auto mt-4 max-w-sm text-[14px] leading-relaxed text-ink-soft">
             没有找到「{query}」。试试更短的关键词，或者按标签浏览。
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-2">
@@ -85,7 +85,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
               <Link
                 key={tag.tag}
                 href={`/library?tag=${encodeURIComponent(tag.tag)}`}
-                className="border border-line px-2 py-0.5 text-[11px] text-ink-soft transition-colors hover:border-ink hover:text-ink"
+                className="border-2 border-line px-2 py-0.5 text-[12px] text-ink-soft transition-colors hover:border-ink hover:text-ink"
               >
                 {tag.tag}
               </Link>
@@ -93,7 +93,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-12 gap-x-8 gap-y-12 border-t border-line pt-8">
+        <div className="grid grid-cols-12 gap-x-8 gap-y-12 border-t-2 border-line pt-8">
           <section className="col-span-12 md:col-span-4">
             <h2 className="meta mb-4 text-ink">常用标签</h2>
             <div className="flex flex-wrap gap-1.5">
@@ -101,7 +101,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
                 <Link
                   key={tag.tag}
                   href={`/search?q=${encodeURIComponent(tag.tag)}`}
-                  className="border border-line px-2 py-0.5 text-[11px] text-ink-soft transition-colors hover:border-ink hover:text-ink"
+                  className="border-2 border-line px-2 py-0.5 text-[12px] text-ink-soft transition-colors hover:border-ink hover:text-ink"
                 >
                   {tag.tag}
                   <span className="ml-1 opacity-50">{tag.count}</span>
@@ -117,10 +117,10 @@ export default async function SearchPage({ searchParams }: PageProps) {
                 <li key={work.id}>
                   <Link
                     href={`/work/${work.id}`}
-                    className="flex items-center gap-4 border-b border-line py-3 transition-colors hover:bg-ink/[0.02]"
+                    className="flex items-center gap-4 border-b-2 border-line py-3 transition-colors hover:bg-ink/[0.02]"
                   >
                     <span className="specimen-no w-10 shrink-0">No.{work.no}</span>
-                    <span className="min-w-0 flex-1 truncate font-serif text-[14px] text-ink">
+                    <span className="min-w-0 flex-1 truncate text-[14px] text-ink">
                       {work.title}
                     </span>
                     <span className="meta shrink-0" style={{ color: TYPE_MAP[work.type]?.color }}>

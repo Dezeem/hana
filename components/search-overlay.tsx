@@ -109,7 +109,7 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="搜索标题、导演、标签，或一句短评"
-            className="w-full bg-transparent font-serif text-xl text-ink outline-none placeholder:text-ink-faint sm:text-2xl"
+            className="w-full bg-transparent text-xl text-ink outline-none placeholder:text-ink-faint sm:text-2xl"
             autoComplete="off"
             spellCheck={false}
           />
@@ -135,7 +135,7 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
                 href={`/work/${hit.id}`}
                 onClick={onClose}
                 onMouseEnter={() => setActive(index)}
-                className={`flex items-center gap-4 border-b border-line py-3 transition-colors ${
+                className={`flex items-center gap-4 border-b-2 border-line py-3 transition-colors ${
                   active === index ? "bg-ink/[0.04]" : "hover:bg-ink/[0.02]"
                 }`}
               >
@@ -147,7 +147,7 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
                   ) : null}
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate font-serif text-base text-ink">{hit.title}</span>
+                  <span className="block truncate text-base text-ink">{hit.title}</span>
                   <span className="mt-0.5 block truncate text-xs text-ink-soft">
                     {[hit.creator, hit.year].filter(Boolean).join(" · ")}
                   </span>
@@ -164,13 +164,13 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
         </ul>
 
         {!loading && query && hits.length === 0 ? (
-          <p className="mt-10 text-center font-serif text-sm text-ink-soft">
+          <p className="mt-10 text-center text-sm text-ink-soft">
             没有找到「{query}」。试试更短的关键词，或者去作品库按标签浏览。
           </p>
         ) : null}
 
         {!query ? (
-          <p className="mt-10 text-center font-serif text-sm text-ink-soft">
+          <p className="mt-10 text-center text-sm text-ink-soft">
             输入任意关键词，标题、导演、标签与短评都会被检索。
           </p>
         ) : null}

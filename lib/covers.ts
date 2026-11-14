@@ -1,19 +1,29 @@
 import type { WorkType } from "@/site.config";
 
 /**
- * Procedural cover art.
+ * Procedural cover art — De Stijl plates.
  *
- * Seed covers are drawn as SVG at runtime so the repository stays light,
- * works offline and never ships third-party artwork. Every plate is derived
- * from a numeric seed, so a title always gets the same image.
+ * Each plate is a deterministic partition of the canvas into rectangles, divided
+ * by thick black rules and filled with the three primaries. Nothing is
+ * downloaded, nothing is licensed, and a given seed always produces the same
+ * composition, so the archive looks designed rather than random.
  */
 
-export const TYPE_TINT: Record<WorkType, { accent: string; wash: string; paper: string; code: string }> = {
-  movie: { accent: "#B4402F", wash: "#F1E4DE", paper: "#F7F1EA", code: "FILM" },
-  series: { accent: "#2F4858", wash: "#DFE6EA", paper: "#F1F2F0", code: "SERI" },
-  book: { accent: "#5C6B4A", wash: "#E4E7DA", paper: "#F4F3EA", code: "BOOK" },
-  music: { accent: "#B8863B", wash: "#F0E6D4", paper: "#F8F3E8", code: "ALBM" },
+export const TYPE_TINT: Record<
+  WorkType,
+  { accent: string; code: string }
+> = {
+  movie: { accent: "#D8231C", code: "FILM" },
+  series: { accent: "#1B4B9C", code: "SERI" },
+  book: { accent: "#F7C400", code: "BOOK" },
+  music: { accent: "#101010", code: "ALBM" },
 };
+
+const RED = "#D8231C";
+const BLUE = "#1B4B9C";
+const YELLOW = "#F7C400";
+const BLACK = "#101010";
+const WHITE = "#FBFAF7";
 
 function mulberry32(seed: number) {
   let a = seed >>> 0;
@@ -25,8 +35,28 @@ function mulberry32(seed: number) {
   };
 }
 
-function grain(id: string, opacity: number) {
-  return `<filter id="${id}"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope="${opacity}"/></feComponentTransfer></filter>`;
+type Rect = { x: number; y: number; w: number; h: number };
+
+/** Recursively bisects a rectangle; depth 3 gives 4–8 planes. */
+function partition(rect: Rect, depth: number, rand: () => number): Rect[] {
+  if (depth <= 0) return [rect];
+
+  const horizontal = rand() > 0.42;
+  const ratio = 0.28 + rand() * 0.44;
+
+  if (horizontal) {
+    const cut = rect.h * ratio;
+    return [
+      ...partition({ ...rect, h: cut }, depth - 1, rand),
+      ...partition({ x: rect.x, y: rect.y + cut, w: rect.w, h: rect.h - cut }, depth - 1, rand),
+    ];
+  }
+
+  const cut = rect.w * ratio;
+  return [
+    ...partition({ ...rect, w: cut }, depth - 1, rand),
+    ...partition({ x: rect.x + cut, y: rect.y, w: rect.w - cut, h: rect.h }, depth - 1, rand),
+  ];
 }
 
 type CoverOptions = {
@@ -38,109 +68,76 @@ type CoverOptions = {
   ratio?: number;
 };
 
-export function coverSvg({ seed, type, title, index = 1, width = 900, ratio = 0.72 }: CoverOptions) {
+export function coverSvg({
+  seed,
+  type,
+  title,
+  index = 1,
+  width = 900,
+  ratio = 0.72,
+}: CoverOptions) {
   const tint = TYPE_TINT[type];
   const rand = mulberry32(seed * 7919 + index * 104729);
-  const height = Math.round(width / ratio);
-  const w = width;
-  const h = height;
-  const variant = seed % 5;
-  const uid = `g${seed}`;
+  const h = Math.round(width / ratio);
+  const labelH = Math.round(width * 0.075);
+  const L = Math.max(6, Math.round(width * 0.011));
+
+  const planes = partition({ x: 0, y: 0, w: width, h: h - labelH }, 3, rand);
+  planes.sort((a, b) => b.w * b.h - a.w * a.h);
+
+  // The type's primary always appears; the other two primaries join sometimes.
+  const palette: string[] = [];
+  if (tint.accent === BLACK) {
+    // Albums are keyed to black, so keep at least one primary in the plane.
+    palette.push(RED);
+    if (rand() > 0.45) palette.push(BLUE);
+    if (rand() > 0.72) palette.push(YELLOW);
+  } else {
+    palette.push(tint.accent);
+    const extras = [RED, BLUE, YELLOW].filter((color) => color !== tint.accent);
+    if (rand() > 0.35) palette.push(extras[0]);
+    if (rand() > 0.6) palette.push(extras[1]);
+  }
+  palette.push(WHITE, WHITE, WHITE);
 
   const shapes: string[] = [];
+  planes.forEach((plane, planeIndex) => {
+    const pick = planeIndex === 0 ? palette[0] : palette[Math.floor(rand() * palette.length)];
+    const inset = L / 2;
+    const x = plane.x + (plane.x === 0 ? L / 2 : inset);
+    const y = plane.y + (plane.y === 0 ? L / 2 : inset);
+    const w = plane.w - (plane.x === 0 ? L / 2 : inset) - (plane.x + plane.w >= width ? L / 2 : inset);
+    const hh =
+      plane.h -
+      (plane.y === 0 ? L / 2 : inset) -
+      (plane.y + plane.h >= h - labelH ? L / 2 : inset);
 
-  if (variant === 0) {
-    const cx = w * (0.35 + rand() * 0.3);
-    const cy = h * (0.3 + rand() * 0.14);
-    const r = w * (0.3 + rand() * 0.1);
+    if (w <= 0 || hh <= 0) return;
     shapes.push(
-      `<circle cx="${cx.toFixed(0)}" cy="${cy.toFixed(0)}" r="${r.toFixed(0)}" fill="${tint.accent}" opacity="0.9"/>`,
-      `<rect x="0" y="${(h * 0.62).toFixed(0)}" width="${w}" height="1" fill="${tint.accent}" opacity="0.5"/>`,
-      `<rect x="0" y="${(h * 0.74).toFixed(0)}" width="${w}" height="1" fill="${tint.accent}" opacity="0.3"/>`,
-      `<rect x="${(w * 0.12).toFixed(0)}" y="${(h * 0.5).toFixed(0)}" width="${(w * 0.06).toFixed(0)}" height="${(h * 0.36).toFixed(0)}" fill="${tint.accent}" opacity="0.14"/>`,
+      `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${hh.toFixed(1)}" fill="${pick}"/>`,
     );
-  } else if (variant === 1) {
-    const cx = w * 0.5;
-    const cy = h * 0.72;
-    for (let i = 0; i < 6; i += 1) {
-      const r = w * (0.22 + i * 0.13);
-      shapes.push(
-        `<circle cx="${cx}" cy="${cy.toFixed(0)}" r="${r.toFixed(0)}" fill="none" stroke="${tint.accent}" stroke-width="${i === 0 ? 2 : 1}" opacity="${(0.75 - i * 0.1).toFixed(2)}"/>`,
-      );
-    }
-    shapes.push(
-      `<circle cx="${cx}" cy="${cy.toFixed(0)}" r="${(w * 0.05).toFixed(0)}" fill="${tint.accent}"/>`,
-      `<rect x="0" y="${(h * 0.28).toFixed(0)}" width="${w}" height="1" fill="${tint.accent}" opacity="0.35"/>`,
-    );
-  } else if (variant === 2) {
-    const cols = 7;
-    const rows = Math.round((cols * h) / w);
-    const step = w / (cols + 1);
-    const dotR = Math.max(2.2, w * 0.004);
-    const dots: string[] = [];
-    for (let row = 1; row < rows; row += 1) {
-      for (let col = 1; col <= cols; col += 1) {
-        const cx = col * step;
-        const cy = (row * h) / (rows + 1);
-        const inBand = Math.abs(cx / w - cy / h) < 0.16;
-        if (inBand) continue;
-        dots.push(
-          `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${dotR.toFixed(1)}" fill="${tint.accent}" opacity="0.5"/>`,
-        );
-      }
-    }
-    shapes.push(
-      `<polygon points="0,${h} ${(w * 0.58).toFixed(0)},0 ${(w * 0.82).toFixed(0)},0 0,${(h * 0.78).toFixed(0)}" fill="${tint.accent}" opacity="0.9"/>`,
-      ...dots,
-    );
-  } else if (variant === 3) {
-    const strokes = 9;
-    for (let i = 0; i < strokes; i += 1) {
-      const x = (w / (strokes + 1)) * (i + 1);
-      const amp = w * (0.02 + rand() * 0.05);
-      const path = `M ${x.toFixed(1)} 0 C ${(x + amp).toFixed(1)} ${(h * 0.3).toFixed(0)}, ${(x - amp).toFixed(1)} ${(h * 0.7).toFixed(0)}, ${x.toFixed(1)} ${h}`;
-      shapes.push(
-        `<path d="${path}" fill="none" stroke="${tint.accent}" stroke-width="${i % 3 === 0 ? 2 : 1}" opacity="${(0.25 + (i % 4) * 0.18).toFixed(2)}"/>`,
-      );
-    }
-    shapes.push(
-      `<rect x="${(w * 0.18).toFixed(0)}" y="${(h * 0.36).toFixed(0)}" width="${(w * 0.64).toFixed(0)}" height="1" fill="${tint.accent}" opacity="0.9"/>`,
-    );
-  } else {
-    const inset = w * (0.13 + rand() * 0.06);
-    shapes.push(
-      `<rect x="${inset.toFixed(0)}" y="${inset.toFixed(0)}" width="${(w - inset * 2).toFixed(0)}" height="${(h - inset * 2).toFixed(0)}" fill="none" stroke="${tint.accent}" stroke-width="1" opacity="0.7"/>`,
-      `<rect x="${(w * 0.3).toFixed(0)}" y="${(h * 0.36).toFixed(0)}" width="${(w * 0.4).toFixed(0)}" height="${(w * 0.4).toFixed(0)}" fill="${tint.accent}" opacity="0.86"/>`,
-      `<rect x="${(w * 0.3).toFixed(0)}" y="${(h * 0.36).toFixed(0)}" width="${(w * 0.4).toFixed(0)}" height="${(w * 0.4).toFixed(0)}" fill="none" stroke="#F7F4EE" stroke-width="1" opacity="0.5"/>`,
-    );
-  }
+  });
 
   const label = String(index).padStart(2, "0");
   const safeTitle = title
-    .slice(0, 22)
+    .slice(0, 24)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="${safeTitle}">
-  <defs>
-    ${grain(uid, 0.22)}
-    <linearGradient id="${uid}-wash" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="${tint.wash}"/>
-      <stop offset="100%" stop-color="${tint.paper}"/>
-    </linearGradient>
-  </defs>
-  <rect width="${w}" height="${h}" fill="${tint.paper}"/>
-  <rect width="${w}" height="${h}" fill="url(#${uid}-wash)" opacity="0.6"/>
-  ${shapes.join("\n  ")}
-  <rect width="${w}" height="${h}" filter="url(#${uid})" opacity="0.55"/>
-  <rect x="0.5" y="0.5" width="${w - 1}" height="${h - 1}" fill="none" stroke="${tint.accent}" stroke-width="1" opacity="0.25"/>
-  <text x="${(w * 0.06).toFixed(0)}" y="${(h * 0.95).toFixed(0)}" font-family="Georgia, serif" font-size="${(w * 0.018).toFixed(0)}" letter-spacing="${(w * 0.004).toFixed(1)}" fill="${tint.accent}" opacity="0.75">PL. ${label}</text>
-  <text x="${(w * 0.94).toFixed(0)}" y="${(h * 0.95).toFixed(0)}" text-anchor="end" font-family="Georgia, serif" font-size="${(w * 0.018).toFixed(0)}" letter-spacing="${(w * 0.004).toFixed(1)}" fill="${tint.accent}" opacity="0.75">${tint.code}</text>
+  const fontSize = Math.round(width * 0.021);
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${h}" width="${width}" height="${h}" role="img" aria-label="${safeTitle}">
+  <rect width="${width}" height="${h}" fill="${BLACK}"/>
+  <g>${shapes.join("")}</g>
+  <rect x="0" y="${h - labelH}" width="${width}" height="${labelH}" fill="${WHITE}"/>
+  <rect x="0" y="${h - labelH}" width="${width}" height="${L / 2}" fill="${BLACK}"/>
+  <text x="${Math.round(L * 1.6)}" y="${h - labelH / 2 + fontSize * 0.36}" font-family="Helvetica, Arial, sans-serif" font-size="${fontSize}" letter-spacing="${(fontSize * 0.18).toFixed(1)}" fill="${BLACK}">PL. ${label}</text>
+  <text x="${width - Math.round(L * 1.6)}" y="${h - labelH / 2 + fontSize * 0.36}" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="${fontSize}" letter-spacing="${(fontSize * 0.18).toFixed(1)}" fill="${BLACK}">${tint.code}</text>
 </svg>`;
 }
 
-/** Deterministic ratios so the collage keeps an organic rhythm. */
+/** Deterministic ratios so the collage keeps an asymmetric rhythm. */
 export function ratioForIndex(index: number): number {
   const set = [0.72, 0.8, 1, 0.68, 0.75, 0.9, 0.66];
   return set[index % set.length];

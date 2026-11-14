@@ -19,7 +19,8 @@ export function ensureSeedCovers(): void {
   SEED_ENTRIES.forEach((entry, index) => {
     const position = index + 1;
     const file = path.join(UPLOAD_DIR, seedFileName(entry.type, position));
-    if (fs.existsSync(file)) return;
+    // Seed plates are regenerated on every boot: they are a few KB of SVG and
+    // this keeps them in sync when the cover generator changes.
     const ratio = ratioForIndex(position);
     fs.writeFileSync(
       file,

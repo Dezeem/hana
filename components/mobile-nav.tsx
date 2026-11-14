@@ -17,7 +17,7 @@ export function MobileNav() {
 
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-50 h-16 border-t border-line bg-paper/95 backdrop-blur-md md:hidden"
+      className="fixed inset-x-0 bottom-0 z-50 h-[68px] border-t-2 border-line bg-paper/95 backdrop-blur-md md:hidden"
       aria-label="移动端导航"
     >
       <ul className="mx-auto flex h-full max-w-md items-stretch">
@@ -35,7 +35,7 @@ export function MobileNav() {
                 )}
               >
                 <Icon className="h-[17px] w-[17px]" strokeWidth={1.4} />
-                <span className="text-[10px] tracking-[0.18em]">{item.label}</span>
+                <span className="text-[11px] font-medium uppercase tracking-[0.16em]">{item.label}</span>
               </Link>
             </li>
           );

@@ -16,7 +16,7 @@ export function AdminNav() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-paper/90 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b-2 border-line bg-paper/90 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-[1200px] items-center justify-between px-5 sm:px-8">
         <div className="flex items-center gap-6">
           <Link href="/admin" className="flex items-baseline gap-2">
@@ -34,7 +34,7 @@ export function AdminNav() {
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "text-[12px] tracking-[0.12em] transition-colors",
+                    "text-[13px] tracking-[0.12em] transition-colors",
                     active ? "text-ink" : "text-ink-soft hover:text-ink",
                   )}
                 >

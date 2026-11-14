@@ -19,20 +19,20 @@ export default function AboutPage() {
           <span className="inline-block h-px w-8 bg-line-strong" />
           Colophon
         </p>
-        <h1 className="max-w-2xl font-display text-[36px] leading-[1.15] tracking-[-0.02em] text-ink sm:text-[50px]">
+        <h1 className="max-w-2xl font-display text-[40px] leading-[1.05] tracking-[-0.035em] text-ink sm:text-[60px]">
           {site.about.heading}
         </h1>
       </header>
 
-      <div className="grid grid-cols-12 gap-x-10 gap-y-12 border-t border-line pt-10">
+      <div className="grid grid-cols-12 gap-x-10 gap-y-12 border-t-2 border-line pt-10">
         <div className="col-span-12 md:col-span-7">
           {site.about.paragraphs.map((paragraph, index) => (
             <p
               key={index}
               className={
                 index === 0
-                  ? "font-serif text-[15px] leading-[2.1] text-ink first-letter:float-left first-letter:mr-3 first-letter:mt-1 first-letter:font-display first-letter:text-[56px] first-letter:leading-[0.8] first-letter:text-ink"
-                  : "mt-6 font-serif text-[15px] leading-[2.1] text-ink-soft"
+                  ? "text-[15px] leading-[2.1] text-ink first-letter:float-left first-letter:mr-3 first-letter:mt-1 first-letter:font-display first-letter:text-[56px] first-letter:leading-[0.8] first-letter:text-ink"
+                  : "mt-6 text-[15px] leading-[2.1] text-ink-soft"
               }
             >
               {paragraph}
@@ -50,7 +50,7 @@ export default function AboutPage() {
         </div>
 
         <aside className="col-span-12 md:col-span-5">
-          <div className="border border-line p-6">
+          <div className="border-2 border-line p-6">
             <p className="meta mb-5">Collection at a glance</p>
 
             <div className="mb-8 flex items-baseline gap-3">
@@ -66,7 +66,7 @@ export default function AboutPage() {
                 const width = stats.total ? (count / stats.total) * 100 : 0;
                 return (
                   <li key={type.key}>
-                    <div className="flex items-baseline justify-between text-[12px]">
+                    <div className="flex items-baseline justify-between text-[13px]">
                       <span className="text-ink">{type.zh}</span>
                       <span className="num text-ink-soft">{count}</span>
                     </div>
@@ -81,7 +81,7 @@ export default function AboutPage() {
               })}
             </ul>
 
-            <div className="mt-8 border-t border-line pt-5">
+            <div className="mt-8 border-t-2 border-line pt-5">
               <p className="meta mb-3">Rating spread</p>
               <div className="flex h-16 items-end gap-2">
                 {stats.ratingBuckets.map((bucket) => (
@@ -94,20 +94,20 @@ export default function AboutPage() {
                   </div>
                 ))}
               </div>
-              <p className="mt-3 text-[11px] text-ink-soft">
+              <p className="mt-3 text-[12px] text-ink-soft">
                 平均 {stats.averageRating ? stats.averageRating.toFixed(2) : "—"} / 5.00
               </p>
             </div>
 
             {stats.topTags.length ? (
-              <div className="mt-8 border-t border-line pt-5">
+              <div className="mt-8 border-t-2 border-line pt-5">
                 <p className="meta mb-3">Most used tags</p>
                 <div className="flex flex-wrap gap-1.5">
                   {stats.topTags.slice(0, 10).map((tag) => (
                     <Link
                       key={tag.tag}
                       href={`/library?tag=${encodeURIComponent(tag.tag)}`}
-                      className="border border-line px-2 py-0.5 text-[11px] text-ink-soft transition-colors hover:border-ink hover:text-ink"
+                      className="border-2 border-line px-2 py-0.5 text-[12px] text-ink-soft transition-colors hover:border-ink hover:text-ink"
                     >
                       {tag.tag}
                     </Link>
@@ -119,9 +119,9 @@ export default function AboutPage() {
         </aside>
       </div>
 
-      <section className="mt-20 border-t border-line pt-8">
+      <section className="mt-20 border-t-2 border-line pt-8">
         <p className="meta mb-4">Colophon</p>
-        <p className="max-w-2xl font-serif text-[12px] leading-[2] text-ink-faint">
+        <p className="max-w-2xl text-[13px] leading-[2] text-ink-faint">
           {site.about.colophon}
         </p>
         <p className="mt-6 font-display text-lg italic text-ink-faint">{site.taglineEn}</p>
