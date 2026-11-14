@@ -2,14 +2,21 @@ import { all, one } from "./client";
 import { parseTags, rowToWork, type Work, type WorkRow } from "./types";
 import type { WorkStatus, WorkType } from "@/site.config";
 
-export type SortKey = "recent" | "rating" | "year" | "title";
+export type SortKey = "recent" | "collected" | "rating" | "year" | "title" | "random";
 
 export type WorkFilter = {
   types?: WorkType[];
   years?: number[];
+  /** Decade starts, e.g. `[2020, 1990]` → 2020–2029 or 1990–1999. */
+  decades?: number[];
   tags?: string[];
   status?: WorkStatus;
+  statuses?: WorkStatus[];
   minRating?: number;
+  /** Only works with no rating — often the biggest bucket in a real archive. */
+  unrated?: boolean;
+  /** Only works that carry a written note. */
+  reviewed?: boolean;
   q?: string;
   sort?: SortKey;
   /** keyset cursor — only used by the `recent` ordering */
@@ -47,14 +54,23 @@ function buildWhere(filter: WorkFilter, withCursor: boolean) {
       params.push(`%,${tag},%`);
     }
   }
-  if (filter.status) {
+  if (filter.statuses?.length) {
+    clauses.push(`status IN (${filter.statuses.map(() => "?").join(",")})`);
+    params.push(...filter.statuses);
+  } else if (filter.status) {
     clauses.push("status = ?");
     params.push(filter.status);
+  }
+  if (filter.decades?.length) {
+    clauses.push(`(${filter.decades.map(() => "(year BETWEEN ? AND ?)").join(" OR ")})`);
+    for (const decade of filter.decades) params.push(decade, decade + 9);
   }
   if (typeof filter.minRating === "number" && filter.minRating > 0) {
     clauses.push("rating >= ?");
     params.push(filter.minRating);
   }
+  if (filter.unrated) clauses.push("rating IS NULL");
+  if (filter.reviewed) clauses.push("review <> ''");
   if (filter.featuredOnly) {
     clauses.push("featured = 1");
   }
@@ -78,12 +94,17 @@ function buildWhere(filter: WorkFilter, withCursor: boolean) {
 
 function orderBy(sort: SortKey | undefined) {
   switch (sort) {
+    case "collected":
+      // The编号 is insertion order, not a date. Real chronology lives in finished_on.
+      return "ORDER BY finished_on IS NULL, finished_on DESC, id DESC";
     case "rating":
       return "ORDER BY rating IS NULL, rating DESC, id DESC";
     case "year":
       return "ORDER BY year IS NULL, year DESC, id DESC";
     case "title":
       return "ORDER BY title COLLATE NOCASE ASC";
+    case "random":
+      return "ORDER BY RANDOM()";
     default:
       return "ORDER BY id DESC";
   }
@@ -140,6 +161,33 @@ export function getRelated(work: Work, limit = 8): Work[] {
   return rows.map(rowToWork);
 }
 
+/**
+ * One random specimen, optionally limited to a status. `ORDER BY RANDOM()` is
+ * fine at this scale (hundreds of rows) and keeps the draw page stateless.
+ */
+export function getRandomWork(status?: WorkStatus): Work | null {
+  const row = status
+    ? one<WorkRow>("SELECT * FROM works WHERE status = ? ORDER BY RANDOM() LIMIT 1", [status])
+    : one<WorkRow>("SELECT * FROM works ORDER BY RANDOM() LIMIT 1");
+  return row ? rowToWork(row) : null;
+}
+
+/**
+ * The same specimen all day, a different one tomorrow — a deterministic offset
+ * keyed on the UTC date, so the home page is stable within a day but not frozen.
+ */
+export function getDailyPick(date = new Date()): Work | null {
+  const total = one<{ c: number }>("SELECT COUNT(*) AS c FROM works")?.c ?? 0;
+  if (!total) return null;
+
+  const key = `${date.getUTCFullYear()}-${date.getUTCMonth() + 1}-${date.getUTCDate()}`;
+  let hash = 7;
+  for (const char of key) hash = (hash * 31 + char.charCodeAt(0)) % 100003;
+
+  const row = one<WorkRow>("SELECT * FROM works ORDER BY id LIMIT 1 OFFSET ?", [hash % total]);
+  return row ? rowToWork(row) : null;
+}
+
 export function getNeighbours(id: number) {
   const prev = one<{ id: number; title: string }>(
     "SELECT id, title FROM works WHERE id < ? ORDER BY id DESC LIMIT 1",
@@ -182,6 +230,8 @@ export type Stats = {
   ratingBuckets: { label: string; count: number }[];
   topTags: TagCount[];
   years: { year: number; count: number }[];
+  /** Oldest and newest work year, ignoring unset years. */
+  yearRange: { from: number | null; to: number | null };
 };
 
 export function getStats(): Stats {
@@ -215,6 +265,9 @@ export function getStats(): Stats {
   }));
 
   const totalRow = one<{ c: number }>("SELECT COUNT(*) AS c FROM works");
+  const rangeRow = one<{ lo: number | null; hi: number | null }>(
+    "SELECT MIN(year) AS lo, MAX(year) AS hi FROM works WHERE year IS NOT NULL",
+  );
 
   return {
     total: totalRow?.c ?? 0,
@@ -224,6 +277,7 @@ export function getStats(): Stats {
     ratingBuckets,
     topTags: listTags().slice(0, 12),
     years: yearRows.slice(0, 12).map((row) => ({ year: row.year, count: row.c })),
+    yearRange: { from: rangeRow?.lo ?? null, to: rangeRow?.hi ?? null },
   };
 }
 

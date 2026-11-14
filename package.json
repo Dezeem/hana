@@ -16,7 +16,9 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "db:reset": "node scripts/reset-db.mjs"
+    "db:reset": "node scripts/reset-db.mjs",
+    "db:import": "node scripts/import-canonical.mjs",
+    "media:warm": "node scripts/warm-media-cache.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

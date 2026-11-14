@@ -29,12 +29,12 @@ export function LoginForm({ next }: { next: string }) {
           autoComplete="current-password"
           required
           placeholder="••••••••"
-          className="field text-lg tracking-[0.3em]"
+          className="field text-[17px] tracking-[0.3em]"
         />
       </label>
 
       {state.error ? (
-        <p className="border-l-2 border-movie pl-3 text-[13px] leading-relaxed text-movie">
+        <p className="border-l border-movie pl-3 text-[15px] leading-relaxed text-movie">
           {state.error}
         </p>
       ) : null}

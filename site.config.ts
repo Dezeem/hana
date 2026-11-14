@@ -87,6 +87,7 @@ export const site = {
   nav: [
     { href: "/library", label: "藏品", labelEn: "Library" },
     { href: "/timeline", label: "年表", labelEn: "Timeline" },
+    { href: "/random", label: "抽签", labelEn: "Draw" },
     { href: "/about", label: "关于", labelEn: "About" },
   ],
   about: {

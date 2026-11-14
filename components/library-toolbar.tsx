@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { LayoutGrid, List, X } from "lucide-react";
+import { Dices, LayoutGrid, List, X } from "lucide-react";
 import { STATUS_META, TYPE_MAP } from "@/site.config";
 import { buildQueryString, parseLibraryQuery, type LibraryQuery } from "@/lib/filters";
 import { cn } from "@/lib/utils";
@@ -12,10 +12,12 @@ type Props = {
 };
 
 const SORTS: { value: LibraryQuery["sort"]; label: string }[] = [
-  { value: "recent", label: "最新收录" },
+  { value: "collected", label: "我的收藏日" },
+  { value: "recent", label: "编号倒序" },
   { value: "rating", label: "我的评分" },
   { value: "year", label: "作品年份" },
   { value: "title", label: "标题笔画" },
+  { value: "random", label: "随机洗牌" },
 ];
 
 export function LibraryToolbar({ query, total }: Props) {
@@ -48,15 +50,16 @@ export function LibraryToolbar({ query, total }: Props) {
       label: `#${tag}`,
       remove: () => apply({ tags: query.tags.filter((item) => item !== tag) }),
     })),
-    ...(query.status
-      ? [
-          {
-            key: `status-${query.status}`,
-            label: STATUS_META[query.status].zh,
-            remove: () => apply({ status: null }),
-          },
-        ]
-      : []),
+    ...query.decades.map((decade) => ({
+      key: `decade-${decade}`,
+      label: `${decade}s`,
+      remove: () => apply({ decades: query.decades.filter((item) => item !== decade) }),
+    })),
+    ...query.statuses.map((status) => ({
+      key: `status-${status}`,
+      label: STATUS_META[status].zh,
+      remove: () => apply({ statuses: query.statuses.filter((item) => item !== status) }),
+    })),
     ...(query.minRating
       ? [
           {
@@ -66,23 +69,44 @@ export function LibraryToolbar({ query, total }: Props) {
           },
         ]
       : []),
+    ...(query.unrated
+      ? [{ key: "unrated", label: "未评分", remove: () => apply({ unrated: false }) }]
+      : []),
+    ...(query.reviewed
+      ? [{ key: "reviewed", label: "写过短评", remove: () => apply({ reviewed: false }) }]
+      : []),
   ];
 
   return (
-    <div className="flex flex-col gap-4 border-b-2 border-line pb-4">
+    <div className="flex flex-col gap-4 border-b border-line pb-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-[14px] text-ink-soft">
+        <p className="text-[16px] text-ink-soft">
           <span className="num mr-1.5 font-display text-[26px] italic text-ink">{total}</span>
           件藏品
         </p>
 
         <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => apply({ sort: "random" })}
+            title="随机洗牌"
+            className={cn(
+              "flex h-[34px] items-center gap-1.5 border border-line px-2.5 text-[13px] uppercase tracking-[0.06em] transition-colors",
+              query.sort === "random"
+                ? "bg-ink text-paper"
+                : "text-ink-soft hover:bg-mist hover:text-ink",
+            )}
+          >
+            <Dices className="h-3.5 w-3.5" strokeWidth={1.6} />
+            摇一摇
+          </button>
+
           <label className="flex items-center gap-2">
             <span className="meta hidden sm:inline">排序</span>
             <select
               value={query.sort}
               onChange={(event) => apply({ sort: event.target.value as LibraryQuery["sort"] })}
-              className="cursor-pointer border-2 border-line bg-transparent px-2 py-1 text-[13px] text-ink outline-none focus:border-ink"
+              className="cursor-pointer border border-line bg-transparent px-2 py-1 text-[15px] text-ink outline-none focus:border-ink"
             >
               {SORTS.map((sort) => (
                 <option key={sort.value} value={sort.value} className="bg-paper text-ink">
@@ -92,7 +116,7 @@ export function LibraryToolbar({ query, total }: Props) {
             </select>
           </label>
 
-          <div className="flex items-center border-2 border-line">
+          <div className="flex items-center border border-line">
             <button
               type="button"
               onClick={() => apply({ view: "grid" })}
@@ -124,7 +148,7 @@ export function LibraryToolbar({ query, total }: Props) {
           {chips.map((chip) => (
             <span
               key={chip.key}
-              className="inline-flex items-center gap-1.5 border-2 border-line px-2 py-0.5 text-[12px] text-ink-soft"
+              className="inline-flex items-center gap-1.5 border border-line px-2 py-0.5 text-[12px] text-ink-soft"
               style={chip.color ? { borderColor: chip.color, color: chip.color } : undefined}
             >
               {chip.label}

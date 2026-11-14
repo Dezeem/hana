@@ -16,7 +16,7 @@ export default function GlobalError({
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="border-b-2 border-line px-5 py-4 sm:px-8">
+      <header className="border-b border-line px-5 py-4 sm:px-8">
         <Link href="/" className="flex items-baseline gap-2.5">
           <span className="font-display text-[21px] italic leading-none text-ink">Hana</span>
           <span className="meta pb-[2px]">花间</span>
@@ -32,7 +32,7 @@ export default function GlobalError({
         <h1 className="max-w-xl font-display text-[40px] leading-[1.1] tracking-[-0.02em] text-ink sm:text-[58px]">
           这一页没能装裱起来。
         </h1>
-        <p className="mt-6 max-w-md text-[14px] leading-[2] text-ink-soft">
+        <p className="mt-6 max-w-md text-[16px] leading-[2] text-ink-soft">
           服务端出了点问题。可以先重试一次；如果反复出现，检查数据库文件是否可写、依赖是否完整。
         </p>
 

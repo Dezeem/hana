@@ -9,8 +9,8 @@ type RatingProps = {
 };
 
 const SIZES = {
-  sm: { text: "text-[13px]", tick: "h-[4px] w-3.5" },
-  md: { text: "text-[15px]", tick: "h-[4px] w-4" },
+  sm: { text: "text-[15px]", tick: "h-[4px] w-3.5" },
+  md: { text: "text-[17px]", tick: "h-[4px] w-4" },
   lg: { text: "text-[34px]", tick: "h-[6px] w-8" },
 };
 

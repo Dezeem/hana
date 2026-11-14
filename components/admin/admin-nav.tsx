@@ -16,11 +16,11 @@ export function AdminNav() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-40 border-b-2 border-line bg-paper/90 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-line bg-paper/90 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-[1200px] items-center justify-between px-5 sm:px-8">
         <div className="flex items-center gap-6">
           <Link href="/admin" className="flex items-baseline gap-2">
-            <span className="font-display text-[19px] italic leading-none text-ink">{site.name}</span>
+            <span className="font-display text-[21px] italic leading-none text-ink">{site.name}</span>
             <span className="meta pb-[2px]">后台</span>
           </Link>
           <nav className="hidden items-center gap-5 sm:flex">
@@ -34,7 +34,7 @@ export function AdminNav() {
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "text-[13px] tracking-[0.12em] transition-colors",
+                    "text-[15px] tracking-[0.12em] transition-colors",
                     active ? "text-ink" : "text-ink-soft hover:text-ink",
                   )}
                 >

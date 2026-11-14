@@ -22,25 +22,25 @@ export default function TimelinePage() {
           <span className="inline-block h-px w-8 bg-line-strong" />
           Chronology
         </p>
-        <h1 className="font-display text-[46px] leading-none tracking-[-0.035em] text-ink sm:text-[68px]">
+        <h1 className="font-display text-[54px] leading-none tracking-[-0.04em] text-ink sm:text-[84px]">
           年表
-          <span className="ml-4 align-baseline text-[14px] not-italic tracking-[0.2em] text-ink-faint">
+          <span className="ml-4 align-baseline text-[16px] not-italic tracking-[0.08em] text-ink-faint">
             TIMELINE
           </span>
         </h1>
-        <p className="mt-6 max-w-lg text-[14px] leading-[1.9] text-ink-soft">
+        <p className="mt-6 max-w-lg text-[16px] leading-[1.9] text-ink-soft">
           按作品本身的年份排列，而不是我遇见它的时间。{total} 件藏品散落在 {timeline.length} 个年份里，
           越往上越接近此刻。
         </p>
       </header>
 
-      <div className="relative border-t-2 border-line pt-10">
+      <div className="relative border-t border-line pt-10">
         <span className="absolute left-[3px] top-10 hidden h-[calc(100%-2.5rem)] w-px bg-line md:left-1/2 md:block" />
 
         {timeline.map((group) => (
           <section key={group.year} className="mb-4">
             <div className="relative mb-6 flex items-center md:justify-center">
-              <h2 className="font-display text-[52px] leading-none tracking-[-0.04em] text-ink sm:text-[72px]">
+              <h2 className="font-display text-[60px] leading-none tracking-[-0.04em] text-ink sm:text-[88px]">
                 {group.year === 0 ? "—" : group.year}
               </h2>
               <span className="meta ml-4 md:absolute md:right-0">
@@ -70,7 +70,10 @@ export default function TimelinePage() {
                         right ? "" : "md:flex-row-reverse",
                       )}
                     >
-                      <span className="w-12 shrink-0 overflow-hidden bg-mist" style={{ aspectRatio: "0.72" }}>
+                      <div
+                        className="w-12 shrink-0 overflow-hidden rounded-[var(--radius-card)] bg-mist"
+                        style={{ aspectRatio: "0.72" }}
+                      >
                         <Cover
                           src={work.cover}
                           fallbackSrc={work.coverRemote}
@@ -78,15 +81,15 @@ export default function TimelinePage() {
                           type={work.type}
                           className="h-full w-full"
                         />
-                      </span>
+                      </div>
                       <span className="min-w-0 flex-1">
-                        <span className="block text-[15px] leading-snug text-ink">
+                        <span className="block text-[17px] leading-snug text-ink">
                           {work.title}
                         </span>
                         <span className="mt-1 block text-[12px] text-ink-soft">
                           {[work.creator, type?.zh].filter(Boolean).join(" · ")}
                         </span>
-                        <span className="mt-2 line-clamp-2 max-h-0 overflow-hidden text-[13px] leading-relaxed text-ink-soft opacity-0 transition-all duration-300 group-hover:max-h-16 group-hover:opacity-100">
+                        <span className="mt-2 line-clamp-2 max-h-0 overflow-hidden text-[15px] leading-relaxed text-ink-soft opacity-0 transition-all duration-300 group-hover:max-h-16 group-hover:opacity-100">
                           {work.review || work.summary}
                         </span>
                       </span>
@@ -100,7 +103,7 @@ export default function TimelinePage() {
       </div>
 
       {!timeline.length ? (
-        <p className="py-24 text-center text-sm text-ink-soft">
+        <p className="py-24 text-center text-[15px] text-ink-soft">
           还没有任何藏品，先去后台录入一件吧。
         </p>
       ) : null}

@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, LayoutGrid, ListOrdered, Info } from "lucide-react";
+import { Dices, Home, LayoutGrid, ListOrdered, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const ITEMS = [
   { href: "/", label: "首页", icon: Home },
   { href: "/library", label: "藏品", icon: LayoutGrid },
   { href: "/timeline", label: "年表", icon: ListOrdered },
+  { href: "/random", label: "抽签", icon: Dices },
   { href: "/about", label: "关于", icon: Info },
 ];
 
@@ -17,7 +18,7 @@ export function MobileNav() {
 
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-50 h-[68px] border-t-2 border-line bg-paper/95 backdrop-blur-md md:hidden"
+      className="fixed inset-x-0 bottom-0 z-50 h-[76px] border-t border-line bg-paper/95 backdrop-blur-md md:hidden"
       aria-label="移动端导航"
     >
       <ul className="mx-auto flex h-full max-w-md items-stretch">
@@ -34,7 +35,7 @@ export function MobileNav() {
                   active ? "text-ink" : "text-ink-faint",
                 )}
               >
-                <Icon className="h-[17px] w-[17px]" strokeWidth={1.4} />
+                <Icon className="h-6 w-6" strokeWidth={1.8} />
                 <span className="text-[11px] font-medium uppercase tracking-[0.16em]">{item.label}</span>
               </Link>
             </li>

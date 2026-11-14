@@ -1,54 +1,29 @@
-"use client";
-
-import { useEffect, useRef, useState, type ElementType, type ReactNode } from "react";
+import type { CSSProperties, ElementType, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 type RevealProps = {
   children: ReactNode;
+  /** Staggers the fade by shifting its scroll range, not by a timer. */
   delay?: number;
   className?: string;
   as?: ElementType;
 };
 
 /**
- * Minimal scroll-in animation. Twelve pixels and a fade, nothing elastic —
- * the archive should feel like paper settling, not like a slideshow.
+ * Marks a block for the scroll-driven fade-in defined in globals.css.
+ *
+ * Deliberately has no client code: the animation is CSS-only and degrades to
+ * "always visible", so a blocked or failed script can never leave the page
+ * blank — which is exactly what a JS-gated reveal used to do.
  */
 export function Reveal({ children, delay = 0, className, as }: RevealProps) {
   const Tag = (as ?? "div") as ElementType;
-  const ref = useRef<HTMLElement | null>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-
-    if (typeof IntersectionObserver === "undefined") {
-      setVisible(true);
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setVisible(true);
-            observer.unobserve(entry.target);
-          }
-        }
-      },
-      { rootMargin: "0px 0px -8% 0px", threshold: 0.05 },
-    );
-
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
+  const shift = delay > 0 ? `${Math.min(delay / 10, 12)}%` : undefined;
 
   return (
     <Tag
-      ref={ref as never}
-      className={cn("reveal", visible && "is-in", className)}
-      style={{ animationDelay: `${delay}ms` }}
+      className={cn("reveal", className)}
+      style={shift ? ({ "--reveal-shift": shift } as CSSProperties) : undefined}
     >
       {children}
     </Tag>

@@ -17,6 +17,21 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  /**
+   * Dev-only: the file watcher used to follow node_modules and the data volume,
+   * which blows past `fs.inotify.max_user_watches` (8192 on many hosts) and
+   * floods the console with ENOSPC errors. Neither directory can change in a way
+   * that needs a rebuild.
+   */
+  webpack: (config, { dev }) => {
+    if (dev) {
+      config.watchOptions = {
+        ...config.watchOptions,
+        ignored: ["**/node_modules/**", "**/.git/**", "**/data/**", "**/.next/**"],
+      };
+    }
+    return config;
+  },
 };
 
 export default nextConfig;

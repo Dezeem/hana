@@ -59,8 +59,8 @@ export function DoubanImport({ type, onTypeChange, onImported, onUrlResolved }: 
   }
 
   return (
-    <section className="border-2 border-line">
-      <div className="flex items-center justify-between border-b-2 border-line px-5 py-3">
+    <section className="border border-line">
+      <div className="flex items-center justify-between border-b border-line px-5 py-3">
         <div className="flex items-center gap-2">
           <Sparkles className="h-3.5 w-3.5 text-ink-soft" strokeWidth={1.4} />
           <span className="meta text-ink">从豆瓣导入</span>
@@ -117,7 +117,7 @@ export function DoubanImport({ type, onTypeChange, onImported, onUrlResolved }: 
         {notice ? (
           <div
             className={cn(
-              "mt-4 border-l-2 pl-3 py-1 text-[13px] leading-relaxed",
+              "mt-4 border-l pl-3 py-1 text-[15px] leading-relaxed",
               notice.kind === "ok" && "border-book text-book",
               notice.kind === "err" && "border-movie text-movie",
               notice.kind === "info" && "border-line-strong text-ink-soft",
@@ -133,7 +133,7 @@ export function DoubanImport({ type, onTypeChange, onImported, onUrlResolved }: 
         )}
 
         {candidates.length ? (
-          <ul className="mt-4 divide-y divide-line border-y-2 border-line">
+          <ul className="mt-4 divide-y divide-line border-y border-line">
             {candidates.map((item) => (
               <li key={item.id}>
                 <button
@@ -151,7 +151,7 @@ export function DoubanImport({ type, onTypeChange, onImported, onUrlResolved }: 
                     ) : null}
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-[14px] text-ink">{item.title}</span>
+                    <span className="block truncate text-[16px] text-ink">{item.title}</span>
                     <span className="block truncate text-[12px] text-ink-soft">{item.subtitle}</span>
                   </span>
                   <span className="meta shrink-0">选择</span>

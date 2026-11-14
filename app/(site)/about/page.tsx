@@ -19,20 +19,20 @@ export default function AboutPage() {
           <span className="inline-block h-px w-8 bg-line-strong" />
           Colophon
         </p>
-        <h1 className="max-w-2xl font-display text-[40px] leading-[1.05] tracking-[-0.035em] text-ink sm:text-[60px]">
+        <h1 className="max-w-2xl font-display text-[46px] leading-[1.05] tracking-[-0.04em] text-ink sm:text-[76px]">
           {site.about.heading}
         </h1>
       </header>
 
-      <div className="grid grid-cols-12 gap-x-10 gap-y-12 border-t-2 border-line pt-10">
+      <div className="grid grid-cols-12 gap-x-10 gap-y-12 border-t border-line pt-10">
         <div className="col-span-12 md:col-span-7">
           {site.about.paragraphs.map((paragraph, index) => (
             <p
               key={index}
               className={
                 index === 0
-                  ? "text-[15px] leading-[2.1] text-ink first-letter:float-left first-letter:mr-3 first-letter:mt-1 first-letter:font-display first-letter:text-[56px] first-letter:leading-[0.8] first-letter:text-ink"
-                  : "mt-6 text-[15px] leading-[2.1] text-ink-soft"
+                  ? "text-[17px] leading-[2.1] text-ink first-letter:float-left first-letter:mr-3 first-letter:mt-1 first-letter:font-display first-letter:text-[56px] first-letter:leading-[0.8] first-letter:text-ink"
+                  : "mt-6 text-[17px] leading-[2.1] text-ink-soft"
               }
             >
               {paragraph}
@@ -50,7 +50,7 @@ export default function AboutPage() {
         </div>
 
         <aside className="col-span-12 md:col-span-5">
-          <div className="border-2 border-line p-6">
+          <div className="border border-line p-6">
             <p className="meta mb-5">Collection at a glance</p>
 
             <div className="mb-8 flex items-baseline gap-3">
@@ -66,7 +66,7 @@ export default function AboutPage() {
                 const width = stats.total ? (count / stats.total) * 100 : 0;
                 return (
                   <li key={type.key}>
-                    <div className="flex items-baseline justify-between text-[13px]">
+                    <div className="flex items-baseline justify-between text-[15px]">
                       <span className="text-ink">{type.zh}</span>
                       <span className="num text-ink-soft">{count}</span>
                     </div>
@@ -81,7 +81,7 @@ export default function AboutPage() {
               })}
             </ul>
 
-            <div className="mt-8 border-t-2 border-line pt-5">
+            <div className="mt-8 border-t border-line pt-5">
               <p className="meta mb-3">Rating spread</p>
               <div className="flex h-16 items-end gap-2">
                 {stats.ratingBuckets.map((bucket) => (
@@ -100,14 +100,14 @@ export default function AboutPage() {
             </div>
 
             {stats.topTags.length ? (
-              <div className="mt-8 border-t-2 border-line pt-5">
+              <div className="mt-8 border-t border-line pt-5">
                 <p className="meta mb-3">Most used tags</p>
                 <div className="flex flex-wrap gap-1.5">
                   {stats.topTags.slice(0, 10).map((tag) => (
                     <Link
                       key={tag.tag}
                       href={`/library?tag=${encodeURIComponent(tag.tag)}`}
-                      className="border-2 border-line px-2 py-0.5 text-[12px] text-ink-soft transition-colors hover:border-ink hover:text-ink"
+                      className="border border-line px-2 py-0.5 text-[12px] text-ink-soft transition-colors hover:border-ink hover:text-ink"
                     >
                       {tag.tag}
                     </Link>
@@ -119,12 +119,68 @@ export default function AboutPage() {
         </aside>
       </div>
 
-      <section className="mt-20 border-t-2 border-line pt-8">
+      {/* legend & playful bits */}
+      <section className="mt-20 grid grid-cols-12 gap-x-10 gap-y-10 border-t border-line pt-8">
+        <div className="col-span-12 md:col-span-5">
+          <p className="meta mb-4">Legend · 图例</p>
+          <ul className="space-y-2 text-[15px] text-ink-soft">
+            <li>
+              <span className="mr-2 inline-block h-2.5 w-2.5 bg-ink align-middle" />
+              已收藏 · 看过、读完、听过
+            </li>
+            <li>
+              <span className="mr-2 inline-block h-2.5 w-2.5 border border-ink align-middle" />
+              进行中 · 还没结束
+            </li>
+            <li>
+              <span className="mr-2 inline-block h-2.5 w-2.5 border border-line-strong align-middle" />
+              想接触 · 躺在清单里
+            </li>
+            <li className="pt-2 text-[13px] text-ink-faint">
+              四色分别代表电影、剧集、书籍、音乐；每件作品有一个三位编号，编号不会回收。
+            </li>
+          </ul>
+        </div>
+
+        <div className="col-span-12 md:col-span-7">
+          <p className="meta mb-4">How to poke around · 玩法</p>
+          <ul className="grid grid-cols-1 gap-x-8 gap-y-3 text-[15px] text-ink-soft sm:grid-cols-2">
+            <li>
+              <kbd className="mr-2 border border-line px-1.5 py-0.5 text-[12px] text-ink">?</kbd>
+              叫出快捷键清单
+            </li>
+            <li>
+              <kbd className="mr-2 border border-line px-1.5 py-0.5 text-[12px] text-ink">/</kbd>
+              直接开始搜索
+            </li>
+            <li>
+              <Link href="/random" className="underlink">
+                抽签
+              </Link>
+              ：从「想接触」里随便挑一件，按 R 再抽
+            </li>
+            <li>
+              <Link href="/library?sort=random" className="underlink">
+                摇一摇
+              </Link>
+              ：把整个藏品库洗成随机顺序
+            </li>
+            <li className="sm:col-span-2">
+              <kbd className="mr-2 border border-line px-1.5 py-0.5 text-[12px] text-ink">
+                ↑ ↑ ↓ ↓ ← → ← → B A
+              </kbd>
+              有一个隐藏版面
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section className="mt-20 border-t border-line pt-8">
         <p className="meta mb-4">Colophon</p>
-        <p className="max-w-2xl text-[13px] leading-[2] text-ink-faint">
+        <p className="max-w-2xl text-[15px] leading-[2] text-ink-faint">
           {site.about.colophon}
         </p>
-        <p className="mt-6 font-display text-lg italic text-ink-faint">{site.taglineEn}</p>
+        <p className="mt-6 font-display text-[18px] italic text-ink-faint">{site.taglineEn}</p>
       </section>
     </div>
   );

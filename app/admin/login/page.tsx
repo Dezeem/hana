@@ -18,7 +18,7 @@ export default async function LoginPage({ searchParams }: PageProps) {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="border-b-2 border-line px-5 py-4 sm:px-8">
+      <header className="border-b border-line px-5 py-4 sm:px-8">
         <Link href="/" className="flex items-baseline gap-2.5">
           <span className="font-display text-[21px] italic leading-none text-ink">{site.name}</span>
           <span className="meta pb-[2px]">后台</span>
@@ -33,7 +33,7 @@ export default async function LoginPage({ searchParams }: PageProps) {
             <br />
             请出示钥匙。
           </h1>
-          <p className="mt-4 mb-10 text-[14px] leading-relaxed text-ink-soft">
+          <p className="mt-4 mb-10 text-[16px] leading-relaxed text-ink-soft">
             访客无需登录即可浏览全部藏品；只有站长需要密码来录入与编辑。
           </p>
 
@@ -41,7 +41,7 @@ export default async function LoginPage({ searchParams }: PageProps) {
         </div>
       </main>
 
-      <footer className="border-t-2 border-line px-5 py-4 sm:px-8">
+      <footer className="border-t border-line px-5 py-4 sm:px-8">
         <Link href="/" className="meta underlink text-ink-soft">
           ← 返回站点
         </Link>

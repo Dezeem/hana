@@ -28,7 +28,7 @@ export default async function AdminDashboard() {
           <div>
             <p className="meta mb-3">Dashboard</p>
             <h1 className="font-display text-[30px] leading-none text-ink">藏品概览</h1>
-            <p className="mt-3 text-[14px] text-ink-soft">
+            <p className="mt-3 text-[16px] text-ink-soft">
               共 {stats.total} 件藏品，其中 {featuredCount} 件被选为首页展品。
             </p>
           </div>
@@ -40,7 +40,7 @@ export default async function AdminDashboard() {
           </div>
         </div>
 
-        <div className="mt-10 grid grid-cols-2 gap-px border-2 border-line bg-line sm:grid-cols-4">
+        <div className="mt-10 grid grid-cols-2 gap-px border border-line bg-line sm:grid-cols-4">
           {WORK_TYPES.map((type) => (
             <div key={type.key} className="bg-paper p-5">
               <div className="flex items-center gap-2">
@@ -61,7 +61,7 @@ export default async function AdminDashboard() {
         </div>
 
         <section className="mt-14">
-          <div className="flex items-baseline justify-between border-b-2 border-line pb-3">
+          <div className="flex items-baseline justify-between border-b border-line pb-3">
             <h2 className="meta text-ink">最近收录</h2>
             <Link href="/admin/works" className="meta underlink text-ink-soft hover:text-ink">
               全部藏品 →
@@ -81,18 +81,18 @@ export default async function AdminDashboard() {
             </thead>
             <tbody>
               {recent.items.map((work) => (
-                <tr key={work.id} className="border-t-2 border-line">
+                <tr key={work.id} className="border-t border-line">
                   <td className="specimen-no py-3">{work.no}</td>
-                  <td className="max-w-[18rem] truncate py-3 text-[14px] text-ink">
+                  <td className="max-w-[18rem] truncate py-3 text-[16px] text-ink">
                     {work.title}
                   </td>
                   <td className="meta hidden py-3 sm:table-cell">
                     {WORK_TYPES.find((type) => type.key === work.type)?.zh}
                   </td>
-                  <td className="num hidden py-3 text-[13px] text-ink-soft md:table-cell">
+                  <td className="num hidden py-3 text-[15px] text-ink-soft md:table-cell">
                     {work.rating?.toFixed(1) ?? "—"}
                   </td>
-                  <td className="num hidden py-3 text-[13px] text-ink-soft md:table-cell">
+                  <td className="num hidden py-3 text-[15px] text-ink-soft md:table-cell">
                     {formatDate(work.createdAt)}
                   </td>
                   <td className="py-3 text-right">
@@ -109,15 +109,15 @@ export default async function AdminDashboard() {
           </table>
 
           {!recent.items.length ? (
-            <p className="py-16 text-center text-[14px] text-ink-soft">
+            <p className="py-16 text-center text-[16px] text-ink-soft">
               还没有藏品，点右上角「新建作品」开始。
             </p>
           ) : null}
         </section>
 
-        <section className="mt-14 border-t-2 border-line pt-6">
+        <section className="mt-14 border-t border-line pt-6">
           <h2 className="meta mb-4 text-ink">系统状态</h2>
-          <dl className="grid grid-cols-1 gap-y-2 text-[13px] sm:grid-cols-2">
+          <dl className="grid grid-cols-1 gap-y-2 text-[15px] sm:grid-cols-2">
             <div className="flex gap-4">
               <dt className="meta w-24 shrink-0 pt-[3px]">数据库</dt>
               <dd className="break-all text-ink-soft">{DB_FILE}</dd>

@@ -38,7 +38,7 @@ export default async function AdminWorksPage({ searchParams }: PageProps) {
           <div>
             <p className="meta mb-3">Manage</p>
             <h1 className="font-display text-[30px] leading-none text-ink">藏品管理</h1>
-            <p className="mt-3 text-[14px] text-ink-soft">
+            <p className="mt-3 text-[16px] text-ink-soft">
               共 {total} 件，当前显示 {items.length} 件。
             </p>
           </div>
@@ -79,11 +79,11 @@ export default async function AdminWorksPage({ searchParams }: PageProps) {
         </div>
 
         <form action={bulkAction} className="mt-8">
-          <div className="flex flex-wrap items-center gap-3 border-y-2 border-line py-3">
+          <div className="flex flex-wrap items-center gap-3 border-y border-line py-3">
             <span className="meta">批量操作</span>
             <select
               name="op"
-              className="cursor-pointer border-2 border-line bg-transparent px-2 py-1 text-[12px] text-ink outline-none focus:border-ink"
+              className="cursor-pointer border border-line bg-transparent px-2 py-1 text-[12px] text-ink outline-none focus:border-ink"
               defaultValue="done"
             >
               <option value="done">标记为已收藏</option>
@@ -114,7 +114,7 @@ export default async function AdminWorksPage({ searchParams }: PageProps) {
             </thead>
             <tbody>
               {items.map((work) => (
-                <tr key={work.id} className="border-t-2 border-line align-middle">
+                <tr key={work.id} className="border-t border-line align-middle">
                   <td className="py-3">
                     <input
                       type="checkbox"
@@ -134,7 +134,7 @@ export default async function AdminWorksPage({ searchParams }: PageProps) {
                         ) : null}
                       </span>
                       <span className="min-w-0">
-                        <span className="block max-w-[16rem] truncate text-[14px] text-ink">
+                        <span className="block max-w-[16rem] truncate text-[16px] text-ink">
                           {work.title}
                         </span>
                         <span className="block max-w-[16rem] truncate text-[12px] text-ink-faint">
@@ -149,10 +149,10 @@ export default async function AdminWorksPage({ searchParams }: PageProps) {
                   <td className="meta hidden py-3 sm:table-cell">
                     {WORK_TYPES.find((item) => item.key === work.type)?.zh}
                   </td>
-                  <td className="hidden py-3 text-[13px] text-ink-soft md:table-cell">
+                  <td className="hidden py-3 text-[15px] text-ink-soft md:table-cell">
                     {STATUS_META[work.status].zh}
                   </td>
-                  <td className="num hidden py-3 text-[13px] text-ink-soft md:table-cell">
+                  <td className="num hidden py-3 text-[15px] text-ink-soft md:table-cell">
                     {work.rating?.toFixed(1) ?? "—"}
                   </td>
                   <td className="num hidden py-3 text-[12px] text-ink-faint lg:table-cell">
@@ -174,8 +174,8 @@ export default async function AdminWorksPage({ searchParams }: PageProps) {
 
         {!items.length ? (
           <div className="py-24 text-center">
-            <p className="font-display text-xl italic text-ink-faint">Empty archive</p>
-            <p className="mt-3 text-[14px] text-ink-soft">
+            <p className="text-[26px] font-semibold uppercase text-ink-faint">Empty archive</p>
+            <p className="mt-3 text-[16px] text-ink-soft">
               这个分类下还没有藏品。
             </p>
           </div>

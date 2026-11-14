@@ -13,12 +13,12 @@ export function CollectionRuler({ counts, total }: RulerProps) {
 
   return (
     <div className="w-full">
-      <div className="flex items-baseline justify-between border-b-2 border-line pb-3">
+      <div className="flex items-baseline justify-between border-b border-line pb-3">
         <span className="meta text-ink">Index</span>
-        <span className="num text-[14px] font-medium">{total} specimens</span>
+        <span className="num text-[16px] font-medium">{total} specimens</span>
       </div>
 
-      <ul className="divide-y-2 divide-line">
+      <ul className="divide-y divide-line">
         {WORK_TYPES.map((type) => {
           const count = counts[type.key] ?? 0;
           return (
@@ -30,8 +30,8 @@ export function CollectionRuler({ counts, total }: RulerProps) {
                       className="inline-block h-3 w-3 shrink-0 translate-y-[-1px]"
                       style={{ backgroundColor: type.color }}
                     />
-                    <span className="text-[15px] font-medium">{type.zh}</span>
-                    <span className="text-[12px] uppercase tracking-[0.18em] text-ink-faint">
+                    <span className="text-[17px] font-medium">{type.zh}</span>
+                    <span className="text-[12px] uppercase tracking-[0.08em] text-ink-faint">
                       {type.en}
                     </span>
                   </span>
@@ -39,9 +39,9 @@ export function CollectionRuler({ counts, total }: RulerProps) {
                     {String(count).padStart(2, "0")}
                   </span>
                 </div>
-                <div className="mt-3 h-2 w-full border-2 border-line">
+                <div className="mt-3 h-2.5 w-full overflow-hidden rounded-full bg-mist">
                   <div
-                    className="h-full transition-all duration-500 group-hover:opacity-80"
+                    className="h-full rounded-full transition-all duration-500 group-hover:opacity-80"
                     style={{
                       width: `${Math.max((count / max) * 100, 3)}%`,
                       backgroundColor: type.color,

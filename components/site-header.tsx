@@ -38,13 +38,13 @@ export function SiteHeader() {
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-50 h-20 border-b-2 border-line bg-paper">
+      <header className="fixed inset-x-0 top-0 z-50 h-24 border-b border-line bg-paper">
         <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between px-5 sm:px-8">
           <Link href="/" className="group flex items-baseline gap-3" aria-label={`${site.name} 首页`}>
-            <span className="flex h-8 items-center bg-ink px-3 text-[20px] font-semibold uppercase leading-none tracking-[0.08em] text-paper">
+            <span className="text-[22px] font-semibold leading-none tracking-[0.01em] text-ink">
               {site.name}
             </span>
-            <span className="hidden text-[13px] font-medium uppercase tracking-[0.3em] text-ink-soft sm:block">
+            <span className="hidden text-[14px] font-medium tracking-[0.12em] text-ink-faint sm:block">
               {site.nameZh}
             </span>
           </Link>
@@ -57,7 +57,7 @@ export function SiteHeader() {
                   key={item.href}
                   href={item.href}
                   data-active={active}
-                  className="underlink text-[14px] font-medium uppercase tracking-[0.22em] transition-colors"
+                  className="underlink text-[15px] font-medium tracking-[0.06em] transition-colors"
                   style={{ color: active ? "var(--ink)" : "var(--ink-soft)" }}
                 >
                   {item.label}
@@ -70,11 +70,11 @@ export function SiteHeader() {
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
-              className="flex h-9 items-center gap-2 border-2 border-line px-3 text-ink transition-colors hover:bg-ink hover:text-paper"
+              className="flex h-10 items-center gap-2 rounded-[2px] border border-line px-3.5 text-ink-soft transition-colors hover:border-line-strong hover:text-ink"
               aria-label="打开搜索"
             >
-              <Search className="h-4 w-4" strokeWidth={2} />
-              <span className="hidden text-[12px] font-medium uppercase tracking-[0.2em] sm:inline">
+              <Search className="h-[18px] w-[18px]" strokeWidth={2} />
+              <span className="hidden text-[12px] font-medium uppercase tracking-[0.08em] sm:inline">
                 搜索
               </span>
             </button>

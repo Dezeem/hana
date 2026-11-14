@@ -20,6 +20,7 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
   const [hits, setHits] = useState<Hit[]>([]);
   const [loading, setLoading] = useState(false);
   const [active, setActive] = useState(0);
+  const [failed, setFailed] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const controller = useRef<AbortController | null>(null);
 
@@ -75,16 +76,21 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
     controller.current = request;
 
     setLoading(true);
+    setFailed(false);
     fetch(`/api/search?q=${encodeURIComponent(value)}&limit=8`, { signal: request.signal })
-      .then((response) => response.json())
-      .then((data: { results?: Hit[] }) => {
+      .then((response) => {
+        if (!response.ok) throw new Error(`search responded ${response.status}`);
+        return response.json() as Promise<{ results?: Hit[] }>;
+      })
+      .then((data) => {
         setHits(data.results ?? []);
         setActive(0);
       })
       .catch((error: Error) => {
-        if (error.name !== "AbortError") {
-          console.error("[search] request failed", error);
-        }
+        if (error.name === "AbortError") return;
+        console.error("[search] request failed", error);
+        setHits([]);
+        setFailed(true);
       })
       .finally(() => {
         if (!request.signal.aborted) setLoading(false);
@@ -109,7 +115,7 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="搜索标题、导演、标签，或一句短评"
-            className="w-full bg-transparent text-xl text-ink outline-none placeholder:text-ink-faint sm:text-2xl"
+            className="w-full bg-transparent text-[26px] font-medium text-ink outline-none placeholder:text-ink-faint sm:text-[36px]"
             autoComplete="off"
             spellCheck={false}
           />
@@ -124,7 +130,9 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
         </div>
 
         <div className="mt-3 flex items-center justify-between">
-          <span className="meta">{loading ? "检索中" : `${hits.length} 个结果`}</span>
+          <span className="meta">
+            {loading ? "检索中" : failed ? "检索失败" : `${hits.length} 个结果`}
+          </span>
           <span className="meta">ESC 关闭 · ↑↓ 选择</span>
         </div>
 
@@ -135,7 +143,7 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
                 href={`/work/${hit.id}`}
                 onClick={onClose}
                 onMouseEnter={() => setActive(index)}
-                className={`flex items-center gap-4 border-b-2 border-line py-3 transition-colors ${
+                className={`flex items-center gap-4 border-b border-line py-3 transition-colors ${
                   active === index ? "bg-ink/[0.04]" : "hover:bg-ink/[0.02]"
                 }`}
               >
@@ -143,12 +151,20 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
                 <span className="h-12 w-9 shrink-0 overflow-hidden bg-line">
                   {hit.cover ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={hit.cover} alt="" className="h-full w-full object-cover" />
+                    <img
+                      src={`${hit.cover}?w=240`}
+                      alt=""
+                      width={36}
+                      height={48}
+                      loading="lazy"
+                      decoding="async"
+                      className="h-full w-full object-cover"
+                    />
                   ) : null}
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate text-base text-ink">{hit.title}</span>
-                  <span className="mt-0.5 block truncate text-xs text-ink-soft">
+                  <span className="block truncate text-[16px] text-ink">{hit.title}</span>
+                  <span className="mt-0.5 block truncate text-[13px] text-ink-soft">
                     {[hit.creator, hit.year].filter(Boolean).join(" · ")}
                   </span>
                 </span>
@@ -164,13 +180,15 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
         </ul>
 
         {!loading && query && hits.length === 0 ? (
-          <p className="mt-10 text-center text-sm text-ink-soft">
-            没有找到「{query}」。试试更短的关键词，或者去作品库按标签浏览。
+          <p className="mt-10 text-center text-[15px] text-ink-soft">
+            {failed
+              ? "检索请求没有成功返回。稍等一秒再输入一次，或到搜索页重试。"
+              : `没有找到「${query}」。试试更短的关键词，或者去作品库按标签浏览。`}
           </p>
         ) : null}
 
         {!query ? (
-          <p className="mt-10 text-center text-sm text-ink-soft">
+          <p className="mt-10 text-center text-[15px] text-ink-soft">
             输入任意关键词，标题、导演、标签与短评都会被检索。
           </p>
         ) : null}

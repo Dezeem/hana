@@ -27,9 +27,12 @@ export default async function LibraryPage({ searchParams }: PageProps) {
   const { items, total } = listWorks({
     types: query.types.length ? query.types : undefined,
     years: query.years.length ? query.years : undefined,
+    decades: query.decades.length ? query.decades : undefined,
     tags: query.tags.length ? query.tags : undefined,
-    status: query.status ?? undefined,
+    statuses: query.statuses.length ? query.statuses : undefined,
     minRating: query.minRating ?? undefined,
+    unrated: query.unrated || undefined,
+    reviewed: query.reviewed || undefined,
     sort: query.sort,
     limit: PAGE_SIZE,
     offset: (query.page - 1) * PAGE_SIZE,
@@ -51,9 +54,9 @@ export default async function LibraryPage({ searchParams }: PageProps) {
               <span className="inline-block h-px w-8 bg-line-strong" />
               The collection
             </p>
-            <h1 className="font-display text-[46px] leading-none tracking-[-0.035em] text-ink sm:text-[68px]">
+            <h1 className="font-display text-[54px] leading-none tracking-[-0.04em] text-ink sm:text-[84px]">
               藏品库
-              <span className="ml-4 align-baseline text-[14px] not-italic tracking-[0.2em] text-ink-faint">
+              <span className="ml-4 align-baseline text-[16px] not-italic tracking-[0.08em] text-ink-faint">
                 LIBRARY
               </span>
             </h1>
@@ -81,13 +84,18 @@ export default async function LibraryPage({ searchParams }: PageProps) {
 
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-32 text-center">
-              <p className="font-display text-2xl italic text-ink-faint">No specimens</p>
-              <p className="mt-4 max-w-sm text-[14px] leading-relaxed text-ink-soft">
+              <p className="text-[32px] font-semibold uppercase tracking-[-0.02em] text-ink-faint">No specimens</p>
+              <p className="mt-4 max-w-sm text-[16px] leading-relaxed text-ink-soft">
                 当前条件下没有藏品。试试放宽年份或评分，或者清除筛选看看全部。
               </p>
-              <Link href="/library" className="btn btn-ghost mt-8">
-                查看全部
-              </Link>
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+                <Link href="/library" className="btn btn-ghost">
+                  查看全部
+                </Link>
+                <Link href="/library?sort=random" className="btn">
+                  摇一摇
+                </Link>
+              </div>
             </div>
           ) : query.view === "list" ? (
             <div className="mt-2">
@@ -106,15 +114,15 @@ export default async function LibraryPage({ searchParams }: PageProps) {
           )}
 
           {pages > 1 ? (
-            <nav className="mt-16 flex items-center justify-between border-t-2 border-line pt-6">
+            <nav className="mt-16 flex items-center justify-between border-t border-line pt-6">
               {query.page > 1 ? (
                 <Link href={hrefFor({ page: query.page - 1 })} className="meta underlink text-ink">
                   ← 上一页
                 </Link>
               ) : (
-                <span className="meta opacity-40">← 上一页</span>
+                <span className="meta opacity-70">← 上一页</span>
               )}
-              <span className="num text-[13px] text-ink-soft">
+              <span className="num text-[15px] text-ink-soft">
                 {String(query.page).padStart(2, "0")} / {String(pages).padStart(2, "0")}
               </span>
               {query.page < pages ? (
@@ -122,7 +130,7 @@ export default async function LibraryPage({ searchParams }: PageProps) {
                   下一页 →
                 </Link>
               ) : (
-                <span className="meta opacity-40">下一页 →</span>
+                <span className="meta opacity-70">下一页 →</span>
               )}
             </nav>
           ) : null}
