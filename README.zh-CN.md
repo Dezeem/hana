@@ -96,6 +96,28 @@ npm run dev            # http://localhost:3000
 解析细节见 [`docs/douban-import.md`](./docs/douban-import.md)；如果你想在自己的 AI 客户端里
 配合 `astron-douban-mcp` 使用，见 [`docs/mcp-douban.md`](./docs/mcp-douban.md)。
 
+## 常见问题
+
+**`npm run dev` 报 `SyntaxError: Unexpected token ?`（来自 `commander` 或 `next/dist/bin/next`）**
+
+Node 版本太旧（例如系统自带的 v10）。Hana 需要 **Node ≥ 22.5**：
+
+```bash
+node -v                                  # 先确认版本
+nvm install 24 && nvm use 24             # 或换用任意 22.5+ 的 node
+npm run dev
+```
+
+`npm run dev/build/start` 现在会先跑一次版本检查，不满足时直接给出中文提示，而不是抛那段看不懂的 SyntaxError。若 `npm install` 时报 `EBADENGINE`，原因相同。
+
+**`SQLITE_CANTOPEN` 或数据没保存**
+
+检查 `DATA_DIR` 是否可写（Docker 内为 `/app/data`，需要挂载卷）。
+
+**豆瓣导入一直 `IMPORT_BLOCKED`**
+
+见 [`docs/douban-import.md`](./docs/douban-import.md)，通常是机房 IP 被风控，配置 `DOUBAN_PROXY` 或改用住宅网络。
+
 ## 目录结构
 
 ```

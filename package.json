@@ -8,8 +8,11 @@
     "node": ">=22.5.0"
   },
   "scripts": {
+    "predev": "node scripts/check-node.js",
     "dev": "next dev",
+    "prebuild": "node scripts/check-node.js",
     "build": "next build",
+    "prestart": "node scripts/check-node.js",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",

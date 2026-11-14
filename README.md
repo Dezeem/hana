@@ -103,6 +103,28 @@ See [`docs/douban-import.md`](./docs/douban-import.md) for the parsing details a
 [`docs/mcp-douban.md`](./docs/mcp-douban.md) if you want to drive `astron-douban-mcp`
 from your own AI client alongside Hana.
 
+## Troubleshooting
+
+**`npm run dev` fails with `SyntaxError: Unexpected token ?` inside `commander` or `next/dist/bin/next`**
+
+The Node version is too old — Hana needs **Node ≥ 22.5**, while many Linux images still ship Node 10 or 12.
+
+```bash
+node -v                                  # check first
+nvm install 24 && nvm use 24             # or any 22.5+ runtime
+npm run dev
+```
+
+`dev`, `build` and `start` now run a version check first and print a readable message instead of that stack trace. An `EBADENGINE` error during `npm install` has the same cause.
+
+**`SQLITE_CANTOPEN`, or data disappears after a restart**
+
+Check that `DATA_DIR` is writable — inside Docker it is `/app/data` and must be a mounted volume.
+
+**Import always returns `IMPORT_BLOCKED`**
+
+See [`docs/douban-import.md`](./docs/douban-import.md). Datacenter IPs are usually rate-limited; set `DOUBAN_PROXY` or import from a residential connection.
+
 ## Project structure
 
 ```
