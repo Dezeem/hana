@@ -1,0 +1,39 @@
+services:
+  hana:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: hana:latest
+    container_name: hana
+    restart: unless-stopped
+    ports:
+      - "${HANA_PORT:-3000}:3000"
+    environment:
+      NODE_ENV: production
+      DATA_DIR: /app/data
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?请在 .env 中设置 ADMIN_PASSWORD}
+      AUTH_SECRET: ${AUTH_SECRET:?请在 .env 中设置 AUTH_SECRET}
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+      HANA_SEED: ${HANA_SEED:-1}
+      DOUBAN_USER_AGENT: ${DOUBAN_USER_AGENT:-}
+      DOUBAN_COOKIE: ${DOUBAN_COOKIE:-}
+      DOUBAN_PROXY: ${DOUBAN_PROXY:-}
+      DOUBAN_TIMEOUT_MS: ${DOUBAN_TIMEOUT_MS:-20000}
+    volumes:
+      - hana-data:/app/data
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 25s
+
+volumes:
+  hana-data:
+    name: hana-data
