@@ -25,7 +25,7 @@ Hana 是一个自托管的个人作品档案站：电影、剧集、书籍与音
 | | |
 |---|---|
 | **公开站点** | 首页拼贴墙、多维筛选藏品库、作品详情、年份年表、编辑式关于页 |
-| **检索** | SQLite FTS5 + 子串兜底，⌘K / Ctrl-K 唤起，支持键盘上下选择 |
+| **检索** | SQLite FTS5 + 子串兜底，⌘K / Ctrl-K 或 `/` 唤起，支持键盘上下选择，另有 `/search` 结果全量页 |
 | **后台** | 单密码登录、增删改、批量改状态与「设为精选」、手动上传封面 |
 | **豆瓣导入** | 粘贴条目链接/编号，或直接按标题搜索候选；自动填充元数据、封面与豆瓣评分 |
 | **封面本地化** | 抓到的图会下载、压缩成 WebP 存进数据目录，规避防盗链导致的图裂 |
@@ -69,7 +69,7 @@ npm run dev            # http://localhost:3000
 | 变量 | 默认值 | 说明 |
 |---|---|---|
 | `ADMIN_PASSWORD` | `hana` | 后台密码，**务必修改** |
-| `AUTH_SECRET` | 开发用兜底值 | 会话签名密钥，`openssl rand -hex 32` 生成 |
+| `AUTH_SECRET` | 开发用兜底值 | 会话签名密钥，`openssl rand -hex 32` 生成。**生产环境必须设置**，否则拒绝签发会话 |
 | `DATA_DIR` | `./data` | 数据库与 `uploads/` 所在目录；Docker 内为 `/app/data` |
 | `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000` | 生成 metadata 与 sitemap 用的站点地址 |
 | `HANA_SEED` | `1` | 设为 `0` 可跳过示例数据 |
@@ -104,6 +104,7 @@ hana/
 │  ├─ (site)/                 公开路由（共用导航 / 页脚 / 移动端底栏）
 │  │  ├─ page.tsx             首页：主视觉、精选、拼贴墙
 │  │  ├─ library/page.tsx     藏品库：多维筛选 + 网格/列表
+│  │  ├─ search/page.tsx      搜索结果全量页，无 JavaScript 也可用
 │  │  ├─ work/[id]/page.tsx   作品详情 + 相关推荐轨道
 │  │  ├─ timeline/page.tsx    按作品年份编年的年表
 │  │  └─ about/page.tsx       自述、统计、版记

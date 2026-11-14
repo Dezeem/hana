@@ -7,6 +7,7 @@ import { Rating } from "@/components/rating";
 import { Reveal } from "@/components/reveal";
 import { WorkCard } from "@/components/work-card";
 import { getNeighbours, getRelated, getWork } from "@/lib/db";
+import { workJsonLd } from "@/lib/structured-data";
 import { STATUS_META, TYPE_MAP } from "@/site.config";
 import { aspect, formatDate, typeLabel } from "@/lib/utils";
 
@@ -35,6 +36,8 @@ export default async function WorkPage({ params }: PageProps) {
   const related = getRelated(work, 8);
   const { prev, next } = getNeighbours(work.id);
   const type = TYPE_MAP[work.type];
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const jsonLd = workJsonLd(work, baseUrl);
   const details: { label: string; value: string }[] = [];
 
   if (work.meta.director?.length) details.push({ label: "导演", value: work.meta.director.join(" / ") });
@@ -51,6 +54,10 @@ export default async function WorkPage({ params }: PageProps) {
 
   return (
     <article>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="mx-auto max-w-[1440px] px-5 pt-8 sm:px-8 sm:pt-12">
         <Link href="/library" className="meta underlink inline-flex items-center gap-2 text-ink-soft hover:text-ink">
           <ArrowLeft className="h-3 w-3" strokeWidth={1.4} />

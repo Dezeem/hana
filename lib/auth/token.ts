@@ -4,7 +4,13 @@ export const SESSION_COOKIE = "hana_session";
 const DEV_SECRET = "hana-development-secret-do-not-use-in-production";
 
 function key() {
-  return new TextEncoder().encode(process.env.AUTH_SECRET || DEV_SECRET);
+  const secret = process.env.AUTH_SECRET;
+  if (!secret && process.env.NODE_ENV === "production") {
+    throw new Error(
+      "AUTH_SECRET is not set. Sessions cannot be signed safely in production — see .env.example.",
+    );
+  }
+  return new TextEncoder().encode(secret || DEV_SECRET);
 }
 
 export async function signSession(subject = "admin"): Promise<string> {

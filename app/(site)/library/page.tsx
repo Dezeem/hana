@@ -96,7 +96,7 @@ export default async function LibraryPage({ searchParams }: PageProps) {
               ))}
             </div>
           ) : (
-            <div className="mt-10 columns-2 gap-x-5 md:columns-3 xl:columns-4 [&>*]:mb-9 [&>*]:break-inside-avoid">
+            <div className="mt-10 columns-1 gap-x-5 sm:columns-2 md:columns-3 xl:columns-4 [&>*]:mb-9 [&>*]:break-inside-avoid">
               {items.map((work, index) => (
                 <Reveal key={work.id} delay={(index % 6) * 45}>
                   <WorkCard work={work} eager={index < 4} />

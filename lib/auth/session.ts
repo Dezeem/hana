@@ -7,7 +7,14 @@ import { SESSION_COOKIE, signSession, verifySession } from "./token";
 const MAX_AGE = 60 * 60 * 24 * 30;
 
 function expectedPassword(): string {
-  return process.env.ADMIN_PASSWORD || "hana";
+  const configured = process.env.ADMIN_PASSWORD;
+  if (configured) return configured;
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(
+      "ADMIN_PASSWORD is not set. Refusing to accept the development password in production — see .env.example.",
+    );
+  }
+  return "hana";
 }
 
 /** Constant-time comparison so the login endpoint does not leak the password. */

@@ -104,9 +104,10 @@ export function listWorks(filter: WorkFilter = {}): ListResult {
   const page = hasMore ? rows.slice(0, limit) : rows;
   const items = page.map(rowToWork);
 
+  const countWhere = buildWhere(filter, false);
   const countRow = one<{ c: number }>(
-    `SELECT COUNT(*) AS c FROM works ${buildWhere(filter, false).sql}`,
-    buildWhere(filter, false).params,
+    `SELECT COUNT(*) AS c FROM works ${countWhere.sql}`,
+    countWhere.params,
   );
 
   return {

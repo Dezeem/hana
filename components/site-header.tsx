@@ -13,8 +13,22 @@ export function SiteHeader() {
   const [searchOpen, setSearchOpen] = useState(false);
 
   useEffect(() => {
+    const isTyping = (target: EventTarget | null) => {
+      const node = target as HTMLElement | null;
+      if (!node) return false;
+      return (
+        ["INPUT", "TEXTAREA", "SELECT"].includes(node.tagName) || node.isContentEditable
+      );
+    };
+
     const onKey = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        setSearchOpen(true);
+        return;
+      }
+      // "/" is the quick-search key, as long as the caret is not in a field.
+      if (event.key === "/" && !isTyping(event.target)) {
         event.preventDefault();
         setSearchOpen(true);
       }

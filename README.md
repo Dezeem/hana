@@ -28,7 +28,7 @@ only saturated thing on the page, which is the point.
 | | |
 |---|---|
 | **Public archive** | Home collage, library with multi-facet filters, work detail, year timeline, editorial about page |
-| **Search** | SQLite FTS5 + substring fallback, ⌘K / Ctrl-K overlay, keyboard navigation |
+| **Search** | SQLite FTS5 + substring fallback, ⌘K / Ctrl-K or `/` overlay, keyboard navigation, plus a dedicated `/search` result page |
 | **Admin** | Single-password login, create / edit / delete, bulk status & feature toggles, cover upload |
 | **Douban import** | Paste a subject URL or numeric id, or search by title; metadata, cover and rating are fetched and filled in |
 | **Cover localisation** | Imported artwork is downloaded, resized and stored as WebP — no hotlinking, no broken images |
@@ -73,7 +73,7 @@ generated cover art, so the site is never empty on a fresh clone.
 | Variable | Default | Notes |
 |---|---|---|
 | `ADMIN_PASSWORD` | `hana` | Password for `/admin`. **Set this.** |
-| `AUTH_SECRET` | dev fallback | Signs the session cookie. `openssl rand -hex 32` |
+| `AUTH_SECRET` | dev fallback | Signs the session cookie. `openssl rand -hex 32`. **Required in production** — the app refuses to sign sessions without it |
 | `DATA_DIR` | `./data` | SQLite file + `uploads/` live here. `/app/data` in Docker |
 | `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000` | Canonical URL for metadata and sitemap |
 | `HANA_SEED` | `1` | Set to `0` to skip seeding the demo archive |
@@ -111,6 +111,7 @@ hana/
 │  ├─ (site)/                 public routes (shared header / footer / mobile nav)
 │  │  ├─ page.tsx             home — hero, spotlight, collage wall
 │  │  ├─ library/page.tsx     faceted library with grid / list views
+│  │  ├─ search/page.tsx      full result set for a query, no JavaScript needed
 │  │  ├─ work/[id]/page.tsx   work detail + related rail
 │  │  ├─ timeline/page.tsx    chronology by work year
 │  │  └─ about/page.tsx       colophon and collection stats

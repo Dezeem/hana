@@ -112,7 +112,7 @@ export default async function HomePage() {
           </Link>
         </div>
 
-        <div className="mt-10 columns-2 gap-x-5 md:columns-3 xl:columns-4 [&>*]:mb-10 [&>*]:break-inside-avoid">
+        <div className="mt-10 columns-1 gap-x-5 sm:columns-2 md:columns-3 xl:columns-4 [&>*]:mb-10 [&>*]:break-inside-avoid">
           {wallItems.map((work, index) => (
             <Reveal key={work.id} delay={(index % 8) * 40}>
               <WorkCard work={work} />

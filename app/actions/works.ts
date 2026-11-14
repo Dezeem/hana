@@ -9,6 +9,7 @@ import {
   createWork,
   deleteWork,
   deleteWorks,
+  getWork,
   setFeatured,
   updateWork,
   type WorkInput,
@@ -77,6 +78,8 @@ export async function saveWork(_prev: SaveState, formData: FormData): Promise<Sa
   const upload = await storeUpload(formData.get("coverFile") as File | null);
   const coverRemote = text(formData, "coverRemote");
   const existingCover = text(formData, "cover");
+  const previous = id ? getWork(id) : null;
+  const remoteChanged = Boolean(coverRemote) && coverRemote !== (previous?.coverRemote ?? "");
 
   let cover = existingCover;
   let coverRatio = numberOrNull(text(formData, "coverRatio"), 4) ?? 0.72;
@@ -84,8 +87,9 @@ export async function saveWork(_prev: SaveState, formData: FormData): Promise<Sa
   if (upload) {
     cover = upload.path;
     coverRatio = upload.ratio;
-  } else if (!cover && coverRemote) {
-    const localized = await localizeCover(coverRemote, `manual-${Date.now()}`);
+  } else if (coverRemote && (!cover || remoteChanged)) {
+    // Keyed by the remote URL so re-saving the same subject reuses one file.
+    const localized = await localizeCover(coverRemote, coverRemote);
     if (localized) {
       cover = localized.path;
       coverRatio = localized.ratio;

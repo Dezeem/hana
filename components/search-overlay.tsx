@@ -21,6 +21,9 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
   const [loading, setLoading] = useState(false);
   const [active, setActive] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const controller = useRef<AbortController | null>(null);
+
+  useEffect(() => () => controller.current?.abort(), []);
 
   useEffect(() => {
     if (!open) return;
@@ -65,15 +68,27 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
       setHits([]);
       return;
     }
+
+    // Fast typing can finish requests out of order; keep only the latest one.
+    controller.current?.abort();
+    const request = new AbortController();
+    controller.current = request;
+
     setLoading(true);
-    fetch(`/api/search?q=${encodeURIComponent(value)}&limit=8`)
+    fetch(`/api/search?q=${encodeURIComponent(value)}&limit=8`, { signal: request.signal })
       .then((response) => response.json())
       .then((data: { results?: Hit[] }) => {
         setHits(data.results ?? []);
         setActive(0);
       })
-      .catch((error) => console.error("[search] request failed", error))
-      .finally(() => setLoading(false));
+      .catch((error: Error) => {
+        if (error.name !== "AbortError") {
+          console.error("[search] request failed", error);
+        }
+      })
+      .finally(() => {
+        if (!request.signal.aborted) setLoading(false);
+      });
   }, []);
 
   useEffect(() => {
@@ -160,9 +175,18 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
           </p>
         ) : null}
 
-        <p className="mt-10 text-center">
-          <Link href="/library" onClick={onClose} className="meta underlink text-ink">
-            浏览全部藏品 →
+        <p className="mt-10 flex items-center justify-center gap-8">
+          {query ? (
+            <Link
+              href={`/search?q=${encodeURIComponent(query)}`}
+              onClick={onClose}
+              className="meta underlink text-ink"
+            >
+              查看全部结果 →
+            </Link>
+          ) : null}
+          <Link href="/library" onClick={onClose} className="meta underlink text-ink-soft">
+            浏览全部藏品
           </Link>
         </p>
       </div>
