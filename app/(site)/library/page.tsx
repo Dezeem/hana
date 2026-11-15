@@ -7,6 +7,7 @@ import { WorkCard } from "@/components/work-card";
 import { getStats, listTags, listWorks, listYears } from "@/lib/db";
 import { buildQueryString, parseLibraryQuery, type LibraryQuery } from "@/lib/filters";
 import { PAGE_SIZE } from "@/site.config";
+import { FourBar } from "@/components/primary-bits";
 
 export const metadata: Metadata = {
   title: "藏品库",
@@ -51,7 +52,7 @@ export default async function LibraryPage({ searchParams }: PageProps) {
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
             <p className="meta mb-4 flex items-center gap-3">
-              <span className="inline-block h-px w-8 bg-line-strong" />
+              <FourBar className="h-1 w-8 shrink-0" />
               The collection
             </p>
             <h1 className="font-display text-[54px] leading-none tracking-[-0.04em] text-ink sm:text-[84px]">

@@ -74,23 +74,6 @@ export const SEED_ENTRIES: SeedEntry[] = [
     meta: { publisher: "南海出版公司", language: "西班牙语" },
   },
   {
-    type: "series",
-    title: "我的天才女友",
-    originalTitle: "L'amica geniale",
-    creator: "萨维里奥·科斯坦佐",
-    year: 2018,
-    rating: 4.9,
-    status: "done",
-    featured: true,
-    tags: ["意大利", "女性友谊", "那不勒斯", "文学改编"],
-    summary:
-      "那不勒斯贫民区的两个女孩莱农与莉拉，从小学教室一路纠缠到各自的中年，友谊里混着爱、嫉妒与不肯认输。",
-    review:
-      "它拍出了我读过的最准确的一种关系：你最好的朋友既是你想成为的人，也是你一辈子都想赢的人。第三季结尾莉拉把孩子递出去的那个镜头，我停了很久。",
-    finishedOn: "2024-06-02",
-    meta: { episodes: 8, region: "意大利" },
-  },
-  {
     type: "music",
     title: "范特西",
     originalTitle: "Fantasy",
@@ -122,22 +105,6 @@ export const SEED_ENTRIES: SeedEntry[] = [
       "所有的情欲都藏在没有拍到的部分里。张曼玉的旗袍换了二十几套，但真正在动的是走廊的灯、雨，和那句「如果多一张船票，你会不会跟我一起走」。",
     finishedOn: "2024-04-19",
     meta: { runtime: "98 分钟", region: "中国香港", director: ["王家卫"] },
-  },
-  {
-    type: "series",
-    title: "漫长的季节",
-    originalTitle: "The Long Season",
-    creator: "辛爽",
-    year: 2023,
-    rating: 4.8,
-    status: "done",
-    tags: ["国产剧", "悬疑", "东北", "时代"],
-    summary:
-      "1997 年的桦林，一桩碎尸案把钢厂司机王响的人生劈成两半；十八年后，他还站在原地等着一个答案。",
-    review:
-      "国产剧里少见的文学性：玉米地、火车、KTV 里跑调的歌，还有王响那句「往前看，别回头」。它拍的是下岗潮，落点却是一个父亲怎么跟自己的失败和解。",
-    finishedOn: "2024-07-11",
-    meta: { episodes: 12, region: "中国大陆" },
   },
   {
     type: "book",
@@ -202,22 +169,6 @@ export const SEED_ENTRIES: SeedEntry[] = [
       "语言干净得几乎没有形容词，可越往后读越不敢翻页。「我一个人，怀念我们仨」——她把最难写的丧亲之痛，写成了很轻的日常。",
     finishedOn: "2023-06-18",
     meta: { publisher: "生活·读书·新知三联书店", language: "中文" },
-  },
-  {
-    type: "series",
-    title: "四重奏",
-    originalTitle: "カルテット",
-    creator: "土井裕泰",
-    year: 2017,
-    rating: 4.5,
-    status: "done",
-    tags: ["日剧", "坂元裕二", "群像", "冬天"],
-    summary:
-      "四个在东京郊区偶然「相遇」的弦乐手组成四重奏乐团，每个人都在隐瞒一段过去，也都在偷偷留住同一个冬天。",
-    review:
-      "坂元裕二把台词写成了生活本身：炸鸡上要不要挤柠檬，是可以吵一整集的大事。它温柔地告诉你，不完美的人也可以组成一个完整的和弦。",
-    finishedOn: "2024-01-05",
-    meta: { episodes: 10, region: "日本" },
   },
   {
     type: "movie",

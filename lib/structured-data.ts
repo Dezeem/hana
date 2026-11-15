@@ -2,7 +2,6 @@ import type { Work } from "./db/types";
 
 const SCHEMA_TYPE = {
   movie: "Movie",
-  series: "TVSeries",
   book: "Book",
   music: "MusicAlbum",
 } as const;

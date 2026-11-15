@@ -31,11 +31,17 @@ CREATE TABLE IF NOT EXISTS works (
   updated_at     TEXT    NOT NULL
 );
 
-CREATE INDEX IF NOT EXISTS idx_works_type    ON works(type);
-CREATE INDEX IF NOT EXISTS idx_works_status  ON works(status);
-CREATE INDEX IF NOT EXISTS idx_works_year    ON works(year);
-CREATE INDEX IF NOT EXISTS idx_works_rating  ON works(rating);
-CREATE INDEX IF NOT EXISTS idx_works_created ON works(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_works_type     ON works(type);
+CREATE INDEX IF NOT EXISTS idx_works_status   ON works(status);
+CREATE INDEX IF NOT EXISTS idx_works_year     ON works(year);
+CREATE INDEX IF NOT EXISTS idx_works_rating   ON works(rating);
+CREATE INDEX IF NOT EXISTS idx_works_created  ON works(created_at DESC);
+
+-- "collected" ordering drives the home page and the library default.
+CREATE INDEX IF NOT EXISTS idx_works_finished ON works(finished_on DESC);
+-- Timeline groups by year and reads covers only; covering index avoids a
+-- full table scan when ordering the whole archive.
+CREATE INDEX IF NOT EXISTS idx_works_year_id  ON works(year DESC, id DESC);
 `;
 
 /**

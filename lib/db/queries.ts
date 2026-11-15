@@ -249,7 +249,7 @@ export function getStats(): Stats {
     "SELECT CAST(rating AS INT) AS b, COUNT(*) AS c FROM works WHERE rating IS NOT NULL GROUP BY b ORDER BY b",
   );
 
-  const byType: Record<WorkType, number> = { movie: 0, series: 0, book: 0, music: 0 };
+  const byType: Record<WorkType, number> = { movie: 0, book: 0, music: 0 };
   for (const row of byTypeRows) {
     if (row.type in byType) byType[row.type] = row.c;
   }
@@ -282,9 +282,22 @@ export function getStats(): Stats {
 }
 
 /** Timeline: every year that has works, with the works inside it. */
+/**
+ * The timeline renders every work at once, so only the fields that actually
+ * reach the page are selected. Anything not listed here becomes an empty
+ * default — the whole archive would otherwise serialise ~2 MB of RSC payload
+ * made of DOI links, tags and long URLs the page never reads.
+ */
+const TIMELINE_COLUMNS = `id, type, title, creator, year, cover, cover_remote, cover_ratio,
+  substr(summary, 1, 90) AS summary, '' AS review,
+  '' AS original_title, NULL AS rating, 'done' AS status, '' AS tags,
+  '' AS douban_id, '' AS douban_url, NULL AS douban_rating,
+  '{}' AS meta, 0 AS featured, NULL AS finished_on,
+  '' AS created_at, '' AS updated_at`;
+
 export function getTimeline(): { year: number; works: Work[] }[] {
   const rows = all<WorkRow>(
-    `SELECT ${LIST_COLUMNS} FROM works ORDER BY COALESCE(year, 0) DESC, id DESC`,
+    `SELECT ${TIMELINE_COLUMNS} FROM works ORDER BY COALESCE(year, 0) DESC, id DESC`,
   );
   const groups = new Map<number, Work[]>();
   for (const row of rows) {

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Dices, Home, LayoutGrid, ListOrdered, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { FourBar } from "./primary-bits";
 
 const ITEMS = [
   { href: "/", label: "首页", icon: Home },
@@ -27,7 +28,10 @@ export function MobileNav() {
           const active =
             item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
           return (
-            <li key={item.href} className="flex-1">
+            <li key={item.href} className="relative flex-1">
+              {active ? (
+                <FourBar className="absolute inset-x-4 top-0 h-0.5" />
+              ) : null}
               <Link
                 href={item.href}
                 className={cn(

@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { getStats } from "@/lib/db";
 import { site, WORK_TYPES } from "@/site.config";
+import { FourBar } from "@/components/primary-bits";
 
 export const metadata: Metadata = {
   title: "关于",
@@ -16,7 +17,7 @@ export default function AboutPage() {
     <div className="mx-auto max-w-[1100px] px-5 sm:px-8">
       <header className="pb-14 pt-12 sm:pt-16">
         <p className="meta mb-4 flex items-center gap-3">
-          <span className="inline-block h-px w-8 bg-line-strong" />
+          <FourBar className="h-1 w-8 shrink-0" />
           Colophon
         </p>
         <h1 className="max-w-2xl font-display text-[46px] leading-[1.05] tracking-[-0.04em] text-ink sm:text-[76px]">
@@ -137,7 +138,7 @@ export default function AboutPage() {
               想接触 · 躺在清单里
             </li>
             <li className="pt-2 text-[13px] text-ink-faint">
-              四色分别代表电影、剧集、书籍、音乐；每件作品有一个三位编号，编号不会回收。
+              红、黄、黑分别对应电影、书籍与音乐；每件作品有一个三位编号，编号不会回收。
             </li>
           </ul>
         </div>

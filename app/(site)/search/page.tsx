@@ -6,6 +6,7 @@ import { WorkCard } from "@/components/work-card";
 import { listTags, listWorks } from "@/lib/db";
 import { searchWorks } from "@/lib/search";
 import { TYPE_MAP } from "@/site.config";
+import { FourBar } from "@/components/primary-bits";
 
 type PageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -33,7 +34,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
     <div className="mx-auto max-w-[1440px] px-5 sm:px-8">
       <header className="pb-10 pt-12 sm:pt-16">
         <p className="meta mb-4 flex items-center gap-3">
-          <span className="inline-block h-px w-8 bg-line-strong" />
+          <FourBar className="h-1 w-8 shrink-0" />
           Full-text search
         </p>
 

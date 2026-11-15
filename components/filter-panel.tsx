@@ -100,8 +100,13 @@ export function FilterPanel({ counts, years, tags, query }: PanelProps) {
                 <button
                   type="button"
                   onClick={() => apply({ types: toggleIn(query.types, type.key) })}
+                  style={
+                    active
+                      ? { backgroundColor: `color-mix(in srgb, ${type.color} 9%, transparent)` }
+                      : undefined
+                  }
                   className={cn(
-                    "flex w-full items-center justify-between py-1 text-left text-[16px] transition-colors",
+                    "flex w-full items-center justify-between px-2 py-1 text-left text-[16px] transition-colors",
                     active ? "text-ink" : "text-ink-soft hover:text-ink",
                   )}
                 >

@@ -14,7 +14,6 @@ export const TYPE_TINT: Record<
   { accent: string; code: string }
 > = {
   movie: { accent: "#D8231C", code: "FILM" },
-  series: { accent: "#1B4B9C", code: "SERI" },
   book: { accent: "#F7C400", code: "BOOK" },
   music: { accent: "#101010", code: "ALBM" },
 };

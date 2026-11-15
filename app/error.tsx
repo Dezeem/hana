@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
+import { FourBar } from "@/components/primary-bits";
 
 export default function GlobalError({
   error,
@@ -25,7 +26,7 @@ export default function GlobalError({
 
       <main className="mx-auto flex w-full max-w-[1100px] flex-1 flex-col justify-center px-5 py-24 sm:px-8">
         <p className="meta mb-6 flex items-center gap-3">
-          <span className="inline-block h-px w-8 bg-line-strong" />
+          <FourBar className="h-1 w-8 shrink-0" />
           Something tore the page
         </p>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { Search, X } from "lucide-react";
 import { TYPE_MAP } from "@/site.config";
@@ -143,8 +143,11 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
                 href={`/work/${hit.id}`}
                 onClick={onClose}
                 onMouseEnter={() => setActive(index)}
-                className={`flex items-center gap-4 border-b border-line py-3 transition-colors ${
-                  active === index ? "bg-ink/[0.04]" : "hover:bg-ink/[0.02]"
+                style={{ "--tc": TYPE_MAP[hit.type]?.color } as CSSProperties}
+                className={`flex items-center gap-4 border-b border-l-2 border-line py-3 transition-colors ${
+                  active === index
+                    ? "border-l-[var(--tc)] bg-[var(--tc)]/[0.07]"
+                    : "border-l-transparent hover:bg-ink/[0.02]"
                 }`}
               >
                 <span className="specimen-no w-10 shrink-0">No.{hit.no}</span>

@@ -2,11 +2,13 @@ import Link from "next/link";
 import { Dices } from "lucide-react";
 import { CollectionRuler } from "@/components/collection-ruler";
 import { Cover } from "@/components/cover";
+import { FourBar, FourDots } from "@/components/primary-bits";
+import { Rating } from "@/components/rating";
 import { Reveal } from "@/components/reveal";
 import { WorkCard } from "@/components/work-card";
 import { getDailyPick, getStats, listWorks } from "@/lib/db";
 import { aspect, formatDate, typeLabel, workMetaLine } from "@/lib/utils";
-import { site, TYPE_MAP } from "@/site.config";
+import { site, STATUS_META, TYPE_MAP } from "@/site.config";
 
 export default async function HomePage() {
   const stats = getStats();
@@ -18,10 +20,26 @@ export default async function HomePage() {
   const wallItems = wall.items.filter((work) => !spotlight.some((item) => item.id === work.id));
   const latest = listWorks({ sort: "collected", limit: 5 }).items;
 
+  const dailyColor = daily ? TYPE_MAP[daily.type]?.color : undefined;
+  const dailySpecs = daily
+    ? [
+        { label: "类型", value: typeLabel(daily.type) },
+        { label: "年份", value: daily.year ? String(daily.year) : "—" },
+        { label: "状态", value: STATUS_META[daily.status].zh },
+        {
+          label: "豆瓣评分",
+          value: daily.doubanRating !== null ? daily.doubanRating.toFixed(1) : "—",
+        },
+        { label: "收藏日", value: formatDate(daily.finishedOn ?? daily.createdAt) || "—" },
+        { label: "编号", value: daily.no },
+      ]
+    : [];
+
   return (
     <div>
       {/* ── hero ─────────────────────────────────────────── */}
       <section className="mx-auto max-w-[1440px] px-5 sm:px-8">
+        <FourBar />
         <div className="grid grid-cols-12 items-start gap-x-8 gap-y-14 border-b border-line pb-16 pt-12 sm:pt-16">
           <div className="col-span-12 lg:col-span-7">
             <span className="label-bar">Private archive</span>
@@ -40,13 +58,13 @@ export default async function HomePage() {
 
             <div className="mt-10 flex flex-wrap items-center gap-5">
               <Link href="/library" className="btn">
-                进入藏品
+                翻阅藏品
               </Link>
               <Link
                 href="/timeline"
                 className="text-[15px] font-medium uppercase tracking-[0.08em] underline decoration-2 underline-offset-4"
               >
-                按年份浏览
+                按年份往回看
               </Link>
             </div>
           </div>
@@ -58,7 +76,7 @@ export default async function HomePage() {
                 style={{ borderBottomColor: "var(--ink)" }}
               >
                 <span className="label-bar">Latest</span>
-                <span className="meta">最近收藏 · 收藏日</span>
+                <span className="meta">最近收进来的五件</span>
               </div>
 
               <ol>
@@ -113,7 +131,15 @@ export default async function HomePage() {
                   <span className="opacity-40">◆</span>
                   <span>{String(index + 1).padStart(3, "0")}</span>
                   <span className="opacity-40">◆</span>
-                  <span>红 · 蓝 · 黄 · 黑</span>
+                  <span className="flex items-center gap-1.5">
+                    <span style={{ color: "var(--c-movie)" }}>红</span>
+                    <span className="opacity-50">·</span>
+                    <span style={{ color: "var(--c-series)" }}>蓝</span>
+                    <span className="opacity-50">·</span>
+                    <span style={{ color: "var(--c-book)" }}>黄</span>
+                    <span className="opacity-50">·</span>
+                    <span style={{ color: "var(--c-music)" }}>黑</span>
+                  </span>
                   <span className="opacity-40">◆</span>
                 </span>
               ))}
@@ -144,8 +170,8 @@ export default async function HomePage() {
               <div className="infobox-row">
                 <span className="infobox-key">藏品</span>
                 <span className="infobox-val">
-                  电影 {stats.byType.movie} · 剧集 {stats.byType.series} · 书籍{" "}
-                  {stats.byType.book} · 音乐 {stats.byType.music}
+                  电影 {stats.byType.movie} · 书籍 {stats.byType.book} · 音乐{" "}
+                  {stats.byType.music}
                 </span>
               </div>
               <div className="infobox-row">
@@ -165,7 +191,7 @@ export default async function HomePage() {
             </div>
 
             <p className="mt-4 text-[15px] leading-[1.8] text-ink-soft">
-              电影、剧集、书籍、音乐各占一种原色。点任意一栏进入对应藏品。
+              三种藏品，三种原色。点任意一栏，只看这一类。
             </p>
           </div>
           <div className="col-span-12 md:col-span-9 lg:col-span-7 lg:col-start-6">
@@ -178,18 +204,24 @@ export default async function HomePage() {
       {daily ? (
         <section className="mx-auto mt-16 max-w-[1440px] px-5 sm:px-8">
           <div className="flex items-baseline justify-between border-b border-line py-4">
-            <span className="label-bar">Today</span>
-            <span className="meta">每日一件 · 当天不变，明天换人</span>
+            <span className="label-bar">
+              <FourDots />
+              Today
+            </span>
+            <span className="meta">每日一件 · 今天就是它，零点后换人</span>
           </div>
 
-          <div className="mt-8 grid grid-cols-12 items-center gap-x-8 gap-y-8">
+          <div className="mt-8 grid grid-cols-12 items-stretch gap-x-8 gap-y-6">
             <Link
               href={`/work/${daily.id}`}
-              className="group col-span-4 sm:col-span-3 lg:col-span-2"
+              className="group col-span-5 sm:col-span-4 lg:col-span-3"
             >
               <div
-                className="relative overflow-hidden rounded-[var(--radius-card)] border border-line bg-mist"
-                style={{ aspectRatio: aspect(daily.coverRatio) }}
+                className="relative overflow-hidden rounded-[var(--radius-card)] border-2 bg-mist"
+                style={{
+                  aspectRatio: aspect(daily.coverRatio),
+                  borderColor: TYPE_MAP[daily.type]?.color,
+                }}
               >
                 <Cover
                   src={daily.cover}
@@ -201,25 +233,75 @@ export default async function HomePage() {
               </div>
             </Link>
 
-            <div className="col-span-8 sm:col-span-9 lg:col-span-7">
+            <div className="col-span-7 flex flex-col sm:col-span-8 lg:col-span-9">
               <p className="meta flex flex-wrap items-center gap-x-3">
                 <span className="num text-ink">No.{daily.no}</span>
-                <span style={{ color: TYPE_MAP[daily.type]?.color }}>{typeLabel(daily.type)}</span>
+                <span style={{ color: dailyColor }}>{typeLabel(daily.type)}</span>
                 {daily.year ? <span>{daily.year}</span> : null}
               </p>
-              <h2 className="mt-3 font-display text-[30px] leading-[1.08] tracking-[-0.03em] sm:text-[42px]">
+
+              <h2 className="mt-3 font-display text-[28px] leading-[1.08] tracking-[-0.03em] sm:text-[40px]">
                 <Link href={`/work/${daily.id}`} className="underlink">
                   {daily.title}
                 </Link>
               </h2>
-              <p className="mt-2 text-[16px] text-ink-soft">{workMetaLine(daily)}</p>
-            </div>
 
-            <div className="col-span-12 lg:col-span-3 lg:text-right">
-              <Link href="/random" className="btn btn-ghost inline-flex items-center gap-2">
-                <Dices className="h-4 w-4" strokeWidth={1.6} />
-                换一件
-              </Link>
+              <p className="mt-2 text-[15px] text-ink-soft">
+                {workMetaLine(daily) || daily.originalTitle || "—"}
+              </p>
+
+              {daily.review || daily.summary ? (
+                <p
+                  className="mt-4 line-clamp-3 max-w-[62ch] border-l-2 pl-4 text-[15px] leading-[1.85] text-ink-soft"
+                  style={{ borderColor: dailyColor }}
+                >
+                  {daily.review || daily.summary}
+                </p>
+              ) : null}
+
+              {daily.tags.length ? (
+                <p className="mt-4 flex flex-wrap gap-1.5">
+                  {daily.tags.slice(0, 6).map((tag) => (
+                    <Link
+                      key={tag}
+                      href={`/library?tag=${encodeURIComponent(tag)}`}
+                      className="rounded-full px-2.5 py-0.5 text-[12px] text-ink-soft transition-colors hover:text-ink"
+                      style={{
+                        background: `color-mix(in srgb, ${dailyColor} 12%, transparent)`,
+                      }}
+                    >
+                      {tag}
+                    </Link>
+                  ))}
+                </p>
+              ) : null}
+
+              <dl
+                className="mt-6 grid flex-1 grid-cols-2 content-center gap-x-6 gap-y-4 border-t pt-5 sm:grid-cols-3 lg:grid-cols-6"
+                style={{ borderTopColor: `color-mix(in srgb, ${dailyColor} 32%, var(--line))` }}
+              >
+                {dailySpecs.map((spec) => (
+                  <div key={spec.label} className="min-w-0">
+                    <dt className="meta">{spec.label}</dt>
+                    <dd className="num mt-1 truncate text-[16px] text-ink">{spec.value}</dd>
+                  </div>
+                ))}
+              </dl>
+
+              <div className="mt-auto flex flex-wrap items-center gap-3 pt-6">
+                <Link href={`/work/${daily.id}`} className="btn">
+                  查看详情
+                </Link>
+                <Link href="/random" className="btn btn-ghost inline-flex items-center gap-2">
+                  <Dices className="h-4 w-4" strokeWidth={1.6} />
+                  换一件
+                </Link>
+                {daily.rating !== null ? (
+                  <span className="ml-auto">
+                    <Rating value={daily.rating} color={TYPE_MAP[daily.type]?.color} />
+                  </span>
+                ) : null}
+              </div>
             </div>
           </div>
         </section>
@@ -289,7 +371,10 @@ export default async function HomePage() {
       {/* ── the wall ─────────────────────────────────────── */}
       <section className="mx-auto mt-24 max-w-[1440px] px-5 sm:px-8">
         <div className="flex items-baseline justify-between border-b border-line py-4">
-          <span className="label-bar">The wall</span>
+          <span className="label-bar">
+            <FourDots />
+            The wall
+          </span>
           <Link
             href="/library"
             className="text-[15px] font-medium uppercase tracking-[0.08em] underline decoration-2 underline-offset-4"
@@ -317,14 +402,14 @@ export default async function HomePage() {
       <section className="mx-auto mt-20 max-w-[1440px] px-5 sm:px-8">
         <div className="grid grid-cols-12 items-start gap-8 border-t border-line pt-10">
           <p className="col-span-12 max-w-xl text-[16px] leading-[1.95] text-ink-soft md:col-span-7">
-            这里的条目没有排序算法，只有日期和手写的短评。想找某一件作品时，用顶部搜索，或到
+            这里没有推荐算法，只有收藏日期和手写的短评。要指名道姓找一件，用顶部搜索；只想随便翻翻，就去
             <Link
               href="/library"
               className="mx-1 underline decoration-2 underline-offset-4 hover:text-ink"
             >
               藏品库
             </Link>
-            按类型、年份与标签筛选。
+            按类型、年份或标签筛一遍。
           </p>
           <p className="col-span-12 break-words text-balance text-right text-[clamp(15px,1.25vw,18px)] font-semibold uppercase leading-[1.4] tracking-[0.04em] text-ink-faint md:col-span-5">
             {site.taglineEn}

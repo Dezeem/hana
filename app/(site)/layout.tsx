@@ -1,3 +1,4 @@
+import { BackToTop } from "@/components/back-to-top";
 import { KonamiEgg } from "@/components/konami-egg";
 import { MobileNav } from "@/components/mobile-nav";
 import { ShortcutsPanel } from "@/components/shortcuts-panel";
@@ -20,6 +21,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
         {children}
       </main>
       <SiteFooter />
+      <BackToTop />
       <MobileNav />
       <ShortcutsPanel />
       <KonamiEgg />

@@ -1,61 +1,45 @@
 import Link from "next/link";
 import { site } from "@/site.config";
+import { FourBar } from "./primary-bits";
 
 export function SiteFooter() {
   return (
-    <footer className="mt-28 border-t border-line">
-      <div className="mx-auto max-w-[1440px] px-5 py-14 sm:px-8">
-        <div className="flex flex-col gap-12 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="w-fit text-[26px] font-semibold leading-none tracking-[0.02em] text-ink">
-              {site.name}
-            </p>
-            <p className="mt-6 max-w-md text-[17px] leading-[1.9] text-ink-soft">
-              {site.tagline}
-            </p>
-          </div>
+    <footer className="mt-20 border-t border-line">
+      <FourBar />
+      <div className="mx-auto max-w-[1440px] px-5 py-6 sm:px-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-baseline sm:justify-between">
+          <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <span className="text-[16px] font-semibold leading-none text-ink">{site.name}</span>
+            <span className="text-[13px] text-ink-faint">{site.tagline}</span>
+          </p>
 
-          <div className="flex flex-wrap items-end gap-x-16 gap-y-8">
-            <div>
-              <p className="meta mb-4 text-ink">Navigate</p>
-              <ul className="space-y-2">
-                {site.nav.map((item) => (
-                  <li key={item.href}>
-                    <Link href={item.href} className="link-quiet text-[17px]">
-                      {item.label} · {item.labelEn}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <p className="meta mb-4 text-ink">Elsewhere</p>
-              <ul className="space-y-2">
-                <li>
-                  <a href={`mailto:${site.email}`} className="link-quiet text-[17px]">
-                    {site.email}
-                  </a>
-                </li>
-                <li>
-                  <Link href="/admin" className="link-quiet text-[17px]">
-                    后台管理
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
+          <nav
+            className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] text-ink-soft"
+            aria-label="页脚导航"
+          >
+            {site.nav.map((item) => (
+              <Link key={item.href} href={item.href} className="link-quiet">
+                {item.label}
+              </Link>
+            ))}
+            <a href={`mailto:${site.email}`} className="link-quiet">
+              邮件
+            </a>
+            <Link href="/admin" className="link-quiet">
+              后台
+            </Link>
+          </nav>
         </div>
 
-        <div className="mt-14 flex flex-col gap-3 border-t border-line pt-6 text-[12px] uppercase tracking-[0.08em] text-ink-faint sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            © {new Date().getFullYear()} {site.owner} · Collection kept by hand
-          </p>
-          <p className="flex items-center gap-2">
-            <span>按 ? 看快捷键</span>
-            <span className="opacity-40">·</span>
-            <span>Metadata referenced from Douban</span>
-          </p>
-        </div>
+        <p className="mt-4 flex flex-wrap items-center gap-x-2.5 gap-y-1 border-t border-line pt-3 text-[11px] uppercase tracking-[0.08em] text-ink-faint">
+          <span>
+            © {new Date().getFullYear()} {site.owner}
+          </span>
+          <span className="opacity-40">·</span>
+          <span>按 ? 看快捷键</span>
+          <span className="opacity-40">·</span>
+          <span>Metadata referenced from Douban</span>
+        </p>
       </div>
     </footer>
   );

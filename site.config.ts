@@ -3,7 +3,7 @@
  * This is the only file you need to touch to make Hana yours.
  */
 
-export type WorkType = "movie" | "series" | "book" | "music";
+export type WorkType = "movie" | "book" | "music";
 
 export type TypeMeta = {
   key: WorkType;
@@ -26,15 +26,6 @@ export const WORK_TYPES: TypeMeta[] = [
     en: "Films",
     color: "var(--c-movie)",
     ink: "var(--c-movie)",
-    host: "movie.douban.com",
-    suggestPath: "movie",
-  },
-  {
-    key: "series",
-    zh: "剧集",
-    en: "Series",
-    color: "var(--c-series)",
-    ink: "var(--c-series)",
     host: "movie.douban.com",
     suggestPath: "movie",
   },
@@ -78,11 +69,11 @@ export const site = {
   owner: "Hana",
   title: "Hana — a private archive in primary colours",
   tagline: "把看过的、读过的、听过的，一件件压进标本册。",
-  taglineEn: "A private archive of films, series, books and albums.",
+  taglineEn: "A private archive of films, books and albums.",
   description:
-    "Hana 是一个人的作品档案：电影、剧集、书籍与音乐，用红、蓝、黄、黑标记分类，逐件编号，用极大的字排出来。",
+    "一个人的作品档案：电影、书籍与音乐各占一种原色，逐件编号；看过的、读过的、听过的，都收在这里。",
   descriptionEn:
-    "Hana is a one-person archive for films, series, books and albums — numbered, classified and marked out in red, blue, yellow and black.",
+    "Hana is a one-person archive for films, books and albums — numbered, classified and marked out in primary colours.",
   email: "hello@hana.studio",
   nav: [
     { href: "/library", label: "藏品", labelEn: "Library" },

@@ -19,7 +19,7 @@ import { importDouban, searchDouban, type ImportResult } from "@/lib/douban";
 import { localizeCover } from "@/lib/douban/cover";
 import { storeUpload } from "@/lib/uploads";
 
-const typeEnum = z.enum(["movie", "series", "book", "music"]);
+const typeEnum = z.enum(["movie", "book", "music"]);
 const statusEnum = z.enum(["done", "doing", "wish"]);
 
 export type SaveState = {

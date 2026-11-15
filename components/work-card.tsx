@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import { Quote } from "lucide-react";
 import { TYPE_MAP } from "@/site.config";
@@ -30,7 +31,8 @@ export function WorkCard({ work, variant = "masonry", eager }: WorkCardProps) {
     return (
       <Link
         href={`/work/${work.id}`}
-        className="group flex items-center gap-5 border-b border-line py-5 transition-colors hover:bg-mist"
+        className="group flex items-center gap-5 border-b border-l-2 border-line border-l-transparent py-5 transition-colors hover:border-l-[var(--tc)] hover:bg-mist"
+        style={{ "--tc": TYPE_MAP[work.type]?.color } as CSSProperties}
       >
         <span className="specimen-no w-14 shrink-0">No.{work.no}</span>
         <div className="h-20 w-14 shrink-0 overflow-hidden rounded-[var(--radius-card)] border border-line bg-mist">
@@ -52,7 +54,7 @@ export function WorkCard({ work, variant = "masonry", eager }: WorkCardProps) {
           {work.review || work.summary}
         </span>
         <span className="hidden shrink-0 sm:block">
-          <Rating value={work.rating} />
+          <Rating value={work.rating} color={TYPE_MAP[work.type]?.color} />
         </span>
         {work.review ? (
           <Quote className="hidden h-3.5 w-3.5 shrink-0 text-ink-faint sm:block" strokeWidth={1.6} aria-hidden />
@@ -68,9 +70,10 @@ export function WorkCard({ work, variant = "masonry", eager }: WorkCardProps) {
     <Link
       href={`/work/${work.id}`}
       className={cn("group block", isRail && "w-[72vw] shrink-0 sm:w-[320px]")}
+      style={{ "--tc": TYPE_MAP[work.type]?.color } as CSSProperties}
     >
       <div
-        className="relative mb-4 overflow-hidden rounded-[var(--radius-card)] border border-line bg-mist"
+        className="relative mb-4 overflow-hidden rounded-[var(--radius-card)] border border-line bg-mist transition-colors duration-300 group-hover:border-[var(--tc)]"
         style={{ aspectRatio: aspect(work.coverRatio) }}
       >
         <Cover
@@ -108,7 +111,14 @@ export function WorkCard({ work, variant = "masonry", eager }: WorkCardProps) {
 
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h3 className="truncate text-[19px] font-semibold leading-snug">{work.title}</h3>
+          <h3 className="flex items-center gap-2 text-[19px] font-semibold leading-snug">
+            <span
+              className="h-2.5 w-2.5 shrink-0"
+              style={{ background: "var(--tc)" }}
+              aria-hidden
+            />
+            <span className="truncate">{work.title}</span>
+          </h3>
           <p className="mt-1 truncate text-[16px] text-ink-soft">{workMetaLine(work)}</p>
         </div>
         <TypeMark type={work.type} />

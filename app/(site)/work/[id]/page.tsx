@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -171,6 +172,11 @@ export default async function WorkPage({ params }: PageProps) {
             <h1 className="mt-5 font-display text-[44px] leading-[1.02] tracking-[-0.04em] text-ink sm:text-[76px]">
               {work.title}
             </h1>
+            <div
+              className="mt-6 h-1 w-16 rounded-full"
+              style={{ background: TYPE_MAP[work.type]?.color }}
+              aria-hidden
+            />
             {work.originalTitle ? (
               <p className="mt-2 font-display text-[17px] italic text-ink-soft">{work.originalTitle}</p>
             ) : null}
@@ -180,8 +186,11 @@ export default async function WorkPage({ params }: PageProps) {
                 "—"}
             </p>
 
-            {/* specimen card — an infobox, wiki style */}
-            <div className="infobox mt-8">
+            {/* specimen card — an infobox tinted with the work's type colour */}
+            <div
+              className="infobox infobox-tinted mt-8"
+              style={{ "--tc": type?.color } as CSSProperties}
+            >
               <div className="infobox-head">
                 <span className="meta">Specimen · 标本卡</span>
                 <span className="specimen-no">No.{work.no}</span>
@@ -225,7 +234,7 @@ export default async function WorkPage({ params }: PageProps) {
             <div className="mt-8 flex flex-wrap items-center gap-x-10 gap-y-4 border-y border-line py-5">
               <div>
                 <p className="meta mb-1.5">我的评分</p>
-                <Rating value={work.rating} size="lg" />
+                <Rating value={work.rating} size="lg" color={TYPE_MAP[work.type]?.color} />
               </div>
               {work.doubanRating !== null ? (
                 <div>
@@ -247,7 +256,10 @@ export default async function WorkPage({ params }: PageProps) {
 
                 {section.id === "facts" ? (
                   details.length ? (
-                    <div className="infobox mt-6">
+                    <div
+                      className="infobox infobox-tinted mt-6"
+                      style={{ "--tc": type?.color } as CSSProperties}
+                    >
                       {details.map((item) => (
                         <div key={item.label} className="infobox-row">
                           <span className="infobox-key">{item.label}</span>
@@ -282,7 +294,8 @@ export default async function WorkPage({ params }: PageProps) {
                       <Link
                         key={tag}
                         href={`/library?tag=${encodeURIComponent(tag)}`}
-                        className="border border-line px-2.5 py-1 text-[13px] text-ink-soft transition-colors hover:border-ink hover:text-ink"
+                        style={{ "--tc": TYPE_MAP[work.type]?.color } as CSSProperties}
+                        className="border border-line px-2.5 py-1 text-[13px] text-ink-soft transition-colors hover:border-[var(--tc)] hover:text-ink"
                       >
                         {tag}
                       </Link>

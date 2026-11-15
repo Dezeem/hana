@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Search } from "lucide-react";
 import { site } from "@/site.config";
+import { FourBar } from "./primary-bits";
 import { SearchOverlay } from "./search-overlay";
 import { ThemeToggle } from "./theme-toggle";
 
@@ -39,6 +40,7 @@ export function SiteHeader() {
   return (
     <>
       <header className="fixed inset-x-0 top-0 z-50 h-24 border-b border-line bg-paper">
+        <FourBar className="absolute inset-x-0 top-0 h-1" />
         <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between px-5 sm:px-8">
           <Link href="/" className="group flex items-baseline gap-3" aria-label={`${site.name} 首页`}>
             <span className="text-[22px] font-semibold leading-none tracking-[0.01em] text-ink">

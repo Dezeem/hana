@@ -237,10 +237,6 @@ export function buildDraft(
     metaOut.runtime = duration(info["片长"] ?? (ld?.duration as string | undefined));
     metaOut.region = info["制片国家/地区"] ?? "";
     metaOut.language = info["语言"] ?? "";
-    if (type === "series") {
-      const eps = info["集数"]?.match(/\d+/)?.[0];
-      if (eps) metaOut.episodes = Number(eps);
-    }
   }
 
   const ratingValue = Number(

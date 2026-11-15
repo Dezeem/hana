@@ -15,10 +15,10 @@
   --mist: #eef1f4;
   --mist-soft: #f7f9fa;
 
-  --c-movie: #bf5f5a;
-  --c-series: #55779f;
-  --c-book: #68897d;
-  --c-music: #3a3d42;
+  --c-movie: #d32b21;
+  --c-series: #1e5cb8;
+  --c-book: #c89500;
+  --c-music: #15161a;
 
   --radius-card: 14px;
   --radius-chip: 999px;
@@ -35,10 +35,10 @@
   --mist: #1e2125;
   --mist-soft: #191b1e;
 
-  --c-movie: #dc8f8a;
-  --c-series: #89a9c9;
-  --c-book: #91b3a6;
-  --c-music: #c9ccd2;
+  --c-movie: #ef6a5f;
+  --c-series: #7ea9d8;
+  --c-book: #e2b23c;
+  --c-music: #d6d8dd;
 }
 
 /* ── hidden plate · the four primaries rotate ──────────────── */
@@ -303,6 +303,7 @@ html[data-egg="on"].dark {
 
 /* ── editorial blocks · infobox, pull quote, contents ──────── */
 .infobox {
+  position: relative;
   border: 1px solid var(--line);
   border-radius: var(--radius-card);
   background: var(--paper-raised);
@@ -347,6 +348,44 @@ html[data-egg="on"].dark {
   font-size: 15px;
   color: var(--ink);
   overflow-wrap: anywhere;
+}
+
+/* a table can wear a colour: type colour via --tc, or the full palette */
+.infobox-tinted::before,
+.infobox-spectrum::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: var(--tc, var(--ink));
+}
+
+.infobox-spectrum::before {
+  background: linear-gradient(
+    90deg,
+    var(--c-movie) 0 25%,
+    var(--c-series) 25% 50%,
+    var(--c-book) 50% 75%,
+    var(--c-music) 75% 100%
+  );
+}
+
+.infobox-tinted {
+  border-color: color-mix(in srgb, var(--tc, var(--ink)) 32%, var(--line));
+}
+
+.infobox-tinted .infobox-head {
+  background: color-mix(in srgb, var(--tc, var(--ink)) 10%, var(--mist-soft));
+  border-bottom-color: color-mix(in srgb, var(--tc, var(--ink)) 28%, var(--line));
+}
+
+.infobox-tinted .infobox-row {
+  border-top-color: color-mix(in srgb, var(--tc, var(--ink)) 15%, var(--line));
+}
+
+.infobox-tinted .infobox-key {
+  background: color-mix(in srgb, var(--tc, var(--ink)) 6%, var(--paper));
+  border-right-color: color-mix(in srgb, var(--tc, var(--ink)) 15%, var(--line));
 }
 
 .cquote {

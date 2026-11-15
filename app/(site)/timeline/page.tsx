@@ -1,10 +1,11 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { Cover } from "@/components/cover";
+
 import { Reveal } from "@/components/reveal";
 import { getTimeline } from "@/lib/db";
 import { TYPE_MAP } from "@/site.config";
 import { cn } from "@/lib/utils";
+import { FourBar } from "@/components/primary-bits";
 
 export const metadata: Metadata = {
   title: "年表",
@@ -19,7 +20,7 @@ export default function TimelinePage() {
     <div className="mx-auto max-w-[1100px] px-5 sm:px-8">
       <header className="pb-12 pt-12 sm:pt-16">
         <p className="meta mb-4 flex items-center gap-3">
-          <span className="inline-block h-px w-8 bg-line-strong" />
+          <FourBar className="h-1 w-8 shrink-0" />
           Chronology
         </p>
         <h1 className="font-display text-[54px] leading-none tracking-[-0.04em] text-ink sm:text-[84px]">
@@ -38,7 +39,10 @@ export default function TimelinePage() {
         <span className="absolute left-[3px] top-10 hidden h-[calc(100%-2.5rem)] w-px bg-line md:left-1/2 md:block" />
 
         {timeline.map((group) => (
-          <section key={group.year} className="mb-4">
+          <section
+            key={group.year}
+            className="mb-4 [content-visibility:auto] [contain-intrinsic-size:auto_600px]"
+          >
             <div className="relative mb-6 flex items-center md:justify-center">
               <h2 className="font-display text-[60px] leading-none tracking-[-0.04em] text-ink sm:text-[88px]">
                 {group.year === 0 ? "—" : group.year}
@@ -56,10 +60,10 @@ export default function TimelinePage() {
                   <Reveal
                     key={work.id}
                     delay={(index % 6) * 45}
-                    className="relative pl-6 md:pl-0"
+                    className="group relative pl-6 md:pl-0"
                   >
                     <span
-                      className="absolute left-0 top-4 h-[7px] w-[7px] -translate-x-[3px] rounded-full md:left-1/2 md:-translate-x-1/2"
+                      className="absolute left-0 top-4 h-[7px] w-[7px] -translate-x-[3px] rounded-full transition-transform duration-300 group-hover:scale-[1.9] md:left-1/2 md:-translate-x-1/2"
                       style={{ backgroundColor: type?.color }}
                     />
                     <Link
@@ -74,13 +78,21 @@ export default function TimelinePage() {
                         className="w-12 shrink-0 overflow-hidden rounded-[var(--radius-card)] bg-mist"
                         style={{ aspectRatio: "0.72" }}
                       >
-                        <Cover
-                          src={work.cover}
-                          fallbackSrc={work.coverRemote}
-                          title={work.title}
-                          type={work.type}
-                          className="h-full w-full"
-                        />
+                        {work.cover ? (
+                          // Plain <img> on purpose: 703 client-side <Cover>
+                          // components serialise into the RSC payload and were
+                          // the bulk of this page's 4 MB of flight data.
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={`${work.cover}?w=240`}
+                            alt=""
+                            width={48}
+                            height={67}
+                            loading="lazy"
+                            decoding="async"
+                            className="h-full w-full object-cover"
+                          />
+                        ) : null}
                       </div>
                       <span className="min-w-0 flex-1">
                         <span className="block text-[17px] leading-snug text-ink">

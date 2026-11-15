@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { ArrowRight, Dices } from "lucide-react";
 import { Cover } from "@/components/cover";
 import { DrawKeyHint } from "@/components/draw-key-hint";
+import { FourDots } from "@/components/primary-bits";
 import { Rating } from "@/components/rating";
 import { getRandomWork, getStats } from "@/lib/db";
 import { STATUS_META, TYPE_MAP } from "@/site.config";
@@ -29,7 +30,10 @@ export default async function DrawPage({ searchParams }: PageProps) {
   return (
     <div className="mx-auto max-w-[1440px] px-5 sm:px-8">
       <div className="flex items-baseline justify-between border-b border-line py-4">
-        <span className="label-bar">Draw</span>
+        <span className="label-bar">
+          <FourDots />
+          Draw
+        </span>
         <span className="meta">
           {wantsWishlist
             ? `从 ${stats.byStatus.wish} 件「想接触」里抽`
@@ -71,7 +75,7 @@ export default async function DrawPage({ searchParams }: PageProps) {
                 <div className="text-right">
                   <p className="meta">Rating</p>
                   <div className="mt-1 flex justify-end">
-                    <Rating value={work.rating} />
+                    <Rating value={work.rating} color={TYPE_MAP[work.type]?.color} />
                   </div>
                 </div>
               </div>

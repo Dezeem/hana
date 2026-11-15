@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  /**
+   * Lets a production build run beside an active `next dev` without the two
+   * processes fighting over `.next` (which corrupts route chunks):
+   *   NEXT_DIST_DIR=.next-build npm run build
+   */
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   // Standalone output keeps the Docker image small and self-contained.
   output: "standalone",
   poweredByHeader: false,
