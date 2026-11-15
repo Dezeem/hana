@@ -76,9 +76,9 @@ export default async function TimelinePage({ searchParams }: PageProps) {
           <FourBar className="h-1 w-8 shrink-0" />
           Chronology
         </p>
-        <h1 className="font-display text-[54px] leading-none tracking-[-0.04em] text-ink sm:text-[84px]">
+        <h1 className="font-serif text-[54px] font-medium leading-none tracking-[-0.01em] text-ink sm:text-[84px]">
           按年
-          <span className="ml-4 align-baseline text-[16px] not-italic tracking-[0.08em] text-ink-faint">
+          <span className="ml-4 align-baseline font-display text-[16px] not-italic tracking-[0.08em] text-ink-faint">
             BY YEAR
           </span>
         </h1>

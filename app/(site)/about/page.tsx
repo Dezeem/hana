@@ -20,7 +20,7 @@ export default function AboutPage() {
           <FourBar className="h-1 w-8 shrink-0" />
           Colophon
         </p>
-        <h1 className="max-w-2xl font-display text-[46px] leading-[1.05] tracking-[-0.04em] text-ink sm:text-[76px]">
+        <h1 className="max-w-2xl font-serif text-[46px] font-medium leading-[1.12] tracking-[-0.01em] text-ink sm:text-[76px]">
           {site.about.heading}
         </h1>
       </header>

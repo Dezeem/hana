@@ -11,6 +11,12 @@ type WorkCardProps = {
   work: Work;
   variant?: "masonry" | "grid" | "list" | "rail";
   eager?: boolean;
+  /**
+   * Force every cover into the same portrait frame. Multi-column walls need
+   * this: mixed cover ratios leave columns of wildly different lengths, and the
+   * last row ends up ragged with a hole above the next section.
+   */
+  uniform?: boolean;
 };
 
 function TypeMark({ type }: { type: Work["type"] }) {
@@ -26,7 +32,7 @@ function TypeMark({ type }: { type: Work["type"] }) {
   );
 }
 
-export function WorkCard({ work, variant = "masonry", eager }: WorkCardProps) {
+export function WorkCard({ work, variant = "masonry", eager, uniform }: WorkCardProps) {
   if (variant === "list") {
     return (
       <Link
@@ -74,7 +80,7 @@ export function WorkCard({ work, variant = "masonry", eager }: WorkCardProps) {
     >
       <div
         className="relative mb-4 overflow-hidden rounded-[var(--radius-card)] border border-line bg-mist transition-colors duration-300 group-hover:border-[var(--tc)]"
-        style={{ aspectRatio: aspect(work.coverRatio) }}
+        style={{ aspectRatio: uniform ? "4 / 5" : aspect(work.coverRatio) }}
       >
         <Cover
           src={work.cover}

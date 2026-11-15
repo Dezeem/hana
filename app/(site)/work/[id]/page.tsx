@@ -16,7 +16,7 @@ type PageProps = { params: Promise<{ id: string }> };
 
 function SectionHead({ no, zh, en }: { no: string; zh: string; en: string }) {
   return (
-    <div className="flex items-baseline gap-4 border-b border-line pb-2">
+    <div className="sticky top-24 z-10 flex items-baseline gap-4 border-b border-line bg-paper pb-2 pt-3">
       <span className="num text-[13px] text-ink-faint">{no}</span>
       <h2 className="text-[22px] font-semibold tracking-[-0.01em] text-ink">{zh}</h2>
       <span className="meta ml-auto">{en}</span>
@@ -103,8 +103,14 @@ export default async function WorkPage({ params }: PageProps) {
                   sizes="(max-width: 640px) 92vw, (max-width: 1024px) 45vw, 520px"
                   className="h-full w-full"
                 />
-                <span className="pointer-events-none absolute left-0 top-0 bg-paper/90 px-2.5 py-1 backdrop-blur-sm">
+                {/* narrow screens keep the horizontal badge; wide ones get the spine */}
+                <span className="pointer-events-none absolute left-0 top-0 bg-paper/90 px-2.5 py-1 backdrop-blur-sm sm:hidden">
                   <span className="specimen-no">No.{work.no}</span>
+                </span>
+                <span className="vertical-rl pointer-events-none absolute right-0 top-0 hidden h-full border-l border-line bg-paper/90 px-2 py-3 backdrop-blur-sm sm:block">
+                  <span className="specimen-no text-[12px] tracking-[0.3em]">
+                    No.{work.no} — {work.year ?? "—"}
+                  </span>
                 </span>
               </div>
 
@@ -173,7 +179,7 @@ export default async function WorkPage({ params }: PageProps) {
               <span className="h-px flex-1" style={{ backgroundColor: type?.color, opacity: 0.35 }} />
             </div>
 
-            <h1 className="mt-5 font-display text-[44px] leading-[1.02] tracking-[-0.04em] text-ink sm:text-[76px]">
+            <h1 className="mt-5 font-serif text-[44px] font-medium leading-[1.04] tracking-[-0.01em] text-ink sm:text-[76px]">
               {work.title}
             </h1>
             <div

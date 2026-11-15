@@ -67,6 +67,7 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
   const search = useCallback((value: string) => {
     if (value.trim().length < 1) {
       setHits([]);
+      setLoading(false);
       return;
     }
 
@@ -75,26 +76,37 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
     const request = new AbortController();
     controller.current = request;
 
-    setLoading(true);
-    setFailed(false);
-    fetch(`/api/search?q=${encodeURIComponent(value)}&limit=8`, { signal: request.signal })
-      .then((response) => {
-        if (!response.ok) throw new Error(`search responded ${response.status}`);
-        return response.json() as Promise<{ results?: Hit[] }>;
-      })
-      .then((data) => {
-        setHits(data.results ?? []);
-        setActive(0);
-      })
-      .catch((error: Error) => {
-        if (error.name === "AbortError") return;
-        console.error("[search] request failed", error);
-        setHits([]);
-        setFailed(true);
-      })
-      .finally(() => {
-        if (!request.signal.aborted) setLoading(false);
-      });
+    const run = (attempt: number) => {
+      setLoading(true);
+      setFailed(false);
+
+      fetch(`/api/search?q=${encodeURIComponent(value)}&limit=8`, { signal: request.signal })
+        .then((response) => {
+          if (!response.ok) throw new Error(`search responded ${response.status}`);
+          return response.json() as Promise<{ results?: Hit[] }>;
+        })
+        .then((data) => {
+          if (request.signal.aborted) return;
+          setHits(data.results ?? []);
+          setActive(0);
+          setLoading(false);
+        })
+        .catch((error: Error) => {
+          if (error.name === "AbortError") return;
+          // Dev servers can 500 while they compile the route; one quiet retry
+          // is cheaper than asking the reader to type the query again.
+          if (attempt === 0 && !request.signal.aborted) {
+            window.setTimeout(() => run(1), 600);
+            return;
+          }
+          console.error("[search] request failed", error);
+          setHits([]);
+          setFailed(true);
+          setLoading(false);
+        });
+    };
+
+    run(0);
   }, []);
 
   useEffect(() => {
@@ -186,7 +198,7 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
           <p className="mt-10 text-center text-[15px] text-ink-soft">
             {failed
               ? "检索请求没有成功返回。稍等一秒再输入一次，或到搜索页重试。"
-              : `没有找到「${query}」。试试更短的关键词，或者去作品库按标签浏览。`}
+              : `没有找到「${query}」。试试更短的关键词，或者去清单按标签浏览。`}
           </p>
         ) : null}
 
