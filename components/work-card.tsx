@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Quote } from "lucide-react";
 import { TYPE_MAP } from "@/site.config";
 import type { Work } from "@/lib/db/types";
-import { aspect, cn, ratingText, workMetaLine } from "@/lib/utils";
+import { aspect, cn, ratingText, workFactsLine, workMetaLine } from "@/lib/utils";
 import { Cover } from "./cover";
 import { Rating } from "./rating";
 
@@ -51,7 +51,7 @@ export function WorkCard({ work, variant = "masonry", eager }: WorkCardProps) {
           </span>
         </span>
         <span className="hidden max-w-[280px] flex-1 truncate text-[16px] text-ink-faint lg:block">
-          {work.review || work.summary}
+          {work.review || work.summary || workFactsLine(work)}
         </span>
         <span className="hidden shrink-0 sm:block">
           <Rating value={work.rating} color={TYPE_MAP[work.type]?.color} />
@@ -125,7 +125,7 @@ export function WorkCard({ work, variant = "masonry", eager }: WorkCardProps) {
       </div>
 
       <p className="mt-2 line-clamp-2 max-h-0 overflow-hidden text-[16px] leading-relaxed text-ink-soft opacity-0 transition-all duration-300 group-hover:max-h-14 group-hover:opacity-100">
-        {work.review || work.summary}
+        {work.review || work.summary || workFactsLine(work)}
       </p>
     </Link>
   );

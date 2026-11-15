@@ -38,8 +38,16 @@ const FROM_SUBJECTS = flag("from-subjects");
 const LIMIT = Number(argv.find((a) => a.startsWith("--limit="))?.split("=")[1] ?? 0);
 const SOURCE = argv.find((a) => !a.startsWith("--")) ?? path.join("data", "import");
 
-/** canonical `medium` → Hana `works.type`. Unsupported media are counted, not coerced. */
+/**
+ * canonical `medium` → the shape used while reading a subject. `series` still
+ * exists here so tv pages keep their 集数/首播 handling; it is folded into
+ * `movie` only when the row is written (see HANA_TYPE).
+ */
 const MEDIUM_MAP = { movie: "movie", tv: "series", book: "book", music: "music" };
+
+/** Hana ships films, books and albums — tv is archived as a film. */
+const HANA_TYPE = { movie: "movie", series: "movie", book: "book", music: "music" };
+const hanaType = (type) => HANA_TYPE[type] ?? type;
 
 const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36";
@@ -131,6 +139,16 @@ function fieldFrom(revisions, key) {
     return fields[key];
   }
   return undefined;
+}
+
+/**
+ * The synopsis is not part of `info`; canonical keeps it under `intro` and
+ * sometimes `summary`. Reading it here is what makes the archive's 简介 column
+ * worth having instead of writing an empty string on every row.
+ */
+function introOf(revisions) {
+  const raw = fieldFrom(revisions, "intro") ?? fieldFrom(revisions, "summary");
+  return typeof raw === "string" ? raw.trim() : "";
 }
 
 /** `cover_url` is digest-exempt and explicitly "not guaranteed to be latest". */
@@ -424,6 +442,7 @@ for await (const record of readRecords(subjectsFile)) {
     title: upstreamDeleted ? null : fieldFrom(revisions, "title"),
     aliases: Array.isArray(aliases) ? aliases : [],
     info: info && typeof info === "object" ? info : null,
+    intro: upstreamDeleted ? "" : introOf(revisions),
     cover: latestCover(revisions),
     rawMeta: fieldFrom(revisions, "raw_meta"),
     observedAt: newestTimestamp(revisions),
@@ -474,14 +493,14 @@ if (marks) {
     const markedAt = fieldFrom(revisions, "marked_at");
 
     rows.push({
-      type: subject.type,
+      type: hanaType(subject.type),
       ...headingOf(subject, title),
       creator: creatorOf(subject.type, subject.info, subject.aliases, subject.rawMeta),
       year: yearOf(subject.type, subject.info, subject.rawMeta),
       cover: "",
       cover_remote: subject.cover,
       cover_ratio: 0.72,
-      summary: "",
+      summary: subject.intro ?? "",
       review: typeof comment === "string" ? comment : "",
       rating: Number.isInteger(rating) ? rating : null,
       status,
@@ -500,14 +519,14 @@ if (marks) {
     const title = typeof subject.title === "string" ? subject.title.trim() : "";
     if (!title) continue;
     rows.push({
-      type: subject.type,
+      type: hanaType(subject.type),
       ...headingOf(subject, title),
       creator: creatorOf(subject.type, subject.info, subject.aliases, subject.rawMeta),
       year: yearOf(subject.type, subject.info, subject.rawMeta),
       cover: "",
       cover_remote: subject.cover,
       cover_ratio: 0.72,
-      summary: "",
+      summary: subject.intro ?? "",
       review: "",
       rating: null,
       status: "done",

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Plus } from "lucide-react";
 import { AdminNav } from "@/components/admin/admin-nav";
 import { requireAdmin } from "@/lib/auth/session";
-import { getStats, listWorks } from "@/lib/db";
+import { getStats, listTags, listWorks, listWorksForAdmin } from "@/lib/db";
 import { DATA_DIR, DB_FILE, hasFts } from "@/lib/db/client";
 import { WORK_TYPES } from "@/site.config";
 import { formatDate } from "@/lib/utils";
@@ -19,6 +19,9 @@ export default async function AdminDashboard() {
   const stats = getStats();
   const recent = listWorks({ limit: 8 });
   const featuredCount = listWorks({ featuredOnly: true, limit: 100 }).total;
+  const tags = listTags().slice(0, 12);
+  const pendingNotes = listWorksForAdmin({ unreviewed: true, limit: 1 }).total;
+  const missingTags = listWorksForAdmin({ untagged: true, limit: 1 }).total;
 
   return (
     <>
@@ -27,9 +30,9 @@ export default async function AdminDashboard() {
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
             <p className="meta mb-3">Dashboard</p>
-            <h1 className="font-display text-[30px] leading-none text-ink">藏品概览</h1>
+            <h1 className="font-display text-[30px] leading-none text-ink">作品概览</h1>
             <p className="mt-3 text-[16px] text-ink-soft">
-              共 {stats.total} 件藏品，其中 {featuredCount} 件被选为首页展品。
+              共 {stats.total} 件作品，{featuredCount} 件被放上首页。
             </p>
           </div>
           <div className="flex gap-3">
@@ -40,7 +43,7 @@ export default async function AdminDashboard() {
           </div>
         </div>
 
-        <div className="mt-10 grid grid-cols-2 gap-px border border-line bg-line sm:grid-cols-4">
+        <div className="mt-10 grid grid-cols-2 gap-px border border-line bg-line sm:grid-cols-3">
           {WORK_TYPES.map((type) => (
             <div key={type.key} className="bg-paper p-5">
               <div className="flex items-center gap-2">
@@ -60,11 +63,32 @@ export default async function AdminDashboard() {
           ))}
         </div>
 
+        <div className="mt-6 flex flex-wrap items-center gap-x-8 gap-y-3 border border-line px-5 py-4">
+          <span className="meta">待维护</span>
+          <Link
+            href="/admin/works?unreviewed=1"
+            className="group inline-flex items-baseline gap-2 text-[15px] text-ink-soft transition-colors hover:text-ink"
+          >
+            待写短评
+            <span className="num text-[20px] text-ink">{pendingNotes}</span>
+          </Link>
+          <Link
+            href="/admin/works?untagged=1"
+            className="group inline-flex items-baseline gap-2 text-[15px] text-ink-soft transition-colors hover:text-ink"
+          >
+            没有标签
+            <span className="num text-[20px] text-ink">{missingTags}</span>
+          </Link>
+          <Link href="/admin/works/new" className="meta ml-auto underlink text-ink-soft hover:text-ink">
+            继续录入 →
+          </Link>
+        </div>
+
         <section className="mt-14">
           <div className="flex items-baseline justify-between border-b border-line pb-3">
             <h2 className="meta text-ink">最近收录</h2>
             <Link href="/admin/works" className="meta underlink text-ink-soft hover:text-ink">
-              全部藏品 →
+              全部作品 →
             </Link>
           </div>
 
@@ -110,7 +134,35 @@ export default async function AdminDashboard() {
 
           {!recent.items.length ? (
             <p className="py-16 text-center text-[16px] text-ink-soft">
-              还没有藏品，点右上角「新建作品」开始。
+              还没有作品，点右上角「新建」开始。
+            </p>
+          ) : null}
+        </section>
+
+        <section className="mt-14">
+          <div className="flex items-baseline justify-between border-b border-line pb-3">
+            <h2 className="meta text-ink">标签索引</h2>
+            <Link href="/admin/works" className="meta underlink text-ink-soft hover:text-ink">
+              去作品管理 →
+            </Link>
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            {tags.map((item) => (
+              <Link
+                key={item.tag}
+                href={`/admin/works?tag=${encodeURIComponent(item.tag)}`}
+                className="inline-flex items-center gap-2 rounded-full border border-line px-3 py-1 text-[13px] text-ink-soft transition-colors hover:border-ink hover:text-ink"
+              >
+                {item.tag}
+                <span className="num text-[11px] text-ink-faint">{item.count}</span>
+              </Link>
+            ))}
+          </div>
+
+          {!tags.length ? (
+            <p className="mt-4 text-[15px] text-ink-soft">
+              还没有标签。打开任意一件作品，在「标签」里补上纪录片、剧集这类形态吧。
             </p>
           ) : null}
         </section>

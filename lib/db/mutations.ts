@@ -116,10 +116,15 @@ export function setFeatured(id: number, featured: boolean): void {
   ]);
 }
 
-/** Bulk status change and tag add/remove, applied in one transaction. */
+/** Bulk status/type change and tag add/remove, applied in one transaction. */
 export function bulkUpdate(
   ids: number[],
-  patch: { status?: WorkStatus; addTags?: string[]; removeTags?: string[] },
+  patch: {
+    status?: WorkStatus;
+    type?: WorkType;
+    addTags?: string[];
+    removeTags?: string[];
+  },
 ): void {
   if (!ids.length) return;
   transaction(() => {
@@ -133,12 +138,12 @@ export function bulkUpdate(
       if (patch.removeTags?.length) {
         tags = tags.filter((tag) => !patch.removeTags?.includes(tag));
       }
-      run("UPDATE works SET status = COALESCE(?, status), tags = ?, updated_at = ? WHERE id = ?", [
-        patch.status ?? null,
-        normalizeTags(tags),
-        now(),
-        id,
-      ]);
+      run(
+        `UPDATE works SET status = COALESCE(?, status), type = COALESCE(?, type),
+           tags = ?, updated_at = ?
+         WHERE id = ?`,
+        [patch.status ?? null, patch.type ?? null, normalizeTags(tags), now(), id],
+      );
     }
   });
 }

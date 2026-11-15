@@ -29,12 +29,12 @@ export default async function LoginPage({ searchParams }: PageProps) {
         <div className="w-full max-w-sm">
           <p className="meta mb-4">Curator access</p>
           <h1 className="font-display text-[32px] leading-tight text-ink">
-            这是你的标本室，
+            欢迎回来，
             <br />
             请出示钥匙。
           </h1>
           <p className="mt-4 mb-10 text-[16px] leading-relaxed text-ink-soft">
-            访客无需登录即可浏览全部藏品；只有站长需要密码来录入与编辑。
+            访客不用登录就能看全部作品；只有站长需要密码来录入和编辑。
           </p>
 
           <LoginForm next={next} />

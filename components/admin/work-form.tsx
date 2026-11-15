@@ -9,6 +9,7 @@ import type { DoubanDraft } from "@/lib/douban/types";
 import { STATUS_META, WORK_TYPES, type WorkStatus, type WorkType } from "@/site.config";
 import { cn } from "@/lib/utils";
 import { DoubanImport } from "./douban-import";
+import { TagInput } from "./tag-input";
 
 type Values = {
   type: WorkType;
@@ -78,7 +79,14 @@ function SubmitBar({ isEdit }: { isEdit: boolean }) {
   );
 }
 
-export function WorkForm({ work }: { work?: Work | null }) {
+export function WorkForm({
+  work,
+  tagOptions = [],
+}: {
+  work?: Work | null;
+  /** Real tags already used in the archive, most frequent first. */
+  tagOptions?: string[];
+}) {
   const [state, formAction] = useActionState<SaveState, FormData>(saveWork, { ok: false });
   const [values, setValues] = useState<Values>(() => initialValues(work));
 
@@ -266,16 +274,18 @@ export function WorkForm({ work }: { work?: Work | null }) {
             </div>
           </div>
 
-          <label className="sm:col-span-2">
-            <span className="meta mb-2 block">标签（逗号分隔）</span>
-            <input
-              name="tags"
+          <div className="sm:col-span-2">
+            <span className="meta mb-2 block">标签</span>
+            <TagInput
               value={values.tags}
-              onChange={(event) => set("tags", event.target.value)}
-              placeholder="台湾新电影, 青春, 长镜头"
-              className="field"
+              onChange={(next) => set("tags", next)}
+              suggestions={tagOptions}
             />
-          </label>
+            <input type="hidden" name="tags" value={values.tags} />
+            <p className="meta mt-2">
+              下面是从现有作品里挑出的高频标签，点一下就能复用；纪录片这类形态也记在这里。
+            </p>
+          </div>
 
           <label className="sm:col-span-2">
             <span className="meta mb-2 block">短评</span>
@@ -367,7 +377,7 @@ export function WorkForm({ work }: { work?: Work | null }) {
                 onChange={(event) => set("featured", event.target.checked)}
                 className="h-3.5 w-3.5 accent-ink"
               />
-              <span className="text-[15px] text-ink-soft">在首页「精选展品」中展示</span>
+              <span className="text-[15px] text-ink-soft">在首页「推荐」中展示</span>
             </label>
           </div>
         </div>

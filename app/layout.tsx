@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   description: site.description,
   applicationName: site.name,
   authors: [{ name: site.owner }],
-  keywords: ["个人收藏", "书影音", "作品档案", "豆瓣", "视觉档案"],
+  keywords: ["书影音清单", "个人记录", "电影", "书籍", "音乐", "豆瓣"],
   openGraph: {
     type: "website",
     locale: "zh_CN",

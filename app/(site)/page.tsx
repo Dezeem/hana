@@ -7,8 +7,31 @@ import { Rating } from "@/components/rating";
 import { Reveal } from "@/components/reveal";
 import { WorkCard } from "@/components/work-card";
 import { getDailyPick, getStats, listWorks } from "@/lib/db";
+import type { Work } from "@/lib/db/types";
 import { aspect, formatDate, typeLabel, workMetaLine } from "@/lib/utils";
 import { site, STATUS_META, TYPE_MAP } from "@/site.config";
+
+/** Spec band cells come from what the row actually holds — no empty placeholders. */
+function dailySpecCells(work: Work): { label: string; value: string }[] {
+  const cells: { label: string; value: string }[] = [
+    { label: "类型", value: typeLabel(work.type) },
+    { label: "年份", value: work.year ? String(work.year) : "—" },
+    { label: "状态", value: STATUS_META[work.status].zh },
+  ];
+
+  const { meta } = work;
+  if (meta.director?.length) cells.push({ label: "导演", value: meta.director.join(" / ") });
+  if (meta.artist) cells.push({ label: "表演者", value: meta.artist });
+  if (meta.region) cells.push({ label: "地区", value: meta.region });
+  if (meta.runtime) cells.push({ label: "片长", value: meta.runtime });
+  if (meta.publisher) cells.push({ label: "出版", value: meta.publisher });
+  if (meta.pages) cells.push({ label: "页数", value: `${meta.pages} 页` });
+
+  cells.push({ label: "收藏日", value: formatDate(work.finishedOn ?? work.createdAt) || "—" });
+  cells.push({ label: "编号", value: work.no });
+
+  return cells.slice(0, 6);
+}
 
 export default async function HomePage() {
   const stats = getStats();
@@ -21,19 +44,7 @@ export default async function HomePage() {
   const latest = listWorks({ sort: "collected", limit: 5 }).items;
 
   const dailyColor = daily ? TYPE_MAP[daily.type]?.color : undefined;
-  const dailySpecs = daily
-    ? [
-        { label: "类型", value: typeLabel(daily.type) },
-        { label: "年份", value: daily.year ? String(daily.year) : "—" },
-        { label: "状态", value: STATUS_META[daily.status].zh },
-        {
-          label: "豆瓣评分",
-          value: daily.doubanRating !== null ? daily.doubanRating.toFixed(1) : "—",
-        },
-        { label: "收藏日", value: formatDate(daily.finishedOn ?? daily.createdAt) || "—" },
-        { label: "编号", value: daily.no },
-      ]
-    : [];
+  const dailySpecs = daily ? dailySpecCells(daily) : [];
 
   return (
     <div>
@@ -42,14 +53,14 @@ export default async function HomePage() {
         <FourBar />
         <div className="grid grid-cols-12 items-start gap-x-8 gap-y-14 border-b border-line pb-16 pt-12 sm:pt-16">
           <div className="col-span-12 lg:col-span-7">
-            <span className="label-bar">Private archive</span>
+            <span className="label-bar">Personal list</span>
 
             <h1 className="mt-8 text-[clamp(42px,8.2vw,118px)] font-semibold leading-[0.94] tracking-[-0.045em]">
-              把看过的，
+              看过的，
               <br />
-              <span style={{ color: "var(--c-movie)" }}>压进</span>
-              <span style={{ color: "var(--c-series)" }}>标</span>
-              <span style={{ color: "var(--c-book)" }}>本</span>册。
+              <span style={{ color: "var(--c-movie)" }}>都</span>
+              <span style={{ color: "var(--c-series)" }}>记</span>
+              <span style={{ color: "var(--c-book)" }}>在</span>这里。
             </h1>
 
             <p className="mt-9 max-w-[36rem] text-[18px] leading-[1.85] text-ink-soft sm:text-[19px]">
@@ -58,13 +69,13 @@ export default async function HomePage() {
 
             <div className="mt-10 flex flex-wrap items-center gap-5">
               <Link href="/library" className="btn">
-                翻阅藏品
+                翻清单
               </Link>
               <Link
                 href="/timeline"
                 className="text-[15px] font-medium uppercase tracking-[0.08em] underline decoration-2 underline-offset-4"
               >
-                按年份往回看
+                按年份看
               </Link>
             </div>
           </div>
@@ -127,7 +138,7 @@ export default async function HomePage() {
                   key={index}
                   className="meta flex items-center gap-6 whitespace-nowrap pr-6 !text-ink-soft"
                 >
-                  <span>标本册 · Specimen room</span>
+                  <span>清单 · The list</span>
                   <span className="opacity-40">◆</span>
                   <span>{String(index + 1).padStart(3, "0")}</span>
                   <span className="opacity-40">◆</span>
@@ -152,23 +163,23 @@ export default async function HomePage() {
       <section className="mx-auto max-w-[1440px] px-5 sm:px-8">
         <div className="grid grid-cols-12 gap-x-8 gap-y-10 border-b border-line py-12">
           <div className="col-span-12 md:col-span-3">
-            <div className="infobox">
+            <div className="infobox infobox-spectrum">
               <div className="infobox-head">
-                <span className="meta">Archive · 档案</span>
+                <span className="meta">At a glance · 概览</span>
                 <span className="num text-[11px] text-ink-soft">
                   {String(stats.total).padStart(3, "0")}
                 </span>
               </div>
               <div className="infobox-row">
                 <span className="infobox-key">名称</span>
-                <span className="infobox-val">标本册</span>
+                <span className="infobox-val">清单</span>
               </div>
               <div className="infobox-row">
                 <span className="infobox-key">主人</span>
                 <span className="infobox-val">{site.owner}</span>
               </div>
               <div className="infobox-row">
-                <span className="infobox-key">藏品</span>
+                <span className="infobox-key">作品</span>
                 <span className="infobox-val">
                   电影 {stats.byType.movie} · 书籍 {stats.byType.book} · 音乐{" "}
                   {stats.byType.music}
@@ -191,7 +202,7 @@ export default async function HomePage() {
             </div>
 
             <p className="mt-4 text-[15px] leading-[1.8] text-ink-soft">
-              三种藏品，三种原色。点任意一栏，只看这一类。
+              三种作品，三种原色。点任意一栏，只看这一类。
             </p>
           </div>
           <div className="col-span-12 md:col-span-9 lg:col-span-7 lg:col-start-6">
@@ -208,7 +219,7 @@ export default async function HomePage() {
               <FourDots />
               Today
             </span>
-            <span className="meta">每日一件 · 今天就是它，零点后换人</span>
+            <span className="meta">每日一件 · 今天就是它，零点后换一件</span>
           </div>
 
           <div className="mt-8 grid grid-cols-12 items-stretch gap-x-8 gap-y-6">
@@ -393,7 +404,7 @@ export default async function HomePage() {
 
         {!wallItems.length && !spotlight.length ? (
           <p className="py-28 text-center text-[17px] text-ink-soft">
-            标本册还是空的。登录后台，粘贴一个豆瓣链接开始吧。
+            这里还是空的。登录后台，粘一个豆瓣链接就能开始。
           </p>
         ) : null}
       </section>
@@ -402,12 +413,12 @@ export default async function HomePage() {
       <section className="mx-auto mt-20 max-w-[1440px] px-5 sm:px-8">
         <div className="grid grid-cols-12 items-start gap-8 border-t border-line pt-10">
           <p className="col-span-12 max-w-xl text-[16px] leading-[1.95] text-ink-soft md:col-span-7">
-            这里没有推荐算法，只有收藏日期和手写的短评。要指名道姓找一件，用顶部搜索；只想随便翻翻，就去
+            这里没有算法，只有收藏日期和手写的短评。想找具体某一件，用顶部搜索；只想随便看看，就去
             <Link
               href="/library"
               className="mx-1 underline decoration-2 underline-offset-4 hover:text-ink"
             >
-              藏品库
+              清单
             </Link>
             按类型、年份或标签筛一遍。
           </p>

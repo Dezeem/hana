@@ -91,7 +91,7 @@ export function KonamiEgg() {
           四种原色换了个位置。
         </p>
         <p className="mt-3 text-[16px] leading-[1.9] text-ink-soft">
-          这没有含义，只是让人知道：这份档案是人手工摆的，不是流水线生成的。
+          这没有含义，只是让人知道：这份清单是人手工摆的，不是流水线生成的。
         </p>
 
         <div className="mt-8 flex items-center justify-between border-t border-line pt-4">

@@ -57,9 +57,9 @@ export const TYPE_MAP: Record<WorkType, TypeMeta> = WORK_TYPES.reduce(
 export type WorkStatus = "done" | "doing" | "wish";
 
 export const STATUS_META: Record<WorkStatus, { zh: string; en: string }> = {
-  done: { zh: "已收藏", en: "Collected" },
+  done: { zh: "已完成", en: "Finished" },
   doing: { zh: "进行中", en: "In progress" },
-  wish: { zh: "想接触", en: "Wishlist" },
+  wish: { zh: "待开始", en: "Up next" },
 };
 
 export const site = {
@@ -67,26 +67,26 @@ export const site = {
   /** shown next to the logo, handwritten-feeling */
   nameZh: "花间",
   owner: "Hana",
-  title: "Hana — a private archive in primary colours",
-  tagline: "把看过的、读过的、听过的，一件件压进标本册。",
-  taglineEn: "A private archive of films, books and albums.",
+  title: "Hana — a private list in primary colours",
+  tagline: "一份按原色编号的私人清单。",
+  taglineEn: "Films, books and albums, kept in primary colours.",
   description:
-    "一个人的作品档案：电影、书籍与音乐各占一种原色，逐件编号；看过的、读过的、听过的，都收在这里。",
+    "一个人的电影、书和唱片。每件都有编号、年份，和一段写给自己的短评。",
   descriptionEn:
-    "Hana is a one-person archive for films, books and albums — numbered, classified and marked out in primary colours.",
+    "A one-person list of films, books and albums — numbered, dated and kept in primary colours.",
   email: "hello@hana.studio",
   nav: [
-    { href: "/library", label: "藏品", labelEn: "Library" },
-    { href: "/timeline", label: "年表", labelEn: "Timeline" },
-    { href: "/random", label: "抽签", labelEn: "Draw" },
+    { href: "/library", label: "清单", labelEn: "Index" },
+    { href: "/timeline", label: "按年", labelEn: "Years" },
+    { href: "/random", label: "随机", labelEn: "Shuffle" },
     { href: "/about", label: "关于", labelEn: "About" },
   ],
   about: {
-    heading: "关于这份档案",
+    heading: "关于这个站",
     paragraphs: [
-      "我习惯把看过的东西记下来。不是为了统计，而是因为记忆会风干——一部电影的某个镜头、一本书读到折角的那一页、一张专辑第三轨的贝斯，如果不写下来，几个月后就只剩一个模糊的好印象。",
-      "所以有了 Hana。它最初只是一本纸质笔记，用铅笔编号，贴上票根和书腰。搬到屏幕之后，我尽量保留那种手写档案的秩序：每件作品有一个编号，有类型、年份、创作者，以及一段属于我自己的短评。",
-      "这里的条目大多来自豆瓣的公开资料，封面与简介仅是索引；真正的内容是那些短评，它们不客观，也不打算客观。",
+      "我习惯把看过的东西记下来。不是为了统计，而是因为记忆会风干——一部电影的某个镜头、一本书读到折角的那一页、一张专辑第三轨的贝斯，当时觉得不会忘，几个月后只剩一个模糊的好印象。",
+      "所以有了这个站。它最早是一本纸质笔记，用铅笔编号，贴票根和书腰。搬到屏幕上之后，我尽量保留那种手写的秩序：每件作品一个编号，加上类型、年份、创作者，和一段属于我自己的短评。",
+      "条目大多取自豆瓣的公开资料，封面与简介只是索引；真正的内容是短评，它们不客观，也不打算客观。",
     ],
     colophon:
       "Built with Next.js, SQLite and a strict grid. Cover plates in the demo archive are generated procedurally. Public metadata is referenced from Douban for personal archival purposes only.",

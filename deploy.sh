@@ -47,7 +47,7 @@ case "${1:-start}" in
     read -r answer
     [ "$answer" = "yes" ] || { say "已取消。"; exit 0; }
     $COMPOSE down -v
-    say "数据卷已删除，下次启动会重新写入示例藏品。"
+    say "数据卷已删除，下次启动会重新写入示例作品。"
     exit 0
     ;;
   start)

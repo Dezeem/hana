@@ -207,7 +207,7 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
             </Link>
           ) : null}
           <Link href="/library" onClick={onClose} className="meta underlink text-ink-soft">
-            浏览全部藏品
+            浏览全部作品
           </Link>
         </p>
       </div>

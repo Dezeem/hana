@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 const SHORTCUTS: { keys: string; label: string }[] = [
   { keys: "⌘ K / Ctrl K", label: "打开搜索" },
   { keys: "/", label: "打开搜索" },
-  { keys: "R", label: "在抽签页再抽一件" },
+  { keys: "R", label: "在随机页再看一件" },
   { keys: "?", label: "显示这份清单" },
   { keys: "Esc", label: "关闭浮层" },
   { keys: "↑ ↑ ↓ ↓ ← → ← → B A", label: "隐藏版面" },

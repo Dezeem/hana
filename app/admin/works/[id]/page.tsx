@@ -5,7 +5,7 @@ import { AdminNav } from "@/components/admin/admin-nav";
 import { WorkForm } from "@/components/admin/work-form";
 import { deleteWorkAction } from "@/app/actions/works";
 import { requireAdmin } from "@/lib/auth/session";
-import { getWork } from "@/lib/db";
+import { getWork, listTags } from "@/lib/db";
 
 export const metadata: Metadata = {
   title: "编辑作品",
@@ -19,6 +19,7 @@ export default async function EditWorkPage({ params }: PageProps) {
   const { id } = await params;
   const work = getWork(Number(id));
   if (!work) notFound();
+  const tagOptions = listTags().slice(0, 24).map((item) => item.tag);
 
   return (
     <>
@@ -34,12 +35,12 @@ export default async function EditWorkPage({ params }: PageProps) {
           </Link>
         </div>
 
-        <WorkForm work={work} />
+        <WorkForm work={work} tagOptions={tagOptions} />
 
         <section className="mt-16 border border-movie/40 p-5">
           <h2 className="meta text-movie">Danger zone</h2>
           <p className="mt-3 text-[15px] leading-relaxed text-ink-soft">
-            删除后无法恢复。作品会从藏品库、年表和首页同时消失，但已下载的封面文件会保留在数据目录里。
+            删除后无法恢复。作品会从清单、按年和首页同时消失，但已下载的封面文件会保留在数据目录里。
           </p>
           <form action={deleteWorkAction} className="mt-4">
             <input type="hidden" name="id" value={work.id} />

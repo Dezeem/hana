@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 const LINKS = [
   { href: "/admin", label: "概览" },
-  { href: "/admin/works", label: "藏品" },
+  { href: "/admin/works", label: "作品" },
   { href: "/admin/works/new", label: "新建" },
 ];
 

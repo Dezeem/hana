@@ -47,7 +47,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
               defaultValue={query}
               placeholder="标题、导演、标签，或一句短评"
               autoFocus={!query}
-              aria-label="搜索藏品"
+              aria-label="搜索作品"
               className="w-full bg-transparent text-[26px] font-medium text-ink outline-none placeholder:text-ink-faint sm:text-[36px]"
             />
             <button type="submit" className="meta shrink-0 pb-1.5 text-ink-soft hover:text-ink">
@@ -59,7 +59,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
         <p className="mt-5 text-[16px] text-ink-soft">
           {query ? (
             <>
-              找到 <span className="num text-ink">{works.length}</span> 件与「{query}」相关的藏品
+              找到 <span className="num text-ink">{works.length}</span> 件与「{query}」相关的作品
             </>
           ) : (
             "输入关键词开始检索。标题、原名、创作者、标签、简介与短评都会被匹配。"

@@ -1,124 +1,151 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 
-import { Reveal } from "@/components/reveal";
-import { getTimeline } from "@/lib/db";
-import { TYPE_MAP } from "@/site.config";
-import { cn } from "@/lib/utils";
 import { FourBar } from "@/components/primary-bits";
+import { TimelineFeed } from "@/components/timeline-feed";
+import { getTimelineBounds, getTimelinePage } from "@/lib/db";
+import { cn, workFactsLine } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "年表",
-  description: "按作品年份排列的个人观看与阅读史。",
+  title: "按年",
+  description: "把作品按年份排开，看看这些年都看了什么。",
 };
 
-export default function TimelinePage() {
-  const timeline = getTimeline();
-  const total = timeline.reduce((sum, group) => sum + group.works.length, 0);
+/**
+ * `span` counts year groups including the newest one. 「最近一年」covers a
+ * rolling twelve months, which can straddle two calendar years — hence 2.
+ */
+const RANGES = [
+  { key: "1y", label: "最近一年", span: 2 },
+  { key: "3y", label: "近三年", span: 3 },
+  { key: "5y", label: "近五年", span: 5 },
+  { key: "10y", label: "近十年", span: 10 },
+  { key: "all", label: "全部年份", span: null },
+] as const;
+
+type Range = (typeof RANGES)[number];
+
+const DEFAULT_RANGE = RANGES[0].key;
+
+type PageProps = {
+  searchParams: Promise<{ range?: string | string[] }>;
+};
+
+function rangeHref(range: Range): string {
+  return range.key === DEFAULT_RANGE ? "/timeline" : `/timeline?range=${range.key}`;
+}
+
+export default async function TimelinePage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const requested = typeof params.range === "string" ? params.range : "";
+  const active = RANGES.find((range) => range.key === requested) ?? RANGES[0];
+
+  const bounds = getTimelineBounds();
+  const anchor = bounds.to ?? new Date().getFullYear();
+  const since = active.span === null ? null : anchor - (active.span - 1);
+
+  // First page is server-rendered; the rest arrives as the reader scrolls.
+  const { groups, nextCursor, rangeTotal } = getTimelinePage({ since, limit: 3 });
+
+  const initialGroups = groups.map((group) => ({
+    year: group.year,
+    works: group.works.map((work) => ({
+      id: work.id,
+      type: work.type,
+      title: work.title,
+      creator: work.creator,
+      year: work.year,
+      cover: work.cover,
+      summary: work.summary,
+      facts: workFactsLine(work),
+    })),
+  }));
+
+  const rangeFrom = since === null ? bounds.from : Math.max(since, bounds.from ?? since);
+  const rangeLabel =
+    rangeFrom && bounds.to
+      ? rangeFrom === bounds.to
+        ? `${bounds.to}`
+        : `${rangeFrom} – ${bounds.to}`
+      : "—";
 
   return (
     <div className="mx-auto max-w-[1100px] px-5 sm:px-8">
-      <header className="pb-12 pt-12 sm:pt-16">
+      <header className="pb-10 pt-12 sm:pt-16">
         <p className="meta mb-4 flex items-center gap-3">
           <FourBar className="h-1 w-8 shrink-0" />
           Chronology
         </p>
         <h1 className="font-display text-[54px] leading-none tracking-[-0.04em] text-ink sm:text-[84px]">
-          年表
+          按年
           <span className="ml-4 align-baseline text-[16px] not-italic tracking-[0.08em] text-ink-faint">
-            TIMELINE
+            BY YEAR
           </span>
         </h1>
         <p className="mt-6 max-w-lg text-[16px] leading-[1.9] text-ink-soft">
-          按作品本身的年份排列，而不是我遇见它的时间。{total} 件藏品散落在 {timeline.length} 个年份里，
-          越往上越接近此刻。
+          按作品本身的年份排开，而不是我遇见它的时间。先看最近一年，往下滚，更早的年份会自己接上来。
         </p>
+
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-y border-line py-3">
+          <nav className="flex flex-wrap items-center gap-2" aria-label="年份范围">
+            {RANGES.map((range) => {
+              const isActive = range.key === active.key;
+              return (
+                <Link
+                  key={range.key}
+                  href={rangeHref(range)}
+                  scroll={false}
+                  aria-current={isActive ? "page" : undefined}
+                  className={cn(
+                    "rounded-full border px-3.5 py-1.5 text-[13px] transition-colors",
+                    isActive
+                      ? "border-ink bg-ink text-paper"
+                      : "border-line text-ink-soft hover:border-ink hover:text-ink",
+                  )}
+                >
+                  {range.label}
+                </Link>
+              );
+            })}
+          </nav>
+
+          <p className="flex items-baseline gap-2 text-[13px] text-ink-soft">
+            <span className="num">{rangeLabel}</span>
+            <span className="opacity-40">·</span>
+            <span className="num">{rangeTotal} 件</span>
+            {active.span !== null ? (
+              <>
+                <span className="opacity-40">·</span>
+                <Link
+                  href={rangeHref(RANGES[RANGES.length - 1])}
+                  className="underline decoration-2 underline-offset-4 transition-colors hover:text-ink"
+                >
+                  全部 {bounds.total}
+                </Link>
+              </>
+            ) : null}
+          </p>
+        </div>
       </header>
 
       <div className="relative border-t border-line pt-10">
         <span className="absolute left-[3px] top-10 hidden h-[calc(100%-2.5rem)] w-px bg-line md:left-1/2 md:block" />
 
-        {timeline.map((group) => (
-          <section
-            key={group.year}
-            className="mb-4 [content-visibility:auto] [contain-intrinsic-size:auto_600px]"
-          >
-            <div className="relative mb-6 flex items-center md:justify-center">
-              <h2 className="font-display text-[60px] leading-none tracking-[-0.04em] text-ink sm:text-[88px]">
-                {group.year === 0 ? "—" : group.year}
-              </h2>
-              <span className="meta ml-4 md:absolute md:right-0">
-                {String(group.works.length).padStart(2, "0")} pieces
-              </span>
-            </div>
-
-            <div className="pb-14">
-              {group.works.map((work, index) => {
-                const type = TYPE_MAP[work.type];
-                const right = index % 2 === 1;
-                return (
-                  <Reveal
-                    key={work.id}
-                    delay={(index % 6) * 45}
-                    className="group relative pl-6 md:pl-0"
-                  >
-                    <span
-                      className="absolute left-0 top-4 h-[7px] w-[7px] -translate-x-[3px] rounded-full transition-transform duration-300 group-hover:scale-[1.9] md:left-1/2 md:-translate-x-1/2"
-                      style={{ backgroundColor: type?.color }}
-                    />
-                    <Link
-                      href={`/work/${work.id}`}
-                      className={cn(
-                        "group flex items-start gap-4 py-3 transition-colors md:w-[46%]",
-                        right ? "md:ml-auto md:pl-10" : "md:pr-10 md:text-right",
-                        right ? "" : "md:flex-row-reverse",
-                      )}
-                    >
-                      <div
-                        className="w-12 shrink-0 overflow-hidden rounded-[var(--radius-card)] bg-mist"
-                        style={{ aspectRatio: "0.72" }}
-                      >
-                        {work.cover ? (
-                          // Plain <img> on purpose: 703 client-side <Cover>
-                          // components serialise into the RSC payload and were
-                          // the bulk of this page's 4 MB of flight data.
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={`${work.cover}?w=240`}
-                            alt=""
-                            width={48}
-                            height={67}
-                            loading="lazy"
-                            decoding="async"
-                            className="h-full w-full object-cover"
-                          />
-                        ) : null}
-                      </div>
-                      <span className="min-w-0 flex-1">
-                        <span className="block text-[17px] leading-snug text-ink">
-                          {work.title}
-                        </span>
-                        <span className="mt-1 block text-[12px] text-ink-soft">
-                          {[work.creator, type?.zh].filter(Boolean).join(" · ")}
-                        </span>
-                        <span className="mt-2 line-clamp-2 max-h-0 overflow-hidden text-[15px] leading-relaxed text-ink-soft opacity-0 transition-all duration-300 group-hover:max-h-16 group-hover:opacity-100">
-                          {work.review || work.summary}
-                        </span>
-                      </span>
-                    </Link>
-                  </Reveal>
-                );
-              })}
-            </div>
-          </section>
-        ))}
+        {rangeTotal ? (
+          <TimelineFeed
+            key={active.key}
+            initialGroups={initialGroups}
+            initialCursor={nextCursor}
+            since={since}
+          />
+        ) : (
+          <p className="py-24 text-center text-[15px] text-ink-soft">
+            {bounds.total
+              ? "这个范围里还没有作品，换个范围看看。"
+              : "还没有任何作品，先去后台录入一件吧。"}
+          </p>
+        )}
       </div>
-
-      {!timeline.length ? (
-        <p className="py-24 text-center text-[15px] text-ink-soft">
-          还没有任何藏品，先去后台录入一件吧。
-        </p>
-      ) : null}
     </div>
   );
 }

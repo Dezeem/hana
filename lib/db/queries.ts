@@ -2,7 +2,15 @@ import { all, one } from "./client";
 import { parseTags, rowToWork, type Work, type WorkRow } from "./types";
 import type { WorkStatus, WorkType } from "@/site.config";
 
-export type SortKey = "recent" | "collected" | "rating" | "year" | "title" | "random";
+export type SortKey =
+  | "recent"
+  | "collected"
+  | "rating"
+  | "year"
+  | "title"
+  | "random"
+  | "updated"
+  | "created";
 
 export type WorkFilter = {
   types?: WorkType[];
@@ -17,6 +25,9 @@ export type WorkFilter = {
   unrated?: boolean;
   /** Only works that carry a written note. */
   reviewed?: boolean;
+  /** Admin upkeep: entries still waiting for a note or for any tag. */
+  unreviewed?: boolean;
+  untagged?: boolean;
   q?: string;
   sort?: SortKey;
   /** keyset cursor — only used by the `recent` ordering */
@@ -71,6 +82,8 @@ function buildWhere(filter: WorkFilter, withCursor: boolean) {
   }
   if (filter.unrated) clauses.push("rating IS NULL");
   if (filter.reviewed) clauses.push("review <> ''");
+  if (filter.unreviewed) clauses.push("review = ''");
+  if (filter.untagged) clauses.push("tags = ''");
   if (filter.featuredOnly) {
     clauses.push("featured = 1");
   }
@@ -103,6 +116,11 @@ function orderBy(sort: SortKey | undefined) {
       return "ORDER BY year IS NULL, year DESC, id DESC";
     case "title":
       return "ORDER BY title COLLATE NOCASE ASC";
+    case "updated":
+      // Editing is the admin's real "what changed lately" signal.
+      return "ORDER BY updated_at DESC, id DESC";
+    case "created":
+      return "ORDER BY created_at DESC, id DESC";
     case "random":
       return "ORDER BY RANDOM()";
     default:
@@ -135,6 +153,40 @@ export function listWorks(filter: WorkFilter = {}): ListResult {
     items,
     total: countRow?.c ?? items.length,
     nextCursor: hasMore ? items[items.length - 1].id : null,
+  };
+}
+
+/** Trims the columns the manage table never renders, keeping 40 rows light. */
+const ADMIN_COLUMNS = `id, type, title, original_title, creator, year, cover, cover_remote,
+  cover_ratio, substr(summary, 1, 160) AS summary, substr(review, 1, 160) AS review,
+  rating, status, tags, douban_id, douban_url, douban_rating, '{}' AS meta, featured,
+  finished_on, created_at, updated_at`;
+
+/**
+ * Admin listing: note excerpts included, meta dropped, offset paging.
+ * `listWorks` deliberately truncates these fields for the public pages; the
+ * manage table needs them to show whether an entry still lacks a note.
+ */
+export function listWorksForAdmin(filter: WorkFilter = {}): ListResult {
+  const limit = Math.min(Math.max(filter.limit ?? 40, 1), 200);
+  const offset = Math.max(filter.offset ?? 0, 0);
+  const sort = filter.sort ?? "updated";
+  const { sql: where, params } = buildWhere(filter, false);
+
+  const rows = all<WorkRow>(
+    `SELECT ${ADMIN_COLUMNS} FROM works ${where} ${orderBy(sort)} LIMIT ? OFFSET ?`,
+    [...params, limit, offset],
+  );
+
+  const countRow = one<{ c: number }>(
+    `SELECT COUNT(*) AS c FROM works ${where}`,
+    params,
+  );
+
+  return {
+    items: rows.map(rowToWork),
+    total: countRow?.c ?? rows.length,
+    nextCursor: null,
   };
 }
 
@@ -292,13 +344,31 @@ const TIMELINE_COLUMNS = `id, type, title, creator, year, cover, cover_remote, c
   substr(summary, 1, 90) AS summary, '' AS review,
   '' AS original_title, NULL AS rating, 'done' AS status, '' AS tags,
   '' AS douban_id, '' AS douban_url, NULL AS douban_rating,
-  '{}' AS meta, 0 AS featured, NULL AS finished_on,
+  meta, 0 AS featured, NULL AS finished_on,
   '' AS created_at, '' AS updated_at`;
 
-export function getTimeline(): { year: number; works: Work[] }[] {
-  const rows = all<WorkRow>(
-    `SELECT ${TIMELINE_COLUMNS} FROM works ORDER BY COALESCE(year, 0) DESC, id DESC`,
+/** Oldest/newest work year and the total count — anchors the timeline's ranges. */
+export function getTimelineBounds(): { from: number | null; to: number | null; total: number } {
+  const row = one<{ c: number; mn: number | null; mx: number | null }>(
+    `SELECT COUNT(*) AS c,
+       MIN(CASE WHEN year > 1800 THEN year END) AS mn,
+       MAX(CASE WHEN year > 1800 THEN year END) AS mx
+     FROM works`,
   );
+  return { from: row?.mn ?? null, to: row?.mx ?? null, total: row?.c ?? 0 };
+}
+
+export type TimelineGroup = { year: number; works: Work[] };
+
+export type TimelinePage = {
+  groups: TimelineGroup[];
+  /** Year to pass as `before` for the next page; null when the archive ends. */
+  nextCursor: number | null;
+  /** Works inside the chosen range — stable while the feed is scrolling. */
+  rangeTotal: number;
+};
+
+function groupByYear(rows: WorkRow[]): TimelineGroup[] {
   const groups = new Map<number, Work[]>();
   for (const row of rows) {
     const year = row.year ?? 0;
@@ -309,4 +379,61 @@ export function getTimeline(): { year: number; works: Work[] }[] {
   return [...groups.entries()]
     .sort((a, b) => b[0] - a[0])
     .map(([year, works]) => ({ year, works }));
+}
+
+/**
+ * One page of the timeline: `limit` whole year groups, newest first.
+ *
+ * The page never slices a year in half — a group is either shown completely
+ * or not at all — so the feed can keep appending without the year headings
+ * flickering. `before` is the cursor from the previous page, `since` clamps
+ * the range picked in the UI.
+ */
+export function getTimelinePage(
+  options: { since?: number | null; before?: number | null; limit?: number } = {},
+): TimelinePage {
+  const limit = Math.min(Math.max(options.limit ?? 3, 1), 12);
+  const since = options.since ?? null;
+  const before = options.before ?? null;
+
+  const clauses: string[] = [];
+  const params: number[] = [];
+  if (since !== null) {
+    clauses.push("COALESCE(year, 0) >= ?");
+    params.push(since);
+  }
+  if (before !== null) {
+    clauses.push("COALESCE(year, 0) < ?");
+    params.push(before);
+  }
+  const where = clauses.length ? `WHERE ${clauses.join(" AND ")}` : "";
+
+  const yearRows = all<{ year: number }>(
+    `SELECT DISTINCT COALESCE(year, 0) AS year FROM works ${where} ORDER BY year DESC LIMIT ${limit + 1}`,
+    params,
+  );
+  const hasMore = yearRows.length > limit;
+  const years = (hasMore ? yearRows.slice(0, limit) : yearRows).map((row) => row.year);
+
+  const groups = years.length
+    ? groupByYear(
+        all<WorkRow>(
+          `SELECT ${TIMELINE_COLUMNS} FROM works
+           WHERE COALESCE(year, 0) IN (${years.map(() => "?").join(",")})
+           ORDER BY COALESCE(year, 0) DESC, id DESC`,
+          years,
+        ),
+      )
+    : [];
+
+  const countRow = one<{ c: number }>(
+    `SELECT COUNT(*) AS c FROM works ${since !== null ? "WHERE COALESCE(year, 0) >= ?" : ""}`,
+    since !== null ? [since] : [],
+  );
+
+  return {
+    groups,
+    nextCursor: hasMore ? years[years.length - 1] : null,
+    rangeTotal: countRow?.c ?? 0,
+  };
 }

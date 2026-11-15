@@ -8,9 +8,9 @@ import { FourBar } from "./primary-bits";
 
 const ITEMS = [
   { href: "/", label: "首页", icon: Home },
-  { href: "/library", label: "藏品", icon: LayoutGrid },
-  { href: "/timeline", label: "年表", icon: ListOrdered },
-  { href: "/random", label: "抽签", icon: Dices },
+  { href: "/library", label: "清单", icon: LayoutGrid },
+  { href: "/timeline", label: "按年", icon: ListOrdered },
+  { href: "/random", label: "随机", icon: Dices },
   { href: "/about", label: "关于", icon: Info },
 ];
 

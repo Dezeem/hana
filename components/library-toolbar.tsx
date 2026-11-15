@@ -82,7 +82,7 @@ export function LibraryToolbar({ query, total }: Props) {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-[16px] text-ink-soft">
           <span className="num mr-1.5 font-display text-[26px] italic text-ink">{total}</span>
-          件藏品
+          件作品
         </p>
 
         <div className="flex items-center gap-3">

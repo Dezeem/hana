@@ -307,7 +307,7 @@ export function FilterDrawer(props: PanelProps) {
           />
           <div className="absolute inset-x-0 bottom-0 max-h-[85vh] overflow-y-auto border-t border-line bg-paper px-5 pb-10 pt-5">
             <div className="mb-6 flex items-center justify-between">
-              <span className="meta text-ink">筛选藏品</span>
+              <span className="meta text-ink">筛选</span>
               <button
                 type="button"
                 onClick={() => setOpen(false)}

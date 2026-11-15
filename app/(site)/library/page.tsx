@@ -10,8 +10,8 @@ import { PAGE_SIZE } from "@/site.config";
 import { FourBar } from "@/components/primary-bits";
 
 export const metadata: Metadata = {
-  title: "藏品库",
-  description: "按类型、年份、评分与标签检索全部收藏。",
+  title: "清单",
+  description: "按类型、年份、评分和标签筛选全部作品。",
 };
 
 type PageProps = {
@@ -53,21 +53,21 @@ export default async function LibraryPage({ searchParams }: PageProps) {
           <div>
             <p className="meta mb-4 flex items-center gap-3">
               <FourBar className="h-1 w-8 shrink-0" />
-              The collection
+              Everything
             </p>
             <h1 className="font-display text-[54px] leading-none tracking-[-0.04em] text-ink sm:text-[84px]">
-              藏品库
+              清单
               <span className="ml-4 align-baseline text-[16px] not-italic tracking-[0.08em] text-ink-faint">
-                LIBRARY
+                INDEX
               </span>
             </h1>
           </div>
           <div className="flex items-center gap-4">
             <FilterDrawer counts={stats.byType} years={years} tags={tags} query={query} />
             <p className="meta hidden text-right lg:block">
-              {stats.total} specimens
+              {stats.total} entries
               <br />
-              four collections
+              three kinds
             </p>
           </div>
         </div>
@@ -85,9 +85,9 @@ export default async function LibraryPage({ searchParams }: PageProps) {
 
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-32 text-center">
-              <p className="text-[32px] font-semibold uppercase tracking-[-0.02em] text-ink-faint">No specimens</p>
+              <p className="text-[32px] font-semibold uppercase tracking-[-0.02em] text-ink-faint">Nothing here</p>
               <p className="mt-4 max-w-sm text-[16px] leading-relaxed text-ink-soft">
-                当前条件下没有藏品。试试放宽年份或评分，或者清除筛选看看全部。
+                当前条件下没有作品。放宽年份或评分试试，或者清掉筛选看全部。
               </p>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
                 <Link href="/library" className="btn btn-ghost">

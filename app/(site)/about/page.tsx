@@ -6,7 +6,7 @@ import { FourBar } from "@/components/primary-bits";
 
 export const metadata: Metadata = {
   title: "关于",
-  description: "这间标本室的来历、方法与数据来源。",
+  description: "这个站的来历、做法和数据来源。",
 };
 
 export default function AboutPage() {
@@ -45,7 +45,7 @@ export default function AboutPage() {
               写信给我
             </a>
             <Link href="/library" className="meta underlink text-ink-soft hover:text-ink">
-              看看藏品
+              看看全部
             </Link>
           </div>
         </div>
@@ -58,7 +58,7 @@ export default function AboutPage() {
               <span className="num font-display text-[52px] leading-none text-ink">
                 {String(stats.total).padStart(3, "0")}
               </span>
-              <span className="meta pb-2">specimens</span>
+              <span className="meta pb-2">entries</span>
             </div>
 
             <ul className="space-y-3">
@@ -127,7 +127,7 @@ export default function AboutPage() {
           <ul className="space-y-2 text-[15px] text-ink-soft">
             <li>
               <span className="mr-2 inline-block h-2.5 w-2.5 bg-ink align-middle" />
-              已收藏 · 看过、读完、听过
+              已完成 · 看过、读完、听过
             </li>
             <li>
               <span className="mr-2 inline-block h-2.5 w-2.5 border border-ink align-middle" />
@@ -135,7 +135,7 @@ export default function AboutPage() {
             </li>
             <li>
               <span className="mr-2 inline-block h-2.5 w-2.5 border border-line-strong align-middle" />
-              想接触 · 躺在清单里
+              待开始 · 躺在清单里
             </li>
             <li className="pt-2 text-[13px] text-ink-faint">
               红、黄、黑分别对应电影、书籍与音乐；每件作品有一个三位编号，编号不会回收。
@@ -144,7 +144,7 @@ export default function AboutPage() {
         </div>
 
         <div className="col-span-12 md:col-span-7">
-          <p className="meta mb-4">How to poke around · 玩法</p>
+          <p className="meta mb-4">How to poke around · 怎么逛</p>
           <ul className="grid grid-cols-1 gap-x-8 gap-y-3 text-[15px] text-ink-soft sm:grid-cols-2">
             <li>
               <kbd className="mr-2 border border-line px-1.5 py-0.5 text-[12px] text-ink">?</kbd>
@@ -156,15 +156,15 @@ export default function AboutPage() {
             </li>
             <li>
               <Link href="/random" className="underlink">
-                抽签
+                随机
               </Link>
-              ：从「想接触」里随便挑一件，按 R 再抽
+              ：从「待开始」里随便挑一件，按 R 再来一次
             </li>
             <li>
               <Link href="/library?sort=random" className="underlink">
                 摇一摇
               </Link>
-              ：把整个藏品库洗成随机顺序
+              ：把整份清单洗成随机顺序
             </li>
             <li className="sm:col-span-2">
               <kbd className="mr-2 border border-line px-1.5 py-0.5 text-[12px] text-ink">

@@ -12,7 +12,7 @@ import { aspect, typeLabel } from "@/lib/utils";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "抽签",
+  title: "随机",
   robots: { index: false, follow: false },
 };
 
@@ -32,18 +32,18 @@ export default async function DrawPage({ searchParams }: PageProps) {
       <div className="flex items-baseline justify-between border-b border-line py-4">
         <span className="label-bar">
           <FourDots />
-          Draw
+          Shuffle
         </span>
         <span className="meta">
           {wantsWishlist
-            ? `从 ${stats.byStatus.wish} 件「想接触」里抽`
-            : `从全部 ${stats.total} 件里抽`}
+            ? `从 ${stats.byStatus.wish} 件「待开始」里挑`
+            : `从全部 ${stats.total} 件里挑`}
         </span>
       </div>
 
       {!work ? (
         <p className="py-32 text-center text-[17px] text-ink-soft">
-          标本册还是空的，没有可以抽的东西。
+          这里还是空的，没有可抽的。
         </p>
       ) : (
         <>
@@ -137,7 +137,7 @@ export default async function DrawPage({ searchParams }: PageProps) {
               <div className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-4 border-t border-line pt-6">
                 <Link href={nextHref} className="btn inline-flex items-center gap-2">
                   <Dices className="h-4 w-4" strokeWidth={1.6} />
-                  再抽一件
+                  再看一件
                 </Link>
                 <Link
                   href={`/work/${work.id}`}
@@ -151,7 +151,7 @@ export default async function DrawPage({ searchParams }: PageProps) {
                     href={`/random?from=${wantsWishlist ? "all" : "wish"}`}
                     className="meta underlink"
                   >
-                    {wantsWishlist ? "改成从全部抽" : "改成从想接触抽"}
+                    {wantsWishlist ? "从全部里挑" : "从待开始里挑"}
                   </Link>
                   <DrawKeyHint />
                 </div>
@@ -160,7 +160,7 @@ export default async function DrawPage({ searchParams }: PageProps) {
           </div>
 
           <p className="mt-16 border-t border-line pt-6 text-[15px] leading-[1.9] text-ink-soft">
-            抽签不是推荐算法——它没有偏好，也不学习你。抽到不喜欢的，就再抽一次；抽到忘记了的，
+            随机不是推荐算法——它没有偏好，也不学习你。抽到不喜欢的，再来一次；抽到忘记了的，
             正好重看一遍。
           </p>
         </>

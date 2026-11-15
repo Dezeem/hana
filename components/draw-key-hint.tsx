@@ -31,7 +31,7 @@ export function DrawKeyHint() {
     <span className="hidden items-center gap-1.5 text-[12px] uppercase tracking-[0.08em] text-ink-faint sm:flex">
       按
       <kbd className="border border-line px-1.5 py-0.5 text-[11px] text-ink-soft">R</kbd>
-      再抽
+      换一件
     </span>
   );
 }

@@ -15,6 +15,7 @@ import {
   type WorkInput,
 } from "@/lib/db";
 import type { WorkMeta } from "@/lib/db/types";
+import type { WorkStatus, WorkType } from "@/site.config";
 import { importDouban, searchDouban, type ImportResult } from "@/lib/douban";
 import { localizeCover } from "@/lib/douban/cover";
 import { storeUpload } from "@/lib/uploads";
@@ -131,6 +132,8 @@ export async function saveWork(_prev: SaveState, formData: FormData): Promise<Sa
 
   revalidatePath("/");
   revalidatePath("/library");
+  revalidatePath("/timeline");
+  if (id) revalidatePath(`/work/${id}`);
   redirect("/admin/works");
 }
 
@@ -152,6 +155,7 @@ export async function deleteWorkAction(formData: FormData): Promise<void> {
   if (Number.isFinite(id)) deleteWork(id);
   revalidatePath("/");
   revalidatePath("/library");
+  revalidatePath("/timeline");
   redirect("/admin/works");
 }
 
@@ -162,23 +166,43 @@ export async function bulkAction(formData: FormData): Promise<void> {
     .map((value) => Number(value))
     .filter((value) => Number.isFinite(value));
   const op = String(formData.get("op") ?? "");
+  // The list passes its current filters back so a bulk edit keeps the view.
+  const back = text(formData, "back");
+  const destination = back ? `/admin/works?${back}` : "/admin/works";
 
-  if (!ids.length) redirect("/admin/works");
+  if (!ids.length) redirect(destination);
 
   if (op === "delete") {
     deleteWorks(ids);
-  } else if (op === "done" || op === "doing" || op === "wish") {
-    bulkUpdate(ids, { status: op });
   } else if (op === "feature") {
     for (const id of ids) setFeatured(id, true);
   } else if (op === "unfeature") {
     for (const id of ids) setFeatured(id, false);
+  } else {
+    const patch: {
+      status?: WorkStatus;
+      type?: WorkType;
+      addTags?: string[];
+      removeTags?: string[];
+    } = {};
+
+    if (op === "done" || op === "doing" || op === "wish") patch.status = op;
+    if (op === "tag") patch.addTags = splitTags(text(formData, "tag"));
+    if (op === "untag") patch.removeTags = splitTags(text(formData, "tag"));
+
+    const bulkType = typeEnum.safeParse(text(formData, "bulkType"));
+    if (bulkType.success) patch.type = bulkType.data;
+
+    if (patch.status || patch.type || patch.addTags?.length || patch.removeTags?.length) {
+      bulkUpdate(ids, patch);
+    }
   }
 
   revalidatePath("/");
   revalidatePath("/library");
+  revalidatePath("/timeline");
   revalidatePath("/admin/works");
-  redirect("/admin/works");
+  redirect(destination);
 }
 
 

@@ -47,6 +47,9 @@ export default async function WorkPage({ params }: PageProps) {
   const related = getRelated(work, 8);
   const { prev, next } = getNeighbours(work.id);
   const type = TYPE_MAP[work.type];
+  // Region comes from the fetched meta block, so the header says something
+  // concrete instead of guessing a genre from tags.
+  const region = work.meta.region ?? "";
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
   const jsonLd = workJsonLd(work, baseUrl);
   const details: { label: string; value: string }[] = [];
@@ -80,7 +83,7 @@ export default async function WorkPage({ params }: PageProps) {
       <div className="mx-auto max-w-[1440px] px-5 pt-8 sm:px-8 sm:pt-12">
         <Link href="/library" className="meta underlink inline-flex items-center gap-2 text-ink-soft hover:text-ink">
           <ArrowLeft className="h-3 w-3" strokeWidth={1.4} />
-          返回藏品库
+          返回清单
         </Link>
 
         <div className="mt-10 grid grid-cols-12 gap-x-10 gap-y-12">
@@ -165,6 +168,7 @@ export default async function WorkPage({ params }: PageProps) {
               <span className="inline-block h-[7px] w-[7px]" style={{ backgroundColor: type?.color }} />
               <span className="meta" style={{ color: type?.color }}>
                 {type?.en} / {type?.zh}
+                {region ? <span className="text-ink-soft"> · {region}</span> : null}
               </span>
               <span className="h-px flex-1" style={{ backgroundColor: type?.color, opacity: 0.35 }} />
             </div>
@@ -192,7 +196,7 @@ export default async function WorkPage({ params }: PageProps) {
               style={{ "--tc": type?.color } as CSSProperties}
             >
               <div className="infobox-head">
-                <span className="meta">Specimen · 标本卡</span>
+                <span className="meta">Info · 作品信息</span>
                 <span className="specimen-no">No.{work.no}</span>
               </div>
               <div className="infobox-row">
@@ -341,7 +345,7 @@ export default async function WorkPage({ params }: PageProps) {
         <section className="mt-28 border-t border-line">
           <div className="mx-auto max-w-[1440px] px-5 pt-8 sm:px-8">
             <div className="flex items-baseline justify-between">
-              <h2 className="meta text-ink">同标签藏品 · Related</h2>
+              <h2 className="meta text-ink">同标签作品 · Related</h2>
               <span className="meta">{related.length} pieces</span>
             </div>
             <div className="mt-8 flex gap-5 overflow-x-auto pb-6">

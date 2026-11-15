@@ -28,6 +28,24 @@ export function workMetaLine(work: Work): string {
   return [work.creator, work.year ? String(work.year) : ""].filter(Boolean).join(" · ");
 }
 
+/**
+ * One readable line out of the fetched `meta` block, so entries imported from
+ * Douban still say something useful when they have no note or synopsis.
+ */
+export function workFactsLine(work: Work): string {
+  const meta = work.meta;
+  if (meta.director?.length) {
+    return [meta.director.join(" / "), meta.region].filter(Boolean).join(" · ");
+  }
+  if (meta.artist) return [meta.artist, meta.albumType].filter(Boolean).join(" · ");
+  if (meta.publisher) {
+    return [meta.publisher, meta.pages ? `${meta.pages} 页` : ""].filter(Boolean).join(" · ");
+  }
+  if (meta.region) return meta.region;
+  if (meta.language) return meta.language;
+  return "";
+}
+
 export function ratingText(rating: number | null): string {
   if (rating === null || Number.isNaN(rating)) return "—";
   return rating.toFixed(1).replace(/\.0$/, ".0");
