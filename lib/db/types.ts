@@ -14,6 +14,12 @@ export type WorkMeta = {
   region?: string;
   awards?: string[];
   language?: string;
+  /** Lines said on screen, or passages copied out of a book. */
+  quotes?: string[];
+  /** Still frames — local `/media/*` paths or remote URLs. */
+  stills?: string[];
+  /** `label|https://…` — listen links, trailers, publisher pages. */
+  links?: string[];
 };
 
 export type WorkRow = {

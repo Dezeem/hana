@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
 import { Cover } from "@/components/cover";
 import { Rating } from "@/components/rating";
 import { Reveal } from "@/components/reveal";
+import { StillGallery } from "@/components/still-gallery";
 import { getNeighbours, getRelated, getWork } from "@/lib/db";
 import { workJsonLd } from "@/lib/structured-data";
 import { STATUS_META, TYPE_MAP } from "@/site.config";
@@ -64,12 +65,38 @@ export default async function WorkPage({ params }: PageProps) {
   if (work.meta.albumType) details.push({ label: "专辑类型", value: work.meta.albumType });
   if (work.meta.tracks) details.push({ label: "曲目", value: String(work.meta.tracks) });
   if (work.meta.language) details.push({ label: "语言 / 介质", value: work.meta.language });
+  if (work.meta.awards?.length) details.push({ label: "奖项", value: work.meta.awards.join(" / ") });
+
+  const quotes = (work.meta.quotes ?? []).map((line) => line.trim()).filter(Boolean);
+  const stills = (work.meta.stills ?? []).map((line) => line.trim()).filter(Boolean);
+  const links = (work.meta.links ?? [])
+    .map((entry) => {
+      const [label, url] = entry.split("|").map((part) => part.trim());
+      return { label: label || "链接", url: url || label };
+    })
+    .filter((link) => /^(https?:\/\/|\/)/.test(link.url));
+
+  // A type-specific name for the same two blocks: lines on screen, passages on paper.
+  const quoteHeading =
+    work.type === "book"
+      ? { zh: "原文摘录", en: "Excerpts" }
+      : work.type === "music"
+        ? { zh: "歌词", en: "Lyrics" }
+        : { zh: "台词", en: "Lines" };
+  const stillsHeading =
+    work.type === "book"
+      ? { zh: "书影", en: "Images" }
+      : work.type === "music"
+        ? { zh: "影像", en: "Visuals" }
+        : { zh: "剧照", en: "Stills" };
 
   // Wiki-style contents: sections are numbered by those actually present.
   const sections = [
     { id: "facts", zh: "基本信息", en: "Facts" },
     ...(work.review ? [{ id: "note", zh: "短评", en: "Note" }] : []),
+    ...(quotes.length ? [{ id: "quotes", ...quoteHeading }] : []),
     ...(work.summary ? [{ id: "synopsis", zh: "简介", en: "Synopsis" }] : []),
+    ...(stills.length ? [{ id: "stills", ...stillsHeading }] : []),
     ...(work.tags.length ? [{ id: "tags", zh: "标签", en: "Tags" }] : []),
   ].map((section, index) => ({ ...section, no: String(index + 1).padStart(2, "0") }));
 
@@ -156,6 +183,18 @@ export default async function WorkPage({ params }: PageProps) {
                     <ExternalLink className="h-3 w-3" strokeWidth={1.4} />
                   </a>
                 ) : null}
+                {links.map((link) => (
+                  <a
+                    key={`${link.label}-${link.url}`}
+                    href={link.url}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="meta inline-flex items-center gap-1.5 text-ink-soft transition-colors hover:text-ink"
+                  >
+                    {link.label}
+                    <ExternalLink className="h-3 w-3" strokeWidth={1.4} />
+                  </a>
+                ))}
                 <Link
                   href="/random"
                   className="meta inline-flex items-center gap-1.5 text-ink-soft transition-colors hover:text-ink"
@@ -291,11 +330,40 @@ export default async function WorkPage({ params }: PageProps) {
                   </blockquote>
                 ) : null}
 
+                {section.id === "quotes" ? (
+                  <ol className="mt-6">
+                    {quotes.map((line, index) => {
+                      // "文本 —— 出处"; a plain line is just the text.
+                      const [text, source] = line.split(/\s*(?:—{2,}|–{2,}|-{2,})\s*/);
+                      return (
+                        <li
+                          key={`${index}-${text.slice(0, 12)}`}
+                          className="grid grid-cols-[2.5rem_1fr] gap-x-4 border-t border-line py-5 first:border-t-0 first:pt-1"
+                        >
+                          <span className="num pt-1.5 text-[12px] text-ink-faint">
+                            {String(index + 1).padStart(2, "0")}
+                          </span>
+                          <div>
+                            <p className="font-serif text-[20px] leading-[1.85] text-ink sm:text-[23px]">
+                              {text?.trim()}
+                            </p>
+                            {source?.trim() ? (
+                              <p className="meta mt-2">— {source.trim()}</p>
+                            ) : null}
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ol>
+                ) : null}
+
                 {section.id === "synopsis" ? (
                   <p className="mt-6 whitespace-pre-line text-[17px] leading-[1.95] text-ink-soft">
                     {work.summary}
                   </p>
                 ) : null}
+
+                {section.id === "stills" ? <StillGallery stills={stills} /> : null}
 
                 {section.id === "tags" ? (
                   <div className="mt-6 flex flex-wrap gap-2">

@@ -499,6 +499,22 @@ html[data-egg="on"].dark {
   animation: hana-fade 0.5s ease forwards;
 }
 
+/* still-frame lightbox: each swap re-mounts the <img>, so the zoom replays */
+@keyframes hana-zoom {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.zoom-in {
+  animation: hana-zoom 0.34s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
 .vertical-rl {
   writing-mode: vertical-rl;
   text-orientation: mixed;
@@ -510,7 +526,8 @@ html[data-egg="on"].dark {
   }
   .reveal,
   .reveal.is-in,
-  .fade-in {
+  .fade-in,
+  .zoom-in {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;

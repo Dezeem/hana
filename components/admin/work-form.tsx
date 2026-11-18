@@ -111,16 +111,36 @@ export function WorkForm({
     }));
   }
 
-  const metaPreview = ((): [string, string][] => {
+  const metaObject = ((): WorkMeta => {
     try {
       const parsed = JSON.parse(values.meta) as WorkMeta;
-      return Object.entries(parsed)
-        .filter(([, value]) => value !== undefined && value !== null && value !== "")
-        .map(([key, value]) => [key, Array.isArray(value) ? value.join(" / ") : String(value)]);
+      return parsed && typeof parsed === "object" ? parsed : {};
     } catch {
-      return [];
+      return {};
     }
   })();
+
+  /** The textareas below write back into the same JSON blob the importer fills. */
+  function patchMeta(patch: Partial<WorkMeta>) {
+    set("meta", JSON.stringify({ ...metaObject, ...patch }));
+  }
+
+  function lines(raw: string) {
+    return raw
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean);
+  }
+
+  const quotesLabel =
+    values.type === "book" ? "原文摘录" : values.type === "music" ? "歌词" : "台词";
+
+  const metaPreview = Object.entries(metaObject)
+    .filter(([, value]) => value !== undefined && value !== null && value !== "")
+    .map(([key, value]) => [key, Array.isArray(value) ? value.join(" / ") : String(value)]) as [
+    string,
+    string,
+  ][];
 
   return (
     <form action={formAction} className="space-y-6">
@@ -308,6 +328,52 @@ export function WorkForm({
               rows={4}
               className="field resize-none leading-[1.9]"
             />
+          </label>
+        </div>
+      </section>
+
+      <section className="border border-line">
+        <div className="border-b border-line px-5 py-3">
+          <span className="meta text-ink">细节 · Details</span>
+        </div>
+        <div className="grid grid-cols-1 gap-6 px-5 py-6">
+          <label>
+            <span className="meta mb-2 block">{quotesLabel}（每行一条）</span>
+            <textarea
+              defaultValue={(metaObject.quotes ?? []).join("\n")}
+              onChange={(event) => patchMeta({ quotes: lines(event.target.value) })}
+              rows={4}
+              placeholder={"「人は誰でも、誰かの大切な人。」—— 花とアリス"}
+              className="field resize-none leading-[1.9]"
+            />
+            <span className="meta mt-2 block">
+              文本与出处之间用 —— 分隔，出处可省略。书籍填原文摘录，音乐填歌词。
+            </span>
+          </label>
+
+          <label>
+            <span className="meta mb-2 block">剧照 / 书影（每行一个图片地址）</span>
+            <textarea
+              defaultValue={(metaObject.stills ?? []).join("\n")}
+              onChange={(event) => patchMeta({ stills: lines(event.target.value) })}
+              rows={3}
+              placeholder={"/media/xxx.webp 或 https://…"}
+              className="field resize-none leading-[1.9]"
+            />
+          </label>
+
+          <label>
+            <span className="meta mb-2 block">相关链接（每行「标签 | 地址」）</span>
+            <textarea
+              defaultValue={(metaObject.links ?? []).join("\n")}
+              onChange={(event) => patchMeta({ links: lines(event.target.value) })}
+              rows={3}
+              placeholder={"网易云音乐 | https://music.163.com/album?id=…"}
+              className="field resize-none leading-[1.9]"
+            />
+            <span className="meta mt-2 block">
+              试听、预告、出版社页面都可以放在这里，会出现在封面下方。
+            </span>
           </label>
         </div>
       </section>
