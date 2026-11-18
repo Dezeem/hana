@@ -6,11 +6,10 @@ import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
 import { Cover } from "@/components/cover";
 import { Rating } from "@/components/rating";
 import { Reveal } from "@/components/reveal";
-import { WorkCard } from "@/components/work-card";
 import { getNeighbours, getRelated, getWork } from "@/lib/db";
 import { workJsonLd } from "@/lib/structured-data";
 import { STATUS_META, TYPE_MAP } from "@/site.config";
-import { aspect, formatDate, typeLabel } from "@/lib/utils";
+import { aspect, formatDate, typeLabel, workFactsLine } from "@/lib/utils";
 
 type PageProps = { params: Promise<{ id: string }> };
 
@@ -349,17 +348,66 @@ export default async function WorkPage({ params }: PageProps) {
 
       {related.length ? (
         <section className="mt-28 border-t border-line">
-          <div className="mx-auto max-w-[1440px] px-5 pt-8 sm:px-8">
-            <div className="flex items-baseline justify-between">
-              <h2 className="meta text-ink">同标签作品 · Related</h2>
-              <span className="meta">{related.length} pieces</span>
+          <div className="mx-auto max-w-[1440px] px-5 py-14 sm:px-8">
+            {/* a centred register header — the way a cast page announces its list */}
+            <div className="flex items-center gap-6">
+              <span className="h-px flex-1 bg-line" aria-hidden />
+              <h2 className="meta tracking-[0.26em] text-ink">Related · 同标签作品</h2>
+              <span className="h-px flex-1 bg-line" aria-hidden />
             </div>
-            <div className="mt-8 flex gap-5 overflow-x-auto pb-6">
-              {related.map((item, index) => (
-                <Reveal key={item.id} delay={index * 40}>
-                  <WorkCard work={item} variant="rail" />
+
+            <div className="mt-10 grid grid-cols-1 gap-x-14 md:grid-cols-2">
+              {related.map((item, index) => {
+                // The year already sits in the meta line, so the blurb falls back
+                // to facts (director, region, publisher) instead of repeating it.
+                const blurb = item.review || item.summary || workFactsLine(item);
+                return (
+                <Reveal key={item.id} delay={(index % 4) * 40}>
+                  <Link
+                    href={`/work/${item.id}`}
+                    className="group flex h-full items-start gap-5 border-b border-line py-6"
+                  >
+                    <span
+                      className="w-[68px] shrink-0 overflow-hidden rounded-[10px] border border-line bg-mist"
+                      style={{ aspectRatio: "0.72" }}
+                    >
+                      <Cover
+                        src={item.cover}
+                        fallbackSrc={item.coverRemote}
+                        title={item.title}
+                        type={item.type}
+                        sizes="80px"
+                        className="h-full w-full transition-transform duration-700 ease-out group-hover:scale-[1.06]"
+                      />
+                    </span>
+
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-serif text-[22px] leading-[1.3] tracking-[-0.01em] text-ink decoration-2 underline-offset-4 group-hover:underline">
+                        {item.title}
+                      </span>
+                      <span className="mt-1.5 block text-[11px] font-medium uppercase tracking-[0.14em] text-ink-faint">
+                        <span className="num">No.{item.no}</span>
+                        <span className="mx-2 opacity-40">·</span>
+                        <span style={{ color: TYPE_MAP[item.type]?.color }}>
+                          {typeLabel(item.type)}
+                        </span>
+                        {item.year ? (
+                          <>
+                            <span className="mx-2 opacity-40">·</span>
+                            <span className="num">{item.year}</span>
+                          </>
+                        ) : null}
+                      </span>
+                      {blurb ? (
+                        <span className="mt-2 line-clamp-2 block text-[14px] leading-[1.8] text-ink-soft">
+                          {blurb}
+                        </span>
+                      ) : null}
+                    </span>
+                  </Link>
                 </Reveal>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>

@@ -24,21 +24,26 @@
   --radius-chip: 999px;
 }
 
+/**
+ * Night plate · fluorescent on black, borrowed from band-site posters.
+ * Two accents carry everything: electric yellow for action, hot pink for film.
+ * The black is near-pure so the covers and the colour bars do the talking.
+ */
 .dark {
-  --paper: #141517;
-  --paper-raised: #1b1d20;
-  --ink: #edeef0;
-  --ink-soft: #a6aab0;
-  --ink-faint: #74787e;
-  --line: #2a2d31;
-  --line-strong: #3c4046;
-  --mist: #1e2125;
-  --mist-soft: #191b1e;
+  --paper: #050507;
+  --paper-raised: #0b0b0d;
+  --ink: #f7f7f5;
+  --ink-soft: #a3a3a0;
+  --ink-faint: #6c6c68;
+  --line: #232327;
+  --line-strong: #3a3a40;
+  --mist: #101014;
+  --mist-soft: #0a0a0c;
 
-  --c-movie: #ef6a5f;
-  --c-series: #7ea9d8;
-  --c-book: #e2b23c;
-  --c-music: #d6d8dd;
+  --c-movie: #ff2e63;
+  --c-series: #35c8ff;
+  --c-book: #ffe600;
+  --c-music: #f2f2ef;
 }
 
 /* ── hidden plate · the four primaries rotate ──────────────── */
@@ -299,6 +304,46 @@ html[data-egg="on"].dark {
     opacity: 0.4;
     cursor: not-allowed;
   }
+}
+
+/* ── night plate accents ───────────────────────────────────── */
+/* Section tabs and the primary action turn yellow; ghosts outline in white. */
+.dark .label-bar {
+  background: transparent;
+  border-color: color-mix(in srgb, var(--c-book) 45%, transparent);
+  color: var(--c-book);
+}
+
+.dark .btn {
+  border-color: var(--c-book);
+  background: var(--c-book);
+  color: #08090a;
+}
+
+.dark .btn:hover {
+  background: transparent;
+  color: var(--c-book);
+}
+
+.dark .btn-ghost {
+  border-color: var(--line-strong);
+  background: transparent;
+  color: var(--ink);
+}
+
+.dark .btn-ghost:hover {
+  border-color: var(--c-book);
+  background: var(--c-book);
+  color: #08090a;
+}
+
+.dark ::selection {
+  background: var(--c-book);
+  color: #08090a;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: var(--c-book);
 }
 
 /* ── editorial blocks · infobox, pull quote, contents ──────── */

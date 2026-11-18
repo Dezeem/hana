@@ -67,7 +67,7 @@ export const site = {
   /** shown next to the logo, handwritten-feeling */
   nameZh: "花间",
   owner: "Hana",
-  title: "Hana — a private list in primary colours",
+  title: "Hana",
   tagline: "一份按原色编号的私人清单。",
   taglineEn: "Films, books and albums, kept in primary colours.",
   description:

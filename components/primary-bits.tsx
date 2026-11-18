@@ -8,13 +8,17 @@ import { cn } from "@/lib/utils";
 
 const COLORS = ["var(--c-movie)", "var(--c-series)", "var(--c-book)", "var(--c-music)"];
 
+/**
+ * A span, not a div: the bar is used inside `<p className="meta">` labels, and a
+ * block element there is invalid HTML that React reports as a hydration error.
+ */
 export function FourBar({ className }: { className?: string }) {
   return (
-    <div className={cn("flex h-1.5 w-full overflow-hidden", className)} aria-hidden>
+    <span className={cn("flex h-1.5 w-full overflow-hidden", className)} aria-hidden>
       {COLORS.map((color) => (
         <span key={color} className="flex-1" style={{ background: color }} />
       ))}
-    </div>
+    </span>
   );
 }
 
