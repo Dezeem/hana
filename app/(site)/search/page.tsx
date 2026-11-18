@@ -94,7 +94,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-12 gap-x-8 gap-y-12 border-t border-line pt-8">
+        <div className="grid grid-cols-12 gap-x-4 gap-y-10 border-t border-line pt-8 sm:gap-x-8 sm:gap-y-12">
           <section className="col-span-12 md:col-span-4">
             <h2 className="meta mb-4 text-ink">常用标签</h2>
             <div className="flex flex-wrap gap-1.5">

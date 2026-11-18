@@ -86,7 +86,7 @@ export default async function WorkPage({ params }: PageProps) {
           返回清单
         </Link>
 
-        <div className="mt-10 grid grid-cols-12 gap-x-10 gap-y-12">
+        <div className="mt-10 grid grid-cols-12 gap-x-4 gap-y-10 sm:gap-x-8 sm:gap-y-12 lg:gap-x-10">
           {/* cover */}
           <div className="col-span-12 sm:col-span-7 lg:col-span-5 xl:col-span-4">
             <div className="sm:sticky sm:top-24">

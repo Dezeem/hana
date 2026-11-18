@@ -60,7 +60,7 @@ export default async function HomePage() {
       {/* ── hero ─────────────────────────────────────────── */}
       <section className="mx-auto max-w-[1440px] px-5 sm:px-8">
         <FourBar />
-        <div className="grid grid-cols-12 items-start gap-x-8 gap-y-14 border-b border-line pb-16 pt-12 sm:pt-16">
+        <div className="grid grid-cols-12 items-start gap-x-4 gap-y-14 border-b border-line pb-16 pt-12 sm:gap-x-8 sm:pt-16">
           <div className="col-span-12 lg:col-span-7">
             <span className="label-bar">Personal list</span>
 
@@ -196,7 +196,7 @@ export default async function HomePage() {
 
       {/* ── index strip ──────────────────────────────────── */}
       <section className="mx-auto max-w-[1440px] px-5 sm:px-8">
-        <div className="grid grid-cols-12 gap-x-8 gap-y-10 border-b border-line py-12">
+        <div className="grid grid-cols-12 gap-x-4 gap-y-10 border-b border-line py-12 sm:gap-x-8">
           <div className="col-span-12 md:col-span-3">
             <div className="infobox infobox-spectrum">
               <div className="infobox-head">
@@ -257,13 +257,14 @@ export default async function HomePage() {
                 Today
               </span>
             </span>
-            <span className="meta">每日一件 · 今天就是它，零点后换一件</span>
+            <span className="meta hidden sm:block">每日一件 · 今天就是它，零点后换一件</span>
+            <span className="meta sm:hidden">每日一件</span>
           </div>
 
-          <div className="mt-8 grid grid-cols-12 items-stretch gap-x-8 gap-y-6">
+          <div className="mt-8 grid grid-cols-1 items-stretch gap-y-6 sm:grid-cols-12 sm:gap-x-8">
             <Link
               href={`/work/${daily.id}`}
-              className="group col-span-5 self-start sm:col-span-4 lg:col-span-3"
+              className="group max-w-[220px] self-start sm:col-span-4 sm:max-w-none lg:col-span-3"
             >
               <div
                 className="relative overflow-hidden rounded-[var(--radius-card)] border border-line bg-mist shadow-[0_1px_3px_rgb(16_19_22/0.07)] transition-shadow duration-500 group-hover:shadow-[0_10px_28px_-14px_rgb(16_19_22/0.35)]"
@@ -285,7 +286,7 @@ export default async function HomePage() {
               </div>
             </Link>
 
-            <div className="col-span-7 flex flex-col sm:col-span-8 lg:col-span-9">
+            <div className="flex flex-col sm:col-span-8 lg:col-span-9">
               <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
                 <span className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                   <span className="specimen-no">No.{daily.no}</span>
@@ -388,7 +389,7 @@ export default async function HomePage() {
             </span>
           </div>
 
-          <div className="mt-10 grid grid-cols-12 gap-x-6 gap-y-12">
+          <div className="mt-10 grid grid-cols-12 gap-x-3 gap-y-10 sm:gap-x-6 sm:gap-y-12">
             {spotlight.map((work, index) => (
               <Reveal
                 key={work.id}
@@ -457,7 +458,7 @@ export default async function HomePage() {
           </Link>
         </div>
 
-        <div className="mt-10 columns-1 gap-x-6 sm:columns-2 md:columns-3 xl:columns-4 [&>*]:mb-12 [&>*]:break-inside-avoid">
+        <div className="mt-10 columns-2 gap-x-4 md:columns-3 md:gap-x-6 xl:columns-4 [&>*]:mb-8 [&>*]:break-inside-avoid sm:[&>*]:mb-12">
           {wallItems.map((work, index) => (
             <Reveal key={work.id} delay={(index % 8) * 40}>
               <WorkCard work={work} uniform />
@@ -474,7 +475,7 @@ export default async function HomePage() {
 
       {/* ── closing note ─────────────────────────────────── */}
       <section className="mx-auto mt-20 max-w-[1440px] px-5 sm:px-8">
-        <div className="grid grid-cols-12 items-start gap-8 border-t border-line pt-10">
+        <div className="grid grid-cols-12 items-start gap-4 border-t border-line pt-10 md:gap-8">
           <p className="col-span-12 max-w-xl text-[16px] leading-[1.95] text-ink-soft md:col-span-7">
             这里没有算法，只有收藏日期和手写的短评。想找具体某一件，用顶部搜索；只想随便看看，就去
             <Link

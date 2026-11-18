@@ -25,7 +25,7 @@ export default function AboutPage() {
         </h1>
       </header>
 
-      <div className="grid grid-cols-12 gap-x-10 gap-y-12 border-t border-line pt-10">
+      <div className="grid grid-cols-12 gap-x-4 gap-y-10 border-t border-line pt-10 sm:gap-x-8 sm:gap-y-12 lg:gap-x-10">
         <div className="col-span-12 md:col-span-7">
           {site.about.paragraphs.map((paragraph, index) => (
             <p
@@ -121,7 +121,7 @@ export default function AboutPage() {
       </div>
 
       {/* legend & playful bits */}
-      <section className="mt-20 grid grid-cols-12 gap-x-10 gap-y-10 border-t border-line pt-8">
+      <section className="mt-20 grid grid-cols-12 gap-x-4 gap-y-10 border-t border-line pt-8 sm:gap-x-8 lg:gap-x-10">
         <div className="col-span-12 md:col-span-5">
           <p className="meta mb-4">Legend · 图例</p>
           <ul className="space-y-2 text-[15px] text-ink-soft">

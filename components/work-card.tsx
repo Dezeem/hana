@@ -127,7 +127,10 @@ export function WorkCard({ work, variant = "masonry", eager, uniform }: WorkCard
           </h3>
           <p className="mt-1 truncate text-[16px] text-ink-soft">{workMetaLine(work)}</p>
         </div>
-        <TypeMark type={work.type} />
+        {/* a two-up phone grid leaves no room for the type chip */}
+        <span className="hidden shrink-0 sm:block">
+          <TypeMark type={work.type} />
+        </span>
       </div>
 
       <p className="mt-2 line-clamp-2 max-h-0 overflow-hidden text-[16px] leading-relaxed text-ink-soft opacity-0 transition-all duration-300 group-hover:max-h-14 group-hover:opacity-100">

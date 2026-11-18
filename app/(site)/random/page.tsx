@@ -47,7 +47,7 @@ export default async function DrawPage({ searchParams }: PageProps) {
         </p>
       ) : (
         <>
-          <div className="mt-12 grid grid-cols-12 gap-x-10 gap-y-12">
+          <div className="mt-12 grid grid-cols-12 gap-x-4 gap-y-10 sm:gap-x-8 sm:gap-y-12 lg:gap-x-10">
             <div className="col-span-12 sm:col-span-5 lg:col-span-4">
               <div
                 className="relative overflow-hidden rounded-[var(--radius-card)] border border-line bg-mist"

@@ -73,7 +73,7 @@ export default async function LibraryPage({ searchParams }: PageProps) {
         </div>
       </header>
 
-      <div className="grid grid-cols-12 gap-x-8">
+      <div className="grid grid-cols-12 gap-x-4 sm:gap-x-8">
         <aside className="hidden lg:col-span-2 lg:block xl:col-span-2">
           <div className="sticky top-24 pb-16">
             <FilterPanel counts={stats.byType} years={years} tags={tags} query={query} />
@@ -105,7 +105,7 @@ export default async function LibraryPage({ searchParams }: PageProps) {
               ))}
             </div>
           ) : (
-            <div className="mt-10 columns-1 gap-x-5 sm:columns-2 md:columns-3 xl:columns-4 [&>*]:mb-9 [&>*]:break-inside-avoid">
+            <div className="mt-10 columns-2 gap-x-4 sm:gap-x-5 md:columns-3 xl:columns-4 [&>*]:mb-8 [&>*]:break-inside-avoid sm:[&>*]:mb-9">
               {items.map((work, index) => (
                 <Reveal key={work.id} delay={(index % 6) * 45}>
                   <WorkCard work={work} eager={index < 4} />
